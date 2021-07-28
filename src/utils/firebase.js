@@ -7,15 +7,15 @@ export function logout(auth) {
 }
 
 export function acceptPlayer(fireDB, room, uid, username) {
-  fireDB.ref("rooms/" + room + "/players/" + uid).set(username);
+  fireDB.ref('rooms/' + room + '/players/' + uid).set(username);
 }
 
 export function removeKnockPlayer(fireDB, room, uid) {
-  fireDB.ref("rooms/" + room + "/knock/" + uid).remove();
+  fireDB.ref('rooms/' + room + '/knock/' + uid).remove();
 }
 
 export function changeBallPos(fireDB, room, uid, toWhere) {
-  fireDB.ref("rooms/" + room + "/gameProps/characters/" + uid).set(toWhere);
+  fireDB.ref('rooms/' + room + '/gameProps/characters/' + uid).set(toWhere);
 }
 
 export function authenticationListener(auth, setUser) {
@@ -30,17 +30,17 @@ export function authenticationListener(auth, setUser) {
 
 export function startListeningToNewPlayers(fireDB, room, setPlayers) {
   fireDB
-    .ref("rooms/" + room + "/players")
-    .on("value", (snap) => setPlayers(snap.val()));
+    .ref('rooms/' + room + '/players')
+    .on('value', (snap) => setPlayers(snap.val()));
 }
 
 export function stopListeningToNewPlayers(fireDB, room) {
-  fireDB.ref("rooms/" + room + "/players").off("value");
+  fireDB.ref('rooms/' + room + '/players').off('value');
 }
 
 export function startGameHost(fireDB, room) {
-  fireDB.ref("rooms/" + room + "/startGame").set(true);
-  fireDB.ref("rooms/" + room + "/knock").off();
+  fireDB.ref('rooms/' + room + '/startGame').set(true);
+  fireDB.ref('rooms/' + room + '/knock').off();
 }
 
 export function startListeningToStartGame(
@@ -49,14 +49,14 @@ export function startListeningToStartGame(
   setStartGame,
   setPlayers
 ) {
-  fireDB.ref("rooms/" + room + "/startGame").on("value", (snap) => {
+  fireDB.ref('rooms/' + room + '/startGame').on('value', (snap) => {
     if (snap.val()) {
       fireDB
-        .ref("rooms/" + room + "/players")
+        .ref('rooms/' + room + '/players')
         .get()
         .then((snap) => {
           setPlayers(snap.val());
-          fireDB.ref("rooms/" + room + "/startGame").off();
+          fireDB.ref('rooms/' + room + '/startGame').off();
           setStartGame(true);
         });
     }
@@ -73,11 +73,11 @@ export function listenToPlayersPositions(
   setGameBoard
 ) {
   fireDB
-    .ref("rooms")
+    .ref('rooms')
     .child(room)
-    .child("gameProps")
-    .child("characters")
-    .on("value", (snap) => {
+    .child('gameProps')
+    .child('characters')
+    .on('value', (snap) => {
       if (snap.exists()) {
         const ballsPositions = snap.val();
         const newGameBoard = Array.from({
@@ -100,7 +100,7 @@ export function listenToPlayersPositions(
 }
 
 export function startListeningToKnocks(fireDB, room, setKnocks) {
-  fireDB.ref("rooms/" + room + "/knock").on("value", (snap) => {
+  fireDB.ref('rooms/' + room + '/knock').on('value', (snap) => {
     if (snap.exists()) {
       setKnocks(snap.val());
     } else {
@@ -111,16 +111,36 @@ export function startListeningToKnocks(fireDB, room, setKnocks) {
 
 export function knockOnRoom(fireDB, room, uid, username) {
   fireDB
-    .ref("rooms/" + room + "/knock")
+    .ref('rooms/' + room + '/knock')
     .child(uid)
     .set(username);
 }
 
 export function startListeningIfInGame(fireDB, room, uid, setInGame) {
-  fireDB.ref("rooms/" + room + "/players").on("value", (snap) => {
+  fireDB.ref('rooms/' + room + '/players').on('value', (snap) => {
     if (uid in snap.val()) {
       setInGame(true);
-      fireDB.ref("rooms/" + room + "/players").off();
+      fireDB.ref('rooms/' + room + '/players').off();
     }
   });
 }
+
+export const updateCharPosition = (
+  fireDB,
+  room,
+  user,
+  origPos,
+  direction,
+  speed
+) => {
+  const dbRef = fireDB.ref('rooms/' + room + '/gameProps/characters/' + user);
+  if (direction === 'ArrowRight') {
+    dbRef.child('x').set(origPos.x + speed);
+  } else if (direction === 'ArrowLeft') {
+    dbRef.child('x').set(origPos.x - speed);
+  } else if (direction === 'ArrowUp') {
+    dbRef.child('y').set(origPos.y - speed);
+  } else if (direction === 'ArrowDown') {
+    dbRef.child('y').set(origPos.y + speed);
+  }
+};

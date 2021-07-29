@@ -1,5 +1,6 @@
 // import * as Pixi from 'pixi.js';
 import React, { useRef, useEffect } from "react";
+//import { Application } from "pixi.js";
 import { collisionDetect } from "../utils/collision";
 
 const PixiComponent = ({
@@ -13,6 +14,9 @@ const PixiComponent = ({
 }) => {
   const ref = useRef(null);
 
+  // something wrong here
+  // line 21 keeps causing a crash
+  // fixed it by adding square brackets on line 27
   useEffect(() => {
     ref.current.appendChild(gameApp.view);
     gameApp.start();
@@ -20,12 +24,12 @@ const PixiComponent = ({
     return () => {
       gameApp.destroy(true, true);
     };
-  });
+  }, []);
 
   gameApp.ticker.add((delta) => gameLoop(delta));
 
   // did have delta in the brackets below but it was never used
-  function gameLoop() {
+  function gameLoop(delta) {
     //console.log("box-x>>>", boxSpriteClosed.x);
     gameApp.stage.addChild(char1Sprite);
     gameApp.stage.addChild(boxSpriteClosed);
@@ -33,7 +37,7 @@ const PixiComponent = ({
 
     if (collisionDetect(char1Sprite, boxSpriteClosed)) {
       fireDB
-        .ref("rooms/" + room + "/gameProps/boxes/box1")
+        .ref("rooms/" + room + "/gameProps/boxes/1")
         .get()
         .then((snap) => {
           boxSpriteOpen.position.set(snap.val().x, snap.val().y);

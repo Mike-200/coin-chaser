@@ -1,19 +1,33 @@
-import up from '../assets/up-arrow.svg';
-import down from '../assets/down-arrow.svg';
-import left from '../assets/left-arrow.svg';
-import right from '../assets/right-arrow.svg';
-import { startNewScreen } from '../utils/frontend';
+import up from "../assets/up-arrow.svg";
+import down from "../assets/down-arrow.svg";
+import left from "../assets/left-arrow.svg";
+import right from "../assets/right-arrow.svg";
+import { startNewScreen } from "../utils/frontend";
 
-const Controls = ({ gameApp, char1Sprite, boxSpriteClosed, fireDB, room }) => {
+const Controls = ({
+  gameApp,
+  char1Sprite,
+  boxSpriteClosed,
+  fireDB,
+  room,
+  boxes,
+  setBoxes,
+}) => {
+  function NewScreenButton() {
+    startNewScreen(
+      gameApp,
+      char1Sprite,
+      boxSpriteClosed,
+      fireDB,
+      room,
+      boxes,
+      setBoxes
+    );
+  }
+
   return (
     <section className="playing container">
-      <button
-        onClick={() => {
-          startNewScreen(gameApp, char1Sprite, boxSpriteClosed, fireDB, room);
-        }}
-      >
-        New Screen
-      </button>
+      <button onClick={NewScreenButton}>New Screen</button>
 
       <button
       // onClick={() => {

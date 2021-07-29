@@ -59,13 +59,13 @@ function App() {
   const [players, setPlayers] = useState({});
   const [inGame, setInGame] = useState(false);
   const [startGame, setStartGame] = useState(false);
-  const [screenNumber, setScreenNumber] = useState(1);
+  const [boxes, setBoxes] = useState(1);
 
   useEffect(() => {
     if (startGame) {
-      console.log("in game");
-      console.log("user>>>", user);
-      console.log("room>>>", room);
+      // console.log("in game");
+      // console.log("user>>>", user);
+      // console.log("room>>>", room);
       fireDB
         .ref(
           "rooms/" +
@@ -84,18 +84,16 @@ function App() {
           const { x, y } = snap.val();
           char1Sprite.x = x;
           char1Sprite.y = y;
-          console.log("char1-x>>>", boxSpriteClosed.x);
+          //console.log("char1-x>>>", boxSpriteClosed.x);
         });
 
-      // listen for changes to box1 position
-      fireDB
-        .ref("rooms/" + room + "/gameProps/boxes/box1")
-        .on("value", (snap) => {
-          const { x, y } = snap.val();
-          boxSpriteClosed.x = x;
-          boxSpriteClosed.y = y;
-          console.log("box-x>>>", boxSpriteClosed.x);
-        });
+      // listen for changes to box position
+      fireDB.ref("rooms/" + room + "/gameProps/boxes/1").on("value", (snap) => {
+        const { x, y } = snap.val();
+        boxSpriteClosed.x = x;
+        boxSpriteClosed.y = y;
+        //console.log("box-x>>>", boxSpriteClosed.x);
+      });
 
       document.addEventListener("keydown", function (e) {
         e.preventDefault();
@@ -113,12 +111,12 @@ function App() {
 
   useEffect(() => {
     if (startGame) {
-      writeBoxPosition(fireDB, auth.currentUser.uid, boxSpriteClosed);
+      writeBoxPosition(fireDB, auth.currentUser.uid, boxSpriteClosed, 1);
       // fireDB
       //   .ref('rooms/' + auth.currentUser.uid + '/gameProps/boxes/box1')
       //   .set({ x: boxSpriteClosed.x, y: boxSpriteClosed.y });
     }
-  }, [startGame, screenNumber]);
+  }, [startGame, boxes]);
 
   // const [spriteState, setSpriteState] = useState({
   //   char1: { x: 500, y: 450 },
@@ -181,6 +179,8 @@ function App() {
         boxSpriteClosed={boxSpriteClosed}
         fireDB={fireDB}
         room={auth.currentUser.uid}
+        boxes={boxes}
+        setBoxes={setBoxes}
       />
       <button onClick={logoutButton}>Logout</button>
     </div>

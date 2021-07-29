@@ -146,21 +146,23 @@ export const updateCharPosition = (
   }
 };
 
-export const writeBoxPosition = (fireDB, room, box) => {
-  fireDB
-    .ref("rooms/" + room + "/gameProps/boxes/box1")
-    .set({ x: box.x, y: box.y });
-};
-
 export const writeCharPosition = (fireDB, room, char) => {
   fireDB
     .ref("rooms/" + room + "/gameProps/characters/" + room)
     .set({ x: char.x, y: char.y });
 };
 
+export const writeBoxPosition = (fireDB, room, box, boxNo) => {
+  //console.log("boxNo>>>", boxNo);
+  fireDB
+    .ref("rooms/" + room + "/gameProps/boxes")
+    .child(boxNo)
+    .set({ x: box.x, y: box.y, contents: "coin" });
+};
+
 export const readBoxPosition = (fireDB, room) => {
   fireDB
-    .ref("rooms/" + room + "/gameProps/boxes/box1")
+    .ref("rooms/" + room + "/gameProps/boxes/1")
     .get()
     .then((snap) => {
       console.log("box position>>>", snap.val());

@@ -30,16 +30,29 @@ export const startNewScreen = (
   char1Sprite,
   boxSpriteClosed,
   fireDB,
-  room
+  room,
+  boxes,
+  setBoxes
 ) => {
   gameApp.stage.removeChildren();
   occupiedPositions = [];
-  char1Sprite.position.set(randomCharPosition().x, randomCharPosition().y);
+
+  const randCharCoOrds = randomCharPosition();
+  char1Sprite.position.set(randCharCoOrds.x, randCharCoOrds.y);
   writeCharPosition(fireDB, room, char1Sprite);
 
-  boxSpriteClosed.position.set(randomBoxPosition().x, randomBoxPosition().y);
-  writeBoxPosition(fireDB, room, boxSpriteClosed);
+  for (let i = 1; i <= boxes; i++) {
+    const randBoxCoOrds = randomBoxPosition();
+    boxSpriteClosed.position.set(randBoxCoOrds.x, randBoxCoOrds.y);
+
+    writeBoxPosition(fireDB, room, boxSpriteClosed, i);
+    //setBoxes();
+    console.log("boxes>>>", boxes);
+  }
 
   // gameApp.stage.addChild(char1Sprite);
   // gameApp.stage.addChild(boxSpriteClosed);
+  setBoxes((currValue) => {
+    return currValue + 1;
+  });
 };

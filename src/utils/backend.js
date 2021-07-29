@@ -1,48 +1,48 @@
 import { useState } from "react";
 
-export function coordsToIndex(coords, base) {
-  let encodingBase = 10;
-  while (encodingBase < base) {
-    encodingBase = encodingBase * 10;
-  }
-  const yCoords = Math.floor(coords / encodingBase);
-  return yCoords * base + coords - yCoords * encodingBase;
-}
+// export function coordsToIndex(coords, base) {
+//   let encodingBase = 10;
+//   while (encodingBase < base) {
+//     encodingBase = encodingBase * 10;
+//   }
+//   const yCoords = Math.floor(coords / encodingBase);
+//   return yCoords * base + coords - yCoords * encodingBase;
+// }
 
-export function indexToCoords(index, base) {
-  let encodingBase = 10;
-  while (encodingBase < base) {
-    encodingBase = encodingBase * 10;
-  }
-  const yCoords = Math.floor(index / base);
-  return yCoords * encodingBase + index - yCoords * base;
-}
+// export function indexToCoords(index, base) {
+//   let encodingBase = 10;
+//   while (encodingBase < base) {
+//     encodingBase = encodingBase * 10;
+//   }
+//   const yCoords = Math.floor(index / base);
+//   return yCoords * encodingBase + index - yCoords * base;
+// }
 
-export function coordsToXY(coords, base) {
-  let encodingBase = 10;
-  while (encodingBase < base) {
-    encodingBase = encodingBase * 10;
-  }
-  const yCoords = Math.floor(coords / encodingBase);
-  return { x: coords - yCoords * encodingBase, y: yCoords };
-}
+// export function coordsToXY(coords, base) {
+//   let encodingBase = 10;
+//   while (encodingBase < base) {
+//     encodingBase = encodingBase * 10;
+//   }
+//   const yCoords = Math.floor(coords / encodingBase);
+//   return { x: coords - yCoords * encodingBase, y: yCoords };
+// }
 
-export function XYToCoords(xy, base) {
-  let encodingBase = 10;
-  while (encodingBase < base) {
-    encodingBase = encodingBase * 10;
-  }
-  return xy.y * encodingBase + xy.x;
-}
+// export function XYToCoords(xy, base) {
+//   let encodingBase = 10;
+//   while (encodingBase < base) {
+//     encodingBase = encodingBase * 10;
+//   }
+//   return xy.y * encodingBase + xy.x;
+// }
 
-export function XYToIndex(xy, base) {
-  return xy.y * base + xy.x;
-}
+// export function XYToIndex(xy, base) {
+//   return xy.y * base + xy.x;
+// }
 
-export function indexToXY(index, base) {
-  const y = Math.floor(index / base);
-  return { x: index - y * base, y };
-}
+// export function indexToXY(index, base) {
+//   const y = Math.floor(index / base);
+//   return { x: index - y * base, y };
+// }
 
 function isFunction(functionToCheck) {
   return (

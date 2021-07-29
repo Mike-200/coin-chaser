@@ -1,7 +1,7 @@
 // import * as Pixi from 'pixi.js';
-import React, { useRef, useEffect } from "react";
-import { collisionDetect } from "../utils/collision";
-import { readBoxPosition } from "../utils/firebase";
+import React, { useRef, useEffect } from 'react';
+import { collisionDetect } from '../utils/collision';
+import { readBoxPosition } from '../utils/firebase';
 
 const PixiComponent = ({
   gameApp,
@@ -26,32 +26,22 @@ const PixiComponent = ({
   gameApp.ticker.add((delta) => gameLoop(delta));
 
   function gameLoop(delta) {
-    if (
-      collisionDetect(char1Sprite, boxSpriteClosed)
-      //  || collisionDetect(char2Sprite, boxSpriteClosed)
-    ) {
-      //if there's a collision.. increment score
+    gameApp.stage.addChild(char1Sprite);
+    gameApp.stage.addChild(boxSpriteClosed);
+    gameApp.stage.removeChild(coin);
 
+    if (collisionDetect(char1Sprite, boxSpriteClosed)) {
       fireDB
-        .ref("rooms/" + room + "/gameProps/boxes/box1")
+        .ref('rooms/' + room + '/gameProps/boxes/box1')
         .get()
         .then((snap) => {
           boxSpriteOpen.position.set(snap.val().x, snap.val().y);
           coin.position.set(snap.val().x, snap.val().y - 50);
         });
       gameApp.stage.removeChild(boxSpriteClosed);
-      gameApp.stage.addChild(boxSpriteOpen); // to where?
+      gameApp.stage.addChild(boxSpriteOpen);
       gameApp.stage.addChild(coin);
     }
-
-    // else {
-    //   //if there's no collision, show different message
-    //   console.log("no collision");
-    //   // gameApp.stage.removeChild(coin);
-    //   // gameApp.stage.addChild(boxSpriteClosed);
-    // }
-    // if (collisionDetect(char1Sprite, char2Sprite)) {
-    // }
   }
 
   return <div className="game-screen" id="game" ref={ref}></div>;

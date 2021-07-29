@@ -1,27 +1,23 @@
-import "./App.css";
+import './App.css';
 // import Header from './components/Header';
-import PixiComponent from "./components/PixiComponent";
-import Controls from "./components/Controls";
-import * as Pixi from "pixi.js";
-import ninja from "./assets/ninja-char.svg";
-import ghost from "./assets/ghost-char.svg";
-import closedBox from "./assets/box-closed.svg";
-import openBox from "./assets/opened-box.svg";
-import crownCoin from "./assets/coin.svg";
-import firebase from "./firebase-config";
-import {
-  randomCharPosition,
-  randomBoxPosition,
-  startNewScreen,
-} from "./utils/frontend";
-import {
-  logout,
-  updateBoxPosition,
-  updateCharPosition,
-} from "./utils/firebase";
-import { useEffect, useState } from "react";
-import Login from "./components/Login";
-import { useStickyState } from "./utils/backend";
+import PixiComponent from './components/PixiComponent';
+import Controls from './components/Controls';
+import * as Pixi from 'pixi.js';
+import ninja from './assets/ninja-char.svg';
+import ghost from './assets/ghost-char.svg';
+import closedBox from './assets/box-closed.svg';
+import openBox from './assets/opened-box.svg';
+import crownCoin from './assets/coin.svg';
+import firebase from './firebase-config';
+// import {
+//   randomCharPosition,
+//   randomBoxPosition,
+//   startNewScreen,
+// } from "./utils/frontend";
+import { logout, writeBoxPosition, updateCharPosition } from './utils/firebase';
+import { useEffect, useState } from 'react';
+import Login from './components/Login';
+import { useStickyState } from './utils/backend';
 
 let speed = 25;
 
@@ -39,19 +35,22 @@ const gameApp = new Pixi.Application({
 
 const char1Sprite = Pixi.Sprite.from(ninja);
 char1Sprite.anchor.set(0.5, 0.5);
+char1Sprite.position.set(-400, -100);
 
 const char2Sprite = Pixi.Sprite.from(ghost);
 char2Sprite.position.set(400, 100);
 
 const boxSpriteClosed = Pixi.Sprite.from(closedBox);
 boxSpriteClosed.anchor.set(0.5, 0.5);
-//startNewScreen(gameApp, char1Sprite, boxSpriteClosed);
+boxSpriteClosed.position.set(-200, -300);
 
 const boxSpriteOpen = Pixi.Sprite.from(openBox);
 boxSpriteOpen.anchor.set(0.5, 0.5);
+boxSpriteOpen.position.set(-600, -600);
 
 const coin = Pixi.Sprite.from(crownCoin);
 coin.anchor.set(0.5, 0.5);
+coin.position.set(-700, -700);
 
 function App() {
   const [username, setUsername] = useStickyState();
@@ -66,23 +65,30 @@ function App() {
     if (startGame) {
       fireDB
         .ref(
-          "rooms/" +
+          'rooms/' +
             auth.currentUser.uid +
-            "/gameProps/characters/" +
+            '/gameProps/characters/' +
             auth.currentUser.uid
         )
         .set({ x: char1Sprite.x, y: char1Sprite.y });
 
       fireDB
-        .ref("rooms/" + user + "/gameProps/characters/" + user)
-        .on("value", (snap) => {
+        .ref('rooms/' + user + '/gameProps/characters/' + user)
+        .on('value', (snap) => {
           const { x, y } = snap.val();
-          console.log(x, y);
           char1Sprite.x = x;
           char1Sprite.y = y;
         });
 
-      document.addEventListener("keydown", function (e) {
+      fireDB
+        .ref('rooms/' + user + '/gameProps/boxes/box1')
+        .on('value', (snap) => {
+          const { x, y } = snap.val();
+          boxSpriteClosed.x = x;
+          boxSpriteClosed.y = y;
+        });
+
+      document.addEventListener('keydown', function (e) {
         e.preventDefault();
         updateCharPosition(
           fireDB,
@@ -98,7 +104,7 @@ function App() {
 
   useEffect(() => {
     if (startGame) {
-      updateBoxPosition(fireDB, auth.currentUser.uid, boxSpriteClosed);
+      writeBoxPosition(fireDB, auth.currentUser.uid, boxSpriteClosed);
       // fireDB
       //   .ref('rooms/' + auth.currentUser.uid + '/gameProps/boxes/box1')
       //   .set({ x: boxSpriteClosed.x, y: boxSpriteClosed.y });
@@ -158,6 +164,7 @@ function App() {
         fireDB={fireDB}
         room={auth.currentUser.uid}
       />
+      <p>User: {username}</p>
       <p>User: {user}</p>
       <Controls
         gameApp={gameApp}

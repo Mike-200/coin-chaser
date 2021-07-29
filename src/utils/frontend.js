@@ -1,4 +1,4 @@
-import { updateBoxPosition } from "./firebase";
+import { writeBoxPosition, writeCharPosition } from './firebase';
 
 let occupiedPositions = [];
 
@@ -9,7 +9,7 @@ export const randomCharPosition = () => {
 };
 
 export const randomBoxPosition = () => {
-  console.log("using the function");
+  console.log('using the function');
   let tempObj = {};
   let randomXPosition = 0;
   let randomYPosition = 0;
@@ -32,8 +32,11 @@ export const startNewScreen = (
   gameApp.stage.removeChildren();
   occupiedPositions = [];
   char1Sprite.position.set(randomCharPosition().x, randomCharPosition().y);
+  writeCharPosition(fireDB, room, char1Sprite);
+
   boxSpriteClosed.position.set(randomBoxPosition().x, randomBoxPosition().y);
-  updateBoxPosition(fireDB, room, boxSpriteClosed);
-  gameApp.stage.addChild(char1Sprite);
-  gameApp.stage.addChild(boxSpriteClosed);
+  writeBoxPosition(fireDB, room, boxSpriteClosed);
+
+  // gameApp.stage.addChild(char1Sprite);
+  // gameApp.stage.addChild(boxSpriteClosed);
 };

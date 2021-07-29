@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   login,
   startListeningToNewPlayers,
@@ -9,7 +9,7 @@ import {
   removeKnockPlayer,
   startGameHost,
   startListeningToStartGame,
-} from "../utils/firebase";
+} from '../utils/firebase';
 
 const Login = ({
   fireDB,
@@ -31,7 +31,7 @@ const Login = ({
   const loginButton = (e) => {
     e.preventDefault();
     if (!username) {
-      setUsername("empty");
+      setUsername('empty');
     }
     login(auth);
   };
@@ -61,6 +61,7 @@ const Login = ({
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setUser(authUser.uid);
+        // console.log(authUser);
       } else {
         setUser();
       }
@@ -148,7 +149,7 @@ const Login = ({
             <p>Players waiting to be join...</p>
             {Object.keys(clientsKnocks).map((uid) => (
               <p key={uid}>
-                {clientsKnocks[uid]}{" "}
+                {clientsKnocks[uid]}{' '}
                 <button
                   onClick={() => {
                     buttonAcceptPlayer(uid);

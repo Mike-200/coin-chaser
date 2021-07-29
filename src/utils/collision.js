@@ -1,4 +1,4 @@
-// Collision detection function copied from a repo I found on learning Pixi
+// Collision detection function
 export function collisionDetect(char1, char2) {
   //Define the variables we'll need to calculate
   let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;

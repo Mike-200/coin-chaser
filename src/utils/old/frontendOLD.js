@@ -1,4 +1,4 @@
-import { updateBoxPosition } from "./firebase";
+import { updateBoxPosition } from './firebase';
 
 export const randomCharPosition = () => {
   let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
@@ -8,13 +8,10 @@ export const randomCharPosition = () => {
   return { x: randomXPosition, y: randomYPosition };
 };
 
-const allCharAndBoxPositions = [];
-
 export const randomBoxPosition = () => {
   let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
+
   let randomYPosition = 50 * Math.floor((Math.random() * 420) / 50) + 75;
-  // allCharAndBoxPositions.push({});
-  // updtohere
 
   return { x: randomXPosition, y: randomYPosition };
 };
@@ -29,7 +26,11 @@ export const startNewScreen = (
   gameApp.stage.removeChildren();
   char1Sprite.position.set(randomCharPosition().x, randomCharPosition().y);
   boxSpriteClosed.position.set(randomCharPosition().x, randomCharPosition().y);
+
   updateBoxPosition(fireDB, room, boxSpriteClosed);
+  // console.log(room);
+  // console.log(boxSpriteClosed.x);
+
   gameApp.stage.addChild(char1Sprite);
   gameApp.stage.addChild(boxSpriteClosed);
 };

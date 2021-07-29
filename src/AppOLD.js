@@ -1,27 +1,27 @@
-import "./App.css";
+import './App.css';
 // import Header from './components/Header';
-import PixiComponent from "./components/PixiComponent";
-import Controls from "./components/Controls";
-import * as Pixi from "pixi.js";
-import ninja from "./assets/ninja-char.svg";
-import ghost from "./assets/ghost-char.svg";
-import closedBox from "./assets/box-closed.svg";
-import openBox from "./assets/opened-box.svg";
-import crownCoin from "./assets/coin.svg";
-import firebase from "./firebase-config";
+import PixiComponent from './components/PixiComponent';
+import Controls from './components/Controls';
+import * as Pixi from 'pixi.js';
+import ninja from './assets/ninja-char.svg';
+import ghost from './assets/ghost-char.svg';
+import closedBox from './assets/box-closed.svg';
+import openBox from './assets/opened-box.svg';
+import crownCoin from './assets/coin.svg';
+import firebase from './firebase-config';
 import {
   randomCharPosition,
   randomBoxPosition,
   startNewScreen,
-} from "./utils/frontend";
+} from './utils/frontend';
 import {
   logout,
   updateBoxPosition,
   updateCharPosition,
-} from "./utils/firebase";
-import { useEffect, useState } from "react";
-import Login from "./components/Login";
-import { useStickyState } from "./utils/backend";
+} from './utils/firebase';
+import { useEffect, useState } from 'react';
+import Login from './components/Login';
+import { useStickyState } from './utils/backend';
 
 let speed = 20;
 
@@ -41,7 +41,7 @@ const char1Sprite = Pixi.Sprite.from(ninja);
 char1Sprite.anchor.set(0.5, 0.5);
 const boxSpriteClosed = Pixi.Sprite.from(closedBox);
 boxSpriteClosed.anchor.set(0.5, 0.5);
-//startNewScreen(gameApp, char1Sprite, boxSpriteClosed);
+startNewScreen(gameApp, char1Sprite, boxSpriteClosed);
 
 // char1Sprite.position.set(randomCharPosition().x, randomCharPosition().y);
 
@@ -63,29 +63,29 @@ function App() {
   const [players, setPlayers] = useState({});
   const [inGame, setInGame] = useState(false);
   const [startGame, setStartGame] = useState(false);
-  const [screenNumber, setScreenNumber] = useState(1);
+  const [screenNumber, setScreenNumber] = useState(2);
 
   useEffect(() => {
     if (startGame) {
       fireDB
         .ref(
-          "rooms/" +
+          'rooms/' +
             auth.currentUser.uid +
-            "/gameProps/characters/" +
+            '/gameProps/characters/' +
             auth.currentUser.uid
         )
         .set({ x: char1Sprite.x, y: char1Sprite.y });
 
       fireDB
-        .ref("rooms/" + user + "/gameProps/characters/" + user)
-        .on("value", (snap) => {
+        .ref('rooms/' + user + '/gameProps/characters/' + user)
+        .on('value', (snap) => {
           const { x, y } = snap.val();
           console.log(x, y);
           char1Sprite.x = x;
           char1Sprite.y = y;
         });
 
-      document.addEventListener("keydown", function (e) {
+      document.addEventListener('keydown', function (e) {
         e.preventDefault();
         updateCharPosition(
           fireDB,

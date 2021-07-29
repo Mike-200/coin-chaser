@@ -1,5 +1,5 @@
 // import * as Pixi from 'pixi.js';
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 // import { collisionDetect } from '../utils/pixi';
 
 const PixiComponent = ({
@@ -20,8 +20,8 @@ const PixiComponent = ({
     };
   });
 
-  // gameApp.stage.addChild(char1Sprite);
-  // gameApp.stage.addChild(boxSpriteClosed);
+  gameApp.stage.addChild(char1Sprite);
+  gameApp.stage.addChild(boxSpriteClosed);
 
   return <div className="game-screen" id="game" ref={ref}></div>;
 

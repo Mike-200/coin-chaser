@@ -3,66 +3,78 @@ import "./App.css";
 // import Header from './components/Header';
 import PixiComponent from "./components/PixiComponent";
 import * as Pixi from "pixi.js";
-import ninja from "./assets/ninja-char.svg";
-import ghost from "./assets/ghost-char.svg";
 import firebase from "./firebase-config";
-import { logout, updateCharPosition } from "./utils/firebase";
+import { logout } from "./utils/firebase";
 import { useEffect, useState } from "react";
 import Login from "./components/Login";
-import { useStickyState } from "./utils/backend";
+import { getAvatar, useStickyState } from "./utils/backend";
 import characters from "./characters";
 
 const auth = firebase.auth();
 const fireDB = firebase.database();
 
-const char1Sprite = Pixi.Sprite.from(ninja);
-char1Sprite.position.set(50, 400);
-
-const char2Sprite = Pixi.Sprite.from(ghost);
-char2Sprite.position.set(400, 100);
-
-let speed = 20;
+const speed = 20;
+const gameCanvasSize = { width: 760, height: 520 };
 
 function App() {
-  const [username, setUsername] = useStickyState();
+  const [username, setUsername] = useStickyState("username");
   const [avatar, setAvatar] = useState(0);
   const [user, setUser] = useState();
   const [room, setRoom] = useState();
   const [players, setPlayers] = useState({});
   const [inGame, setInGame] = useState(false);
   const [startGame, setStartGame] = useState(false);
-
+  const [sprites, setSprites] = useState({});
 
   useEffect(() => {
     if (startGame) {
+      if (room === user) {
+        Object.keys(players).forEach((player) => {
+          fireDB
+            .ref(
+              "rooms/" +
+                auth.currentUser.uid +
+                "/gameProps/characters/" +
+                player
+            )
+            .set({ x: 10, y: 10 });
+        });
+      }
       fireDB
-        .ref(
-          "rooms/" +
-            auth.currentUser.uid +
-            "/gameProps/characters/" +
-            auth.currentUser.uid
-        )
-        .set({ x: char1Sprite.x, y: char1Sprite.y });
-
-      fireDB
-        .ref("rooms/" + user + "/gameProps/characters/" + user)
+        .ref("rooms/" + user + "/gameProps/characters/")
         .on("value", (snap) => {
-          const { x, y } = snap.val();
-          char1Sprite.x = x;
-          char1Sprite.y = y;
+          const characterPositions = snap.val();
+          Object.keys(characterPositions).forEach((uid) => {
+            if (!(uid in sprites)) {
+              setSprites((sprites) => {
+                sprites[uid] = Pixi.Sprite.from(
+                  getAvatar(players[uid].avatar, characters)
+                );
+                sprites[uid].position.set(
+                  characterPositions[uid].x,
+                  characterPositions[uid].y
+                );
+                return sprites;
+              });
+            } else {
+              sprites[uid].x = characterPositions[uid].x;
+              sprites[uid].y = characterPositions[uid].y;
+            }
+          });
         });
 
-      document.addEventListener("keydown", function (e) {
-        e.preventDefault();
-        updateCharPosition(
-          fireDB,
-          user,
-          user,
-          { x: char1Sprite.x, y: char1Sprite.y },
-          e.key,
-          speed
-        );
-      });
+      // ToDo change position of own character
+      // document.addEventListener("keydown", function (e) {
+      //   e.preventDefault();
+      //   updateCharPosition(
+      //     fireDB,
+      //     user,
+      //     user,
+      //     { x: char1Sprite.x, y: char1Sprite.y },
+      //     e.key,
+      //     speed
+      //   );
+      // });
     }
   }, [startGame]);
 
@@ -112,7 +124,7 @@ function App() {
   return (
     <div className="App">
       {/* <Header /> */}
-      <PixiComponent char1Sprite={char1Sprite} />
+      <PixiComponent sprites={sprites} gameCanvasSize={gameCanvasSize} />
       <p>User: {user}</p>
       {/* <Main /> */}
       <button onClick={logoutButton}>Logout</button>

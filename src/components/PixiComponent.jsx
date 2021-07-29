@@ -1,13 +1,11 @@
-import * as Pixi from 'pixi.js';
-import React, { useRef, useEffect } from 'react';
-// import ninja from '../assets/ninja-char.svg';
-// import ghost from '../assets/ghost-char.svg';
-import closedBox from '../assets/box-closed.svg';
-import openBox from '../assets/opened-box.svg';
-import crownCoin from '../assets/coin.svg';
+import * as Pixi from "pixi.js";
+import React, { useRef, useEffect } from "react";
+import closedBox from "../assets/box-closed.svg";
+import openBox from "../assets/opened-box.svg";
+import crownCoin from "../assets/coin.svg";
 // import { collisionDetect } from '../utils/pixi';
 
-const PixiComponent = ({ char1Sprite }) => {
+const PixiComponent = ({ sprites,gameCanvasSize }) => {
   // const char2Sprite = Pixi.Sprite.from(ghost);
   // char2Sprite.position.set(spriteState.char2.x, spriteState.char2.y);
   // char2Sprite.anchor.set(0.5, 0.5);
@@ -27,15 +25,18 @@ const PixiComponent = ({ char1Sprite }) => {
   // coin.anchor.set(0.5, 0.5);
 
   const gameApp = new Pixi.Application({
-    width: 760,
-    height: 520,
+    width: gameCanvasSize.width,
+    height: gameCanvasSize.height,
     backgroundColor: 0x8fc0a9,
     antialias: true,
     resolution: window.devicePixelRatio,
     autoDensity: true,
   });
 
-  gameApp.stage.addChild(char1Sprite);
+  Object.keys(sprites).forEach((sprite) => {
+    gameApp.stage.addChild(sprites[sprite]);
+  });
+  // gameApp.stage.addChild(char1Sprite);
   // gameApp.stage.addChild(char2Sprite);
 
   // gameApp.stage.addChild(boxSpriteClosed);
@@ -109,7 +110,7 @@ const PixiComponent = ({ char1Sprite }) => {
   //     // now update firebase with the new co-ordinates
   //   };
 
-  const ref = useRef(null);
+  const ref = useRef("pixi_canvas");
 
   useEffect(() => {
     ref.current.appendChild(gameApp.view);

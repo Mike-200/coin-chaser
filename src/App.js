@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import { useStickyState } from "./utils/backend";
 
-let speed = 20;
+let speed = 25;
 
 const auth = firebase.auth();
 const fireDB = firebase.database();
@@ -39,22 +39,19 @@ const gameApp = new Pixi.Application({
 
 const char1Sprite = Pixi.Sprite.from(ninja);
 char1Sprite.anchor.set(0.5, 0.5);
-const boxSpriteClosed = Pixi.Sprite.from(closedBox);
-boxSpriteClosed.anchor.set(0.5, 0.5);
-//startNewScreen(gameApp, char1Sprite, boxSpriteClosed);
-
-// char1Sprite.position.set(randomCharPosition().x, randomCharPosition().y);
 
 const char2Sprite = Pixi.Sprite.from(ghost);
 char2Sprite.position.set(400, 100);
 
-// boxSpriteClosed.position.set(randomBoxPosition().x, randomBoxPosition().y);
+const boxSpriteClosed = Pixi.Sprite.from(closedBox);
+boxSpriteClosed.anchor.set(0.5, 0.5);
+//startNewScreen(gameApp, char1Sprite, boxSpriteClosed);
 
 const boxSpriteOpen = Pixi.Sprite.from(openBox);
-boxSpriteOpen.position.set(300, 300);
+boxSpriteOpen.anchor.set(0.5, 0.5);
 
 const coin = Pixi.Sprite.from(crownCoin);
-coin.position.set(300, 250);
+coin.anchor.set(0.5, 0.5);
 
 function App() {
   const [username, setUsername] = useStickyState();
@@ -158,6 +155,8 @@ function App() {
         boxSpriteClosed={boxSpriteClosed}
         boxSpriteOpen={boxSpriteOpen}
         coin={coin}
+        fireDB={fireDB}
+        room={auth.currentUser.uid}
       />
       <p>User: {user}</p>
       <Controls

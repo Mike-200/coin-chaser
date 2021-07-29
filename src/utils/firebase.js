@@ -151,3 +151,16 @@ export const updateBoxPosition = (fireDB, room, box) => {
     .ref("rooms/" + room + "/gameProps/boxes/box1")
     .set({ x: box.x, y: box.y });
 };
+
+export const readBoxPosition = (fireDB, room) => {
+  fireDB
+    .ref("rooms/" + room + "/gameProps/boxes/box1")
+    .get()
+    .then((snap) => {
+      console.log("box position>>>", snap.val());
+      // setPlayers(snap.val());
+      // fireDB.ref("rooms/" + room + "/startGame").off();
+      // setStartGame(true);
+      //    return snap.val();
+    });
+};

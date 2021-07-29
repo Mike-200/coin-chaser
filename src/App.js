@@ -1,26 +1,48 @@
-import "./App.css";
+import './App.css';
 // import Main from './components/Main';
 // import Header from './components/Header';
-import PixiComponent from "./components/PixiComponent";
-import * as Pixi from "pixi.js";
-import ninja from "./assets/ninja-char.svg";
-import ghost from "./assets/ghost-char.svg";
-import firebase from "./firebase-config";
-import { logout, updateCharPosition } from "./utils/firebase";
-import { useEffect, useState } from "react";
-import Login from "./components/Login";
-import { useStickyState } from "./utils/backend";
+import PixiComponent from './components/PixiComponent';
+import * as Pixi from 'pixi.js';
+import ninja from './assets/ninja-char.svg';
+import ghost from './assets/ghost-char.svg';
+import closedBox from './assets/box-closed.svg';
+import openBox from './assets/opened-box.svg';
+import crownCoin from './assets/coin.svg';
+import firebase from './firebase-config';
+import { randomCharPosition, randomBoxPosition } from './utils/frontend';
+import { logout, updateCharPosition } from './utils/firebase';
+import { useEffect, useState } from 'react';
+import Login from './components/Login';
+import { useStickyState } from './utils/backend';
+
+let speed = 20;
 
 const auth = firebase.auth();
 const fireDB = firebase.database();
 
+const gameApp = new Pixi.Application({
+  width: 760,
+  height: 520,
+  backgroundColor: 0x8fc0a9,
+  antialias: true,
+  resolution: window.devicePixelRatio,
+  autoDensity: true,
+});
+
 const char1Sprite = Pixi.Sprite.from(ninja);
-char1Sprite.position.set(50, 400);
+char1Sprite.position.set(randomCharPosition().x, randomCharPosition().y);
 
 const char2Sprite = Pixi.Sprite.from(ghost);
 char2Sprite.position.set(400, 100);
 
-let speed = 20;
+const boxSpriteClosed = Pixi.Sprite.from(closedBox);
+boxSpriteClosed.position.set(randomBoxPosition().x, randomBoxPosition().y);
+
+const boxSpriteOpen = Pixi.Sprite.from(openBox);
+boxSpriteOpen.position.set(300, 300);
+
+const coin = Pixi.Sprite.from(crownCoin);
+coin.position.set(300, 250);
 
 function App() {
   const [username, setUsername] = useStickyState();
@@ -34,23 +56,23 @@ function App() {
     if (startGame) {
       fireDB
         .ref(
-          "rooms/" +
+          'rooms/' +
             auth.currentUser.uid +
-            "/gameProps/characters/" +
+            '/gameProps/characters/' +
             auth.currentUser.uid
         )
         .set({ x: char1Sprite.x, y: char1Sprite.y });
 
       fireDB
-        .ref("rooms/" + user + "/gameProps/characters/" + user)
-        .on("value", (snap) => {
+        .ref('rooms/' + user + '/gameProps/characters/' + user)
+        .on('value', (snap) => {
           const { x, y } = snap.val();
           console.log(x, y);
           char1Sprite.x = x;
           char1Sprite.y = y;
         });
 
-      document.addEventListener("keydown", function (e) {
+      document.addEventListener('keydown', function (e) {
         e.preventDefault();
         updateCharPosition(
           fireDB,
@@ -61,6 +83,14 @@ function App() {
           speed
         );
       });
+    }
+  }, [startGame]);
+
+  useEffect(() => {
+    if (startGame) {
+      fireDB
+        .ref('rooms/' + auth.currentUser.uid + '/gameProps/boxes/box1')
+        .set({ x: boxSpriteClosed.x, y: boxSpriteClosed.y });
     }
   }, [startGame]);
 
@@ -108,7 +138,13 @@ function App() {
   return (
     <div className="App">
       {/* <Header /> */}
-      <PixiComponent char1Sprite={char1Sprite} />
+      <PixiComponent
+        gameApp={gameApp}
+        char1Sprite={char1Sprite}
+        boxSpriteClosed={boxSpriteClosed}
+        boxSpriteOpen={boxSpriteOpen}
+        coin={coin}
+      />
       <p>User: {user}</p>
       {/* <Main /> */}
       <button onClick={logoutButton}>Logout</button>

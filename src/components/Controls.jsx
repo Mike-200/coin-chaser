@@ -4,7 +4,7 @@ import left from '../assets/left-arrow.svg';
 import right from '../assets/right-arrow.svg';
 // import { startNewGame, startNewScreen } from '../utils/frontend';
 
-const Main = () => {
+const Controls = () => {
   return (
     <section className="playing container">
       <button
@@ -63,4 +63,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default Controls;

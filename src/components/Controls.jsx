@@ -2,15 +2,15 @@ import up from '../assets/up-arrow.svg';
 import down from '../assets/down-arrow.svg';
 import left from '../assets/left-arrow.svg';
 import right from '../assets/right-arrow.svg';
-// import { startNewGame, startNewScreen } from '../utils/frontend';
+import { startNewScreen } from '../utils/frontend';
 
-const Controls = () => {
+const Controls = ({ gameApp, char1Sprite, boxSpriteClosed, fireDB, room }) => {
   return (
     <section className="playing container">
       <button
-      // onClick={() => {
-      //   startNewScreen();
-      // }}
+        onClick={() => {
+          startNewScreen(gameApp, char1Sprite, boxSpriteClosed, fireDB, room);
+        }}
       >
         New Screen
       </button>

@@ -1,7 +1,7 @@
 import './App.css';
-// import Main from './components/Main';
 // import Header from './components/Header';
 import PixiComponent from './components/PixiComponent';
+import Controls from './components/Controls';
 import * as Pixi from 'pixi.js';
 import ninja from './assets/ninja-char.svg';
 import ghost from './assets/ghost-char.svg';
@@ -9,8 +9,16 @@ import closedBox from './assets/box-closed.svg';
 import openBox from './assets/opened-box.svg';
 import crownCoin from './assets/coin.svg';
 import firebase from './firebase-config';
-import { randomCharPosition, randomBoxPosition } from './utils/frontend';
-import { logout, updateCharPosition } from './utils/firebase';
+import {
+  randomCharPosition,
+  randomBoxPosition,
+  startNewScreen,
+} from './utils/frontend';
+import {
+  logout,
+  updateBoxPosition,
+  updateCharPosition,
+} from './utils/firebase';
 import { useEffect, useState } from 'react';
 import Login from './components/Login';
 import { useStickyState } from './utils/backend';
@@ -30,13 +38,17 @@ const gameApp = new Pixi.Application({
 });
 
 const char1Sprite = Pixi.Sprite.from(ninja);
-char1Sprite.position.set(randomCharPosition().x, randomCharPosition().y);
+char1Sprite.anchor.set(0.5, 0.5);
+const boxSpriteClosed = Pixi.Sprite.from(closedBox);
+boxSpriteClosed.anchor.set(0.5, 0.5);
+startNewScreen(gameApp, char1Sprite, boxSpriteClosed);
+
+// char1Sprite.position.set(randomCharPosition().x, randomCharPosition().y);
 
 const char2Sprite = Pixi.Sprite.from(ghost);
 char2Sprite.position.set(400, 100);
 
-const boxSpriteClosed = Pixi.Sprite.from(closedBox);
-boxSpriteClosed.position.set(randomBoxPosition().x, randomBoxPosition().y);
+// boxSpriteClosed.position.set(randomBoxPosition().x, randomBoxPosition().y);
 
 const boxSpriteOpen = Pixi.Sprite.from(openBox);
 boxSpriteOpen.position.set(300, 300);
@@ -51,6 +63,7 @@ function App() {
   const [players, setPlayers] = useState({});
   const [inGame, setInGame] = useState(false);
   const [startGame, setStartGame] = useState(false);
+  const [screenNumber, setScreenNumber] = useState(2);
 
   useEffect(() => {
     if (startGame) {
@@ -88,11 +101,12 @@ function App() {
 
   useEffect(() => {
     if (startGame) {
-      fireDB
-        .ref('rooms/' + auth.currentUser.uid + '/gameProps/boxes/box1')
-        .set({ x: boxSpriteClosed.x, y: boxSpriteClosed.y });
+      updateBoxPosition(fireDB, auth.currentUser.uid, boxSpriteClosed);
+      // fireDB
+      //   .ref('rooms/' + auth.currentUser.uid + '/gameProps/boxes/box1')
+      //   .set({ x: boxSpriteClosed.x, y: boxSpriteClosed.y });
     }
-  }, [startGame]);
+  }, [startGame, screenNumber]);
 
   // const [spriteState, setSpriteState] = useState({
   //   char1: { x: 500, y: 450 },
@@ -146,7 +160,13 @@ function App() {
         coin={coin}
       />
       <p>User: {user}</p>
-      {/* <Main /> */}
+      <Controls
+        gameApp={gameApp}
+        char1Sprite={char1Sprite}
+        boxSpriteClosed={boxSpriteClosed}
+        fireDB={fireDB}
+        room={auth.currentUser.uid}
+      />
       <button onClick={logoutButton}>Logout</button>
     </div>
   );

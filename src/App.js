@@ -1,23 +1,23 @@
-import './App.css';
+import "./App.css";
 // import Header from './components/Header';
-import PixiComponent from './components/PixiComponent';
-import Controls from './components/Controls';
-import * as Pixi from 'pixi.js';
-import ninja from './assets/ninja-char.svg';
-import ghost from './assets/ghost-char.svg';
-import closedBox from './assets/box-closed.svg';
-import openBox from './assets/opened-box.svg';
-import crownCoin from './assets/coin.svg';
-import firebase from './firebase-config';
+import PixiComponent from "./components/PixiComponent";
+import Controls from "./components/Controls";
+import * as Pixi from "pixi.js";
+import ninja from "./assets/ninja-char.svg";
+import ghost from "./assets/ghost-char.svg";
+import closedBox from "./assets/box-closed.svg";
+import openBox from "./assets/opened-box.svg";
+import crownCoin from "./assets/coin.svg";
+import firebase from "./firebase-config";
 // import {
 //   randomCharPosition,
 //   randomBoxPosition,
 //   startNewScreen,
 // } from "./utils/frontend";
-import { logout, writeBoxPosition, updateCharPosition } from './utils/firebase';
-import { useEffect, useState } from 'react';
-import Login from './components/Login';
-import { useStickyState } from './utils/backend';
+import { logout, writeBoxPosition, updateCharPosition } from "./utils/firebase";
+import { useEffect, useState } from "react";
+import Login from "./components/Login";
+import { useStickyState } from "./utils/backend";
 
 let speed = 25;
 
@@ -63,32 +63,41 @@ function App() {
 
   useEffect(() => {
     if (startGame) {
+      console.log("in game");
+      console.log("user>>>", user);
+      console.log("room>>>", room);
       fireDB
         .ref(
-          'rooms/' +
+          "rooms/" +
             auth.currentUser.uid +
-            '/gameProps/characters/' +
+            "/gameProps/characters/" +
             auth.currentUser.uid
         )
         .set({ x: char1Sprite.x, y: char1Sprite.y });
 
+      // listen for changes to char1 position
+      // note - it should be rom - not user - but the first
+      // time it invokes, the db is empty
       fireDB
-        .ref('rooms/' + user + '/gameProps/characters/' + user)
-        .on('value', (snap) => {
+        .ref("rooms/" + user + "/gameProps/characters/" + user)
+        .on("value", (snap) => {
           const { x, y } = snap.val();
           char1Sprite.x = x;
           char1Sprite.y = y;
+          console.log("char1-x>>>", boxSpriteClosed.x);
         });
 
+      // listen for changes to box1 position
       fireDB
-        .ref('rooms/' + user + '/gameProps/boxes/box1')
-        .on('value', (snap) => {
+        .ref("rooms/" + room + "/gameProps/boxes/box1")
+        .on("value", (snap) => {
           const { x, y } = snap.val();
           boxSpriteClosed.x = x;
           boxSpriteClosed.y = y;
+          console.log("box-x>>>", boxSpriteClosed.x);
         });
 
-      document.addEventListener('keydown', function (e) {
+      document.addEventListener("keydown", function (e) {
         e.preventDefault();
         updateCharPosition(
           fireDB,

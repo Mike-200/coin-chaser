@@ -1,18 +1,21 @@
-import { writeBoxPosition, writeCharPosition } from './firebase';
+import { writeBoxPosition, writeCharPosition } from "./firebase";
 
 let occupiedPositions = [];
+let randomXPosition = 0;
+let randomYPosition = 0;
+let tempObj = {};
 
 export const randomCharPosition = () => {
-  let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
-  let randomYPosition = 50 * Math.floor((Math.random() * 470) / 50) + 25;
-  return { x: randomXPosition, y: randomYPosition };
+  do {
+    let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
+    let randomYPosition = 50 * Math.floor((Math.random() * 470) / 50) + 25;
+    tempObj = { x: randomXPosition, y: randomYPosition };
+  } while (occupiedPositions.includes(tempObj));
+  occupiedPositions.push(tempObj);
+  return tempObj;
 };
 
 export const randomBoxPosition = () => {
-  console.log('using the function');
-  let tempObj = {};
-  let randomXPosition = 0;
-  let randomYPosition = 0;
   do {
     randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
     randomYPosition = 50 * Math.floor((Math.random() * 420) / 50) + 75;

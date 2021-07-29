@@ -1,7 +1,6 @@
 // import * as Pixi from 'pixi.js';
-import React, { useRef, useEffect } from 'react';
-import { collisionDetect } from '../utils/collision';
-import { readBoxPosition } from '../utils/firebase';
+import React, { useRef, useEffect } from "react";
+import { collisionDetect } from "../utils/collision";
 
 const PixiComponent = ({
   gameApp,
@@ -25,14 +24,16 @@ const PixiComponent = ({
 
   gameApp.ticker.add((delta) => gameLoop(delta));
 
-  function gameLoop(delta) {
+  // did have delta in the brackets below but it was never used
+  function gameLoop() {
+    //console.log("box-x>>>", boxSpriteClosed.x);
     gameApp.stage.addChild(char1Sprite);
     gameApp.stage.addChild(boxSpriteClosed);
     gameApp.stage.removeChild(coin);
 
     if (collisionDetect(char1Sprite, boxSpriteClosed)) {
       fireDB
-        .ref('rooms/' + room + '/gameProps/boxes/box1')
+        .ref("rooms/" + room + "/gameProps/boxes/box1")
         .get()
         .then((snap) => {
           boxSpriteOpen.position.set(snap.val().x, snap.val().y);

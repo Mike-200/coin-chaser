@@ -48,7 +48,6 @@ function App() {
         .ref("rooms/" + user + "/gameProps/characters/" + user)
         .on("value", (snap) => {
           const { x, y } = snap.val();
-          console.log(x, y);
           char1Sprite.x = x;
           char1Sprite.y = y;
         });

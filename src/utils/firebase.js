@@ -6,8 +6,8 @@ export function logout(auth) {
   auth.signOut();
 }
 
-export function acceptPlayer(fireDB, room, uid, username) {
-  fireDB.ref("rooms/" + room + "/players/" + uid).set(username);
+export function acceptPlayer(fireDB, room, uid, username, avatar) {
+  fireDB.ref("rooms/" + room + "/players/" + uid).set({ username, avatar });
 }
 
 export function removeKnockPlayer(fireDB, room, uid) {
@@ -110,11 +110,20 @@ export function startListeningToKnocks(fireDB, room, setKnocks) {
   });
 }
 
-export function knockOnRoom(fireDB, room, uid, username) {
-  fireDB
-    .ref("rooms/" + room + "/knock")
-    .child(uid)
-    .set(username);
+export function knockOnRoom(fireDB, room, uid, username, avatar) {
+  return fireDB
+    .ref("rooms/" + room + "/players")
+    .get()
+    .then((snap) => {
+      const players = snap.val();
+      if (Object.keys(players).every((uid) => players[uid].avatar !== avatar)) {
+        fireDB
+          .ref("rooms/" + room + "/knock")
+          .child(uid)
+          .set({ username, avatar });
+      } else
+        return "Avatar chosen is already taken - Please choose a different avatar";
+    });
 }
 
 export function startListeningIfInGame(fireDB, room, uid, setInGame) {

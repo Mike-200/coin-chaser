@@ -103,11 +103,6 @@ export function cleanup(
   setRoom();
 }
 
-export function getAvatar (
-  id,
-  characters,
-) {
+export function getAvatar(id, characters) {
   return characters[Object.keys(characters)[id]].default;
 }
-
-

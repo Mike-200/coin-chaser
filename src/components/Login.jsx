@@ -76,87 +76,109 @@ const Login = ({
 
   if (!user)
     return (
-      <div>
-        <form>
-          <input
-            type="textbox"
-            placeHolder="Enter username"
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-            value={username}
-          ></input>
-          <button onClick={loginButton}>Login</button>
-        </form>
+      <div className="CardHolder">
+        <div className="LoginCard">
+          <form>
+            <p className="Logo">COIN CHASER</p>
+            <p>Enter a username to play</p>
+            <p>(max 10 characters)</p>
+            <input
+              type="textbox"
+              maxlength="10"
+              placeHolder="Enter username"
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
+              value={username}
+            ></input>
+            <button onClick={loginButton}>Enter</button>
+          </form>
+        </div>
       </div>
     );
   else if (!room)
     return (
-      <>
-        <button onClick={host}>Host</button>
-        <br />
-        <input
-          type="textbox"
-          onChange={(event) => {
-            setRoomToBe(event.target.value);
-          }}
-          value={roomToBe}
-        ></input>
-        <button onClick={client}>Client</button>
-        <button onClick={logoutButton}>Logout</button>
-      </>
+      <div className="CardHolder">
+        <div className="LoginCard">
+          <p>Host a new game for other players to join</p>
+          <button onClick={host}>Host new game</button>
+          <br />
+          <br />
+          <div>or</div>
+          <p>Enter a room key to join another game</p>
+          <input
+            type="textbox"
+            onChange={(event) => {
+              setRoomToBe(event.target.value);
+            }}
+            value={roomToBe}
+          ></input>
+          <button onClick={client}>Join</button>
+          <br />
+          <br />
+          <button onClick={logoutButton}>Logout</button>
+        </div>
+      </div>
     );
   else if (!inGame)
     return (
-      <div>
-        <p>Waiting to be let into the game...</p>
-        <p>Players in the game...</p>
-        {Object.keys(players).map((uid) => {
-          return <p>{players[uid]}</p>;
-        })}
-        <button onClick={logoutButton}>Logout</button>
+      <div className="CardHolder">
+        <div className="LoginCard">
+          <p>Waiting to be let into the game...</p>
+          <p>Players already in the game...</p>
+          {Object.keys(players).map((uid) => {
+            return <p>{players[uid]}</p>;
+          })}
+          <button onClick={logoutButton}>Logout</button>
+        </div>
       </div>
     );
   else if (!startGame) {
     if (room === user)
       return (
-        <>
-          <button
-            onClick={() => {
-              startGameHost(fireDB, room);
-            }}
-          >
-            Start Game!
-          </button>
-          <p>Room: {room}</p>
+        <div className="CardHolder">
+          <div className="LoginCard">
+            <p>Provide the room key shown below to the other players</p>
+            <p className="Bold">{room}</p>
+
+            <p>Players already in the game...</p>
+            {Object.keys(players).map((uid) => {
+              return <p>{players[uid]}</p>;
+            })}
+            <p>Players waiting to be join...</p>
+            {Object.keys(clientsKnocks).map((uid) => (
+              <p key={uid}>
+                {clientsKnocks[uid]}{" "}
+                <button
+                  onClick={() => {
+                    buttonAcceptPlayer(uid);
+                  }}
+                >
+                  Accept?
+                </button>
+              </p>
+            ))}
+            <button
+              onClick={() => {
+                startGameHost(fireDB, room);
+              }}
+            >
+              Start Game!
+            </button>
+          </div>
+        </div>
+      );
+
+    return (
+      <div className="CardHolder">
+        <div className="LoginCard">
+          <p>The game has not started yet</p>
           <p>Players in the game...</p>
           {Object.keys(players).map((uid) => {
             return <p>{players[uid]}</p>;
           })}
-          <p>Players waiting to be let in</p>
-          {Object.keys(clientsKnocks).map((uid) => (
-            <p key={uid}>
-              {clientsKnocks[uid]}{" "}
-              <button
-                onClick={() => {
-                  buttonAcceptPlayer(uid);
-                }}
-              >
-                Accept?
-              </button>
-            </p>
-          ))}
-        </>
-      );
-
-    return (
-      <>
-        <p>The game has not started yet</p>
-        <p>Players in the game...</p>
-        {Object.keys(players).map((uid) => {
-          return <p>{players[uid]}</p>;
-        })}
-      </>
+        </div>
+      </div>
     );
   }
 };

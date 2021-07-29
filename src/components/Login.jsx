@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getAvatar } from "../utils/backend";
 import {
   login,
   startListeningToNewPlayers,
@@ -10,6 +11,12 @@ import {
   startGameHost,
   startListeningToStartGame,
 } from "../utils/firebase";
+import characters from "../characters";
+import leftArrow from "../assets/left-arrow.svg";
+import rightArrow from "../assets/right-arrow.svg"
+
+
+
 
 const Login = ({
   fireDB,
@@ -27,6 +34,8 @@ const Login = ({
   user,
   room,
   logoutButton,
+  avatar,
+  setAvatar,
 }) => {
   const loginButton = (e) => {
     e.preventDefault();
@@ -74,6 +83,24 @@ const Login = ({
     }
   }, [fireDB, room]);
 
+  function previousAvatar() {
+    setAvatar(avatar => { 
+      if (avatar - 1 < 0) {
+        return Object.keys(characters).length - 1
+      } 
+      return avatar -1;
+    })
+  }
+
+  function nextAvatar() {
+    setAvatar(avatar => {
+      if (avatar + 1 > Object.keys(characters).length - 1) {
+        return 0;
+      }
+      return avatar + 1;
+    })
+  }
+
   if (!user)
     return (
       <div className="CardHolder">
@@ -84,8 +111,8 @@ const Login = ({
             <p>(max 10 characters)</p>
             <input
               type="textbox"
-              maxlength="10"
-              placeHolder="Enter username"
+              maxLength="10"
+              placeholder="Enter username"
               onChange={(e) => {
                 setUsername(e.target.value);
               }}
@@ -115,6 +142,14 @@ const Login = ({
           ></input>
           <button onClick={client}>Join</button>
           <br />
+          <p>Pick your avatar</p>
+          <button onClick={previousAvatar}>
+            <img alt="previous avatar" src={leftArrow}></img>
+          </button>
+          <img className="Avatar" alt="avatar" src={getAvatar(avatar,characters)}></img>
+          <button onClick={nextAvatar}>
+            <img alt="next avatar" src={rightArrow}></img>
+          </button>
           <br />
           <button onClick={logoutButton}>Logout</button>
         </div>

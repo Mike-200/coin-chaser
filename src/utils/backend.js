@@ -102,3 +102,12 @@ export function cleanup(
   setPlayers({});
   setRoom();
 }
+
+export function getAvatar (
+  id,
+  characters,
+) {
+  return characters[Object.keys(characters)[id]].default;
+}
+
+

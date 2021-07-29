@@ -10,6 +10,7 @@ import { logout, updateCharPosition } from "./utils/firebase";
 import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import { useStickyState } from "./utils/backend";
+import characters from "./characters";
 
 const auth = firebase.auth();
 const fireDB = firebase.database();
@@ -24,11 +25,13 @@ let speed = 20;
 
 function App() {
   const [username, setUsername] = useStickyState();
+  const [avatar, setAvatar] = useState(0);
   const [user, setUser] = useState();
   const [room, setRoom] = useState();
   const [players, setPlayers] = useState({});
   const [inGame, setInGame] = useState(false);
   const [startGame, setStartGame] = useState(false);
+
 
   useEffect(() => {
     if (startGame) {
@@ -102,6 +105,8 @@ function App() {
         user={user}
         room={room}
         logoutButton={logoutButton}
+        avatar={avatar}
+        setAvatar={setAvatar}
       />
     );
   }

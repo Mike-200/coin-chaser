@@ -14,9 +14,9 @@ export function removeKnockPlayer(fireDB, room, uid) {
   fireDB.ref("rooms/" + room + "/knock/" + uid).remove();
 }
 
-export function changeBallPos(fireDB, room, uid, toWhere) {
-  fireDB.ref("rooms/" + room + "/gameProps/characters/" + uid).set(toWhere);
-}
+// export function changeBallPos(fireDB, room, uid, toWhere) {
+//   fireDB.ref("rooms/" + room + "/gameProps/characters/" + uid).set(toWhere);
+// }
 
 export function authenticationListener(auth, setUser) {
   auth.onAuthStateChanged((authUser) => {

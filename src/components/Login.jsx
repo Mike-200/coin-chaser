@@ -80,12 +80,12 @@ const Login = ({
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setUser(authUser.uid);
-        console.log(authUser.uid);
+        // console.log(authUser.uid);
       } else {
         setUser();
       }
     });
-  });
+  }, []);
 
   useEffect(() => {
     if (room) {

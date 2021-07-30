@@ -1,10 +1,11 @@
-import "./App.css";
 // import Main from './components/Main';
 // import Header from './components/Header';
 import PixiComponent from "./components/PixiComponent";
+
+import "./App.css";
 import * as Pixi from "pixi.js";
 import firebase from "./firebase-config";
-import { logout } from "./utils/firebase";
+import { logout, updateCharPosition } from "./utils/firebase";
 import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import { getAvatar, useStickyState } from "./utils/backend";
@@ -17,12 +18,13 @@ const speed = 20;
 const gameCanvasSize = { width: 760, height: 520 };
 
 function App() {
+  const [inGame, setInGame] = useState(false);
+
   const [username, setUsername] = useStickyState("username");
   const [avatar, setAvatar] = useState(0);
   const [user, setUser] = useState();
   const [room, setRoom] = useState();
   const [players, setPlayers] = useState({});
-  const [inGame, setInGame] = useState(false);
   const [startGame, setStartGame] = useState(false);
   const [sprites, setSprites] = useState({});
 
@@ -41,40 +43,47 @@ function App() {
         });
       }
       fireDB
-        .ref("rooms/" + user + "/gameProps/characters/")
+        .ref("rooms/" + room + "/gameProps/characters/")
         .on("value", (snap) => {
           const characterPositions = snap.val();
-          Object.keys(characterPositions).forEach((uid) => {
-            if (!(uid in sprites)) {
-              setSprites((sprites) => {
-                sprites[uid] = Pixi.Sprite.from(
-                  getAvatar(players[uid].avatar, characters)
-                );
-                sprites[uid].position.set(
-                  characterPositions[uid].x,
-                  characterPositions[uid].y
-                );
-                return sprites;
-              });
-            } else {
-              sprites[uid].x = characterPositions[uid].x;
-              sprites[uid].y = characterPositions[uid].y;
-            }
-          });
+          if (snap.exists()) {
+            Object.keys(characterPositions).forEach((uid) => {
+              if (!(sprites[uid])) {
+                console.log("i should run twice");
+                setSprites((prevSprites) => {
+                  const sprites = { ...prevSprites };
+                  sprites[uid] = Pixi.Sprite.from(
+                    getAvatar(players[uid].avatar, characters)
+                  );
+                  sprites[uid].position.set(
+                    characterPositions[uid].x,
+                    characterPositions[uid].y
+                  );
+                  if (uid === user) {
+                    console.log("i should run once");
+                    //   // document.removeEventListener("keydown", true);
+                    //   document.addEventListener("keydown", function (e) {
+                    //     e.preventDefault();
+                    //     updateCharPosition(
+                    //       fireDB,
+                    //       room,
+                    //       user,
+                    //       { x: sprites[user].x, y: sprites[user].y },
+                    //       e.key,
+                    //       speed
+                    //     );
+                    //   });
+                  }
+                  return sprites;
+                });
+              } else {
+                sprites[uid].x = characterPositions[uid].x;
+                sprites[uid].y = characterPositions[uid].y;
+              }
+            });
+          }
         });
-
       // ToDo change position of own character
-      // document.addEventListener("keydown", function (e) {
-      //   e.preventDefault();
-      //   updateCharPosition(
-      //     fireDB,
-      //     user,
-      //     user,
-      //     { x: char1Sprite.x, y: char1Sprite.y },
-      //     e.key,
-      //     speed
-      //   );
-      // });
     }
   }, [startGame]);
 
@@ -120,16 +129,17 @@ function App() {
         setAvatar={setAvatar}
       />
     );
+  } else {
+    return (
+      <div className="App">
+        {/* <Header /> */}
+        <PixiComponent sprites={sprites} gameCanvasSize={gameCanvasSize} />
+        <p>User: {user}</p>
+        {/* <Main /> */}
+        <button onClick={logoutButton}>Logout</button>
+      </div>
+    );
   }
-  return (
-    <div className="App">
-      {/* <Header /> */}
-      <PixiComponent sprites={sprites} gameCanvasSize={gameCanvasSize} />
-      <p>User: {user}</p>
-      {/* <Main /> */}
-      <button onClick={logoutButton}>Logout</button>
-    </div>
-  );
 }
 
 export default App;

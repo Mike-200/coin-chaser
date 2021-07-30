@@ -17,6 +17,8 @@ const fireDB = firebase.database();
 const speed = 20;
 const gameCanvasSize = { width: 760, height: 520 };
 
+
+
 function App() {
   const [inGame, setInGame] = useState(false);
 
@@ -26,6 +28,7 @@ function App() {
   const [room, setRoom] = useState();
   const [players, setPlayers] = useState({});
   const [startGame, setStartGame] = useState(false);
+  const [characterSnapShot, setCharacterSnapShot] = useState({});
   const [sprites, setSprites] = useState({});
 
   useEffect(() => {
@@ -47,8 +50,51 @@ function App() {
         .on("value", (snap) => {
           const characterPositions = snap.val();
           if (snap.exists()) {
-            Object.keys(characterPositions).forEach((uid) => {
-              if (!(sprites[uid])) {
+            setCharacterSnapShot(characterPositions)
+            //Object.keys(characterPositions).forEach((uid) => {
+              // if (!characterSets.includes(uid)) { 
+              //   console.log("i should run twice");
+              //   setSprites((prevSprites) => {
+              //     const sprites = { ...prevSprites };
+              //     sprites[uid] = Pixi.Sprite.from(
+              //       getAvatar(players[uid].avatar, characters)
+              //     );
+              //     sprites[uid].position.set(
+              //       characterPositions[uid].x,
+              //       characterPositions[uid].y
+              //     );
+              //     if (uid === user) {
+              //       console.log("i should run once");
+              //       //   // document.removeEventListener("keydown", true);
+              //       //   document.addEventListener("keydown", function (e) {
+              //       //     e.preventDefault();
+              //       //     updateCharPosition(
+              //       //       fireDB,
+              //       //       room,
+              //       //       user,
+              //       //       { x: sprites[user].x, y: sprites[user].y },
+              //       //       e.key,
+              //       //       speed
+              //       //     );
+              //       //   });
+              //     }
+              //     return sprites;
+              //   });
+              // } else {
+              //   console.log(sprites);
+              //   sprites[uid].x = characterPositions[uid].x;
+              //   sprites[uid].y = characterPositions[uid].y;
+              // }
+            //});
+          }
+        });
+      // ToDo change position of own character
+    }
+  }, [startGame]);
+
+  useEffect(() => {
+    Object.keys(characterSnapShot).forEach((uid) => {
+              if (!Object.keys(sprites).includes(uid)) { 
                 console.log("i should run twice");
                 setSprites((prevSprites) => {
                   const sprites = { ...prevSprites };
@@ -56,37 +102,32 @@ function App() {
                     getAvatar(players[uid].avatar, characters)
                   );
                   sprites[uid].position.set(
-                    characterPositions[uid].x,
-                    characterPositions[uid].y
+                    characterSnapShot[uid].x,
+                    characterSnapShot[uid].y
                   );
                   if (uid === user) {
                     console.log("i should run once");
-                    //   // document.removeEventListener("keydown", true);
-                    //   document.addEventListener("keydown", function (e) {
-                    //     e.preventDefault();
-                    //     updateCharPosition(
-                    //       fireDB,
-                    //       room,
-                    //       user,
-                    //       { x: sprites[user].x, y: sprites[user].y },
-                    //       e.key,
-                    //       speed
-                    //     );
-                    //   });
+                      // document.removeEventListener("keydown", true);
+                      document.addEventListener("keydown", function (e) {
+                        e.preventDefault();
+                        updateCharPosition(
+                          fireDB,
+                          room,
+                          user,
+                          { x: sprites[user].x, y: sprites[user].y },
+                          e.key,
+                          speed
+                        );
+                      });
                   }
                   return sprites;
                 });
               } else {
-                sprites[uid].x = characterPositions[uid].x;
-                sprites[uid].y = characterPositions[uid].y;
+                sprites[uid].x = characterSnapShot[uid].x;
+                sprites[uid].y = characterSnapShot[uid].y;
               }
             });
-          }
-        });
-      // ToDo change position of own character
-    }
-  }, [startGame]);
-
+  }, [startGame, characterSnapShot])
   // const [spriteState, setSpriteState] = useState({
   //   char1: { x: 500, y: 450 },
   //   char2: { x: 10, y: 10 },

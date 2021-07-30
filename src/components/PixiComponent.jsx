@@ -1,19 +1,20 @@
 import * as Pixi from "pixi.js";
 import React, { useState, useRef, useEffect } from "react";
 
+
+const gameApp =
+  new Pixi.Application({
+    width: 760,
+    height: 520,
+    backgroundColor: 0x8fc0a9,
+    antialias: true,
+    resolution: window.devicePixelRatio,
+    autoDensity: true,
+  })
+
 const PixiComponent = ({ sprites, gameCanvasSize }) => {
   const ref = useRef("pixi_canvas");
 
-  const [gameApp, setGameApp] = useState(
-    new Pixi.Application({
-      width: gameCanvasSize.width,
-      height: gameCanvasSize.height,
-      backgroundColor: 0x8fc0a9,
-      antialias: true,
-      resolution: window.devicePixelRatio,
-      autoDensity: true,
-    })
-  );
 
   useEffect(() => {
     ref.current.appendChild(gameApp.view);

@@ -5,7 +5,7 @@ let randomXPosition = 0;
 let randomYPosition = 0;
 let tempObj = {};
 
-export const randomCharPosition = () => {
+export const randomCharPosition = (occupiedPositions) => {
   do {
     let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
     let randomYPosition = 50 * Math.floor((Math.random() * 470) / 50) + 25;

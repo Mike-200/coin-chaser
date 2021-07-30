@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import { getAvatar, useStickyState } from "./utils/backend";
 import characters from "./characters";
+import { randomCharPosition } from "./utils/frontend";
+import { randomBoxPosition } from "./utils/frontend";
 
 let speed = 25;
 
@@ -35,9 +37,9 @@ const gameApp = new Pixi.Application({
 // const char2Sprite = Pixi.Sprite.from(ghost);
 // char2Sprite.position.set(400, 100);
 
-const boxSpriteClosed = Pixi.Sprite.from(closedBox);
-boxSpriteClosed.anchor.set(0.5, 0.5);
-boxSpriteClosed.position.set(-200, -300);
+// const boxSpriteClosed = Pixi.Sprite.from(closedBox);
+// boxSpriteClosed.anchor.set(0.5, 0.5);
+// boxSpriteClosed.position.set(400, 300);
 
 const boxSpriteOpen = Pixi.Sprite.from(openBox);
 boxSpriteOpen.anchor.set(0.5, 0.5);
@@ -60,11 +62,14 @@ function App() {
   const [box, setBox] = useState([]);
 
   const [characterSnapShot, setCharacterSnapShot] = useState({});
+  const [boxSnapShot, setBoxSnapShot] = useState({});
+
   const [sprites, setSprites] = useState({});
 
   useEffect(() => {
     if (startGame) {
       if (room === user) {
+        const occupiedPositions = [];
         Object.keys(players).forEach((player) => {
           fireDB
             .ref(
@@ -73,30 +78,40 @@ function App() {
                 "/gameProps/characters/" +
                 player
             )
-            .set({ x: 10, y: 10 });
+            .set(randomCharPosition(occupiedPositions));
         });
+
+        fireDB
+          .ref("rooms/" + room + "/gameProps/boxes")
+          .child("box1")
+          .set(randomBoxPosition(occupiedPositions));
       }
       fireDB
         .ref("rooms/" + room + "/gameProps/characters/")
         .on("value", (snap) => {
-          const characterPositions = snap.val();
           if (snap.exists()) {
-            setCharacterSnapShot(characterPositions);
+            setCharacterSnapShot(snap.val());
           }
         });
+
+      fireDB.ref("rooms/" + room + "/gameProps/boxes").on("value", (snap) => {
+        if (snap.exists()) {
+          setBoxSnapShot(snap.val());
+        }
+      });
 
       // from mike and john - relates to boxes
       // alts needed to make this work
       // listen for changes to box1 positions
-      fireDB.ref("rooms/" + room + "/gameProps/boxes/1").on("value", (snap) => {
-        if (snap.val()) {
-          //console.log("Listener.boxes>>>", boxes);
-          const { x, y } = snap.val();
-          boxSpriteClosed.x = x;
-          boxSpriteClosed.y = y;
-          //console.log("box-x>>>", boxSpriteClosed.x);
-        }
-      });
+      // fireDB.ref("rooms/" + room + "/gameProps/boxes/1").on("value", (snap) => {
+      //   if (snap.val()) {
+      //     //console.log("Listener.boxes>>>", boxes);
+      //     const { x, y } = snap.val();
+      //     boxSpriteClosed.x = x;
+      //     boxSpriteClosed.y = y;
+      //     //console.log("box-x>>>", boxSpriteClosed.x);
+      //   }
+      // });
 
       // listen to changes to all boxes and allocate to the 'box' array
       // delete the above listener once this is working
@@ -131,6 +146,7 @@ function App() {
           sprites[uid] = Pixi.Sprite.from(
             getAvatar(players[uid].avatar, characters)
           );
+          sprites[uid].anchor.set(0.5, 0.5);
           sprites[uid].position.set(
             characterSnapShot[uid].x,
             characterSnapShot[uid].y
@@ -157,6 +173,23 @@ function App() {
       }
     });
   }, [startGame, characterSnapShot]);
+
+  useEffect(() => {
+    Object.keys(boxSnapShot).forEach((uid) => {
+      if (!Object.keys(sprites).includes(uid)) {
+        setSprites((prevSprites) => {
+          const sprites = { ...prevSprites };
+          sprites[uid] = Pixi.Sprite.from(closedBox);
+          sprites[uid].position.set(boxSnapShot[uid].x, boxSnapShot[uid].y);
+
+          return sprites;
+        });
+      } else {
+        sprites[uid].x = boxSnapShot[uid].x;
+        sprites[uid].y = boxSnapShot[uid].y;
+      }
+    });
+  }, [startGame, boxSnapShot]);
 
   function logoutButton() {
     logout(auth);
@@ -190,6 +223,7 @@ function App() {
           sprites={sprites}
           gameCanvasSize={gameCanvasSize}
           gameApp={gameApp}
+          // boxSpriteClosed={boxSpriteClosed}
         />
         <p>User: {username}</p>
         <p>User: {user}</p>
@@ -197,7 +231,7 @@ function App() {
         <Controls
           gameApp={gameApp}
           // char1Sprite={char1Sprite}
-          boxSpriteClosed={boxSpriteClosed}
+          // boxSpriteClosed={boxSpriteClosed}
           fireDB={fireDB}
           room={auth.currentUser.uid}
           numberOfBoxes={numberOfBoxes}
@@ -221,7 +255,7 @@ function App() {
       <PixiComponent
         gameApp={gameApp}
         // char1Sprite={char1Sprite}
-        boxSpriteClosed={boxSpriteClosed}
+        // boxSpriteClosed={boxSpriteClosed}
         boxSpriteOpen={boxSpriteOpen}
         coin={coin}
         fireDB={fireDB}
@@ -232,7 +266,7 @@ function App() {
       <Controls
         gameApp={gameApp}
         // char1Sprite={char1Sprite}
-        boxSpriteClosed={boxSpriteClosed}
+        // boxSpriteClosed={boxSpriteClosed}
         fireDB={fireDB}
         room={auth.currentUser.uid}
         numberOfBoxes={numberOfBoxes}

@@ -32,7 +32,6 @@ const PixiComponent = ({
   function gameLoop() {
     //console.log("box-x>>>", boxSpriteClosed.x);
     //gameApp.stage.addChild(char1Sprite);
-    //gameApp.stage.addChild(boxSpriteClosed);
     //gameApp.stage.removeChild(coin);
     // if (collisionDetect(char1Sprite, boxSpriteClosed)) {
     //   fireDB
@@ -55,6 +54,7 @@ const PixiComponent = ({
     Object.keys(sprites).forEach((sprite) => {
       gameApp.stage.addChild(sprites[sprite]);
     });
+    // gameApp.stage.addChild(boxSpriteClosed);
   }, [sprites, gameApp]);
 
   return <div className="game-screen" id="game" ref={ref}></div>;

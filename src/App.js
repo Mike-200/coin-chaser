@@ -204,6 +204,8 @@ function App() {
         room={auth.currentUser.uid}
         numberOfBoxes={numberOfBoxes}
         setNumberOfBoxes={setNumberOfBoxes}
+        user={user}
+        speed={speed}
       />
       <button onClick={logoutButton}>Logout</button>
     </div>

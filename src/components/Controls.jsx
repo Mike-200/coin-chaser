@@ -3,6 +3,7 @@ import down from "../assets/down-arrow.svg";
 import left from "../assets/left-arrow.svg";
 import right from "../assets/right-arrow.svg";
 import { startNewScreen } from "../utils/frontend";
+import { updateCharPosition } from "../utils/firebase";
 
 const Controls = ({
   gameApp,
@@ -12,6 +13,8 @@ const Controls = ({
   room,
   numberOfBoxes,
   setNumberOfBoxes,
+  user,
+  speed,
 }) => {
   function NewScreenButton() {
     startNewScreen(
@@ -39,35 +42,75 @@ const Controls = ({
 
       <div className="playing-controls">
         <img
-          // onClick={() => {
-          //   moveCharacter(char1Sprite, '-x');
-          // }}
+          onClick={() => {
+            updateCharPosition(
+              fireDB,
+              room,
+              user,
+              {
+                x: char1Sprite.x,
+                y: char1Sprite.y,
+              },
+              "ArrowLeft",
+              speed
+            );
+          }}
           value="left"
           src={left}
           alt="left-arrow"
         ></img>
         <div className="up-down-arrows">
           <img
-            // onClick={() => {
-            //   moveCharacter(char1Sprite, '-y');
-            // }}
+            onClick={() => {
+              updateCharPosition(
+                fireDB,
+                room,
+                user,
+                {
+                  x: char1Sprite.x,
+                  y: char1Sprite.y,
+                },
+                "ArrowUp",
+                speed
+              );
+            }}
             value="up"
             src={up}
             alt="up-arrow"
           ></img>
           <img
-            // onClick={() => {
-            //   moveCharacter(char1Sprite, '+y');
-            // }}
+            onClick={() => {
+              updateCharPosition(
+                fireDB,
+                room,
+                user,
+                {
+                  x: char1Sprite.x,
+                  y: char1Sprite.y,
+                },
+                "ArrowDown",
+                speed
+              );
+            }}
             value="down"
             src={down}
             alt="down-arrow"
           ></img>
         </div>
         <img
-          // onClick={() => {
-          //   moveCharacter(char1Sprite, '+x');
-          // }}
+          onClick={() => {
+            updateCharPosition(
+              fireDB,
+              room,
+              user,
+              {
+                x: char1Sprite.x,
+                y: char1Sprite.y,
+              },
+              "ArrowRight",
+              speed
+            );
+          }}
           value="right"
           src={right}
           alt="right-arrow"

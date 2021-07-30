@@ -17,11 +17,8 @@ const fireDB = firebase.database();
 const speed = 20;
 const gameCanvasSize = { width: 760, height: 520 };
 
-
-
 function App() {
-  const [inGame, setInGame] = useState(false);
-
+  // const [inGame, setInGame] = useState(false);
   const [username, setUsername] = useStickyState("username");
   const [avatar, setAvatar] = useState(0);
   const [user, setUser] = useState();
@@ -51,51 +48,14 @@ function App() {
           const characterPositions = snap.val();
           if (snap.exists()) {
             setCharacterSnapShot(characterPositions)
-            //Object.keys(characterPositions).forEach((uid) => {
-              // if (!characterSets.includes(uid)) { 
-              //   console.log("i should run twice");
-              //   setSprites((prevSprites) => {
-              //     const sprites = { ...prevSprites };
-              //     sprites[uid] = Pixi.Sprite.from(
-              //       getAvatar(players[uid].avatar, characters)
-              //     );
-              //     sprites[uid].position.set(
-              //       characterPositions[uid].x,
-              //       characterPositions[uid].y
-              //     );
-              //     if (uid === user) {
-              //       console.log("i should run once");
-              //       //   // document.removeEventListener("keydown", true);
-              //       //   document.addEventListener("keydown", function (e) {
-              //       //     e.preventDefault();
-              //       //     updateCharPosition(
-              //       //       fireDB,
-              //       //       room,
-              //       //       user,
-              //       //       { x: sprites[user].x, y: sprites[user].y },
-              //       //       e.key,
-              //       //       speed
-              //       //     );
-              //       //   });
-              //     }
-              //     return sprites;
-              //   });
-              // } else {
-              //   console.log(sprites);
-              //   sprites[uid].x = characterPositions[uid].x;
-              //   sprites[uid].y = characterPositions[uid].y;
-              // }
-            //});
           }
         });
-      // ToDo change position of own character
     }
   }, [startGame]);
 
   useEffect(() => {
     Object.keys(characterSnapShot).forEach((uid) => {
               if (!Object.keys(sprites).includes(uid)) { 
-                console.log("i should run twice");
                 setSprites((prevSprites) => {
                   const sprites = { ...prevSprites };
                   sprites[uid] = Pixi.Sprite.from(
@@ -106,7 +66,6 @@ function App() {
                     characterSnapShot[uid].y
                   );
                   if (uid === user) {
-                    console.log("i should run once");
                       // document.removeEventListener("keydown", true);
                       document.addEventListener("keydown", function (e) {
                         e.preventDefault();
@@ -128,21 +87,6 @@ function App() {
               }
             });
   }, [startGame, characterSnapShot])
-  // const [spriteState, setSpriteState] = useState({
-  //   char1: { x: 500, y: 450 },
-  //   char2: { x: 10, y: 10 },
-  // });
-
-  // Create Sprites & add to stage
-
-  // Event Listeners for keypress movements
-
-  // document.addEventListener('keydown', function (e) {
-  //   if (e.keyCode === 68) moveCharacter(char2Sprite, '+x');
-  //   if (e.keyCode === 65) moveCharacter(char2Sprite, '-x');
-  //   if (e.keyCode === 83) moveCharacter(char2Sprite, '+y');
-  //   if (e.keyCode === 87) moveCharacter(char2Sprite, '-y');
-  // });
 
   function logoutButton() {
     logout(auth);
@@ -159,8 +103,6 @@ function App() {
         players={players}
         setPlayers={setPlayers}
         setRoom={setRoom}
-        inGame={inGame}
-        setInGame={setInGame}
         startGame={startGame}
         setStartGame={setStartGame}
         user={user}

@@ -24,8 +24,6 @@ const Login = ({
   players,
   setPlayers,
   setRoom,
-  inGame,
-  setInGame,
   startGame,
   setStartGame,
   user,
@@ -37,6 +35,7 @@ const Login = ({
   const [roomToBe, setRoomToBe] = useState();
   const [clientsKnocks, setClientsKnocks] = useState({});
   const [error, setError] = useState();
+  const [inGame, setInGame] = useState(false);
 
   function loginButton(e) {
     e.preventDefault();
@@ -80,7 +79,6 @@ const Login = ({
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setUser(authUser.uid);
-        // console.log(authUser.uid);
       } else {
         setUser();
       }

@@ -1,5 +1,5 @@
 import * as Pixi from "pixi.js";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 
 
 const gameApp =

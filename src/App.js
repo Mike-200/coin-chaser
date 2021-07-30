@@ -28,9 +28,9 @@ const gameApp = new Pixi.Application({
   autoDensity: true,
 });
 
-const char1Sprite = Pixi.Sprite.from(ninja);
-char1Sprite.anchor.set(0.5, 0.5);
-char1Sprite.position.set(-400, -100);
+// const char1Sprite = Pixi.Sprite.from(ninja);
+// char1Sprite.anchor.set(0.5, 0.5);
+// char1Sprite.position.set(-400, -100);
 
 // const char2Sprite = Pixi.Sprite.from(ghost);
 // char2Sprite.position.set(400, 100);
@@ -46,7 +46,6 @@ boxSpriteOpen.position.set(-600, -600);
 const coin = Pixi.Sprite.from(crownCoin);
 coin.anchor.set(0.5, 0.5);
 coin.position.set(-700, -700);
-const speed = 25;
 const gameCanvasSize = { width: 760, height: 520 };
 
 function App() {
@@ -187,9 +186,27 @@ function App() {
     return (
       <div className="App">
         {/* <Header /> */}
-        <PixiComponent sprites={sprites} gameCanvasSize={gameCanvasSize} />
+        <PixiComponent
+          sprites={sprites}
+          gameCanvasSize={gameCanvasSize}
+          gameApp={gameApp}
+        />
+        <p>User: {username}</p>
         <p>User: {user}</p>
-        {/* <Main /> */}
+
+        <Controls
+          gameApp={gameApp}
+          // char1Sprite={char1Sprite}
+          boxSpriteClosed={boxSpriteClosed}
+          fireDB={fireDB}
+          room={auth.currentUser.uid}
+          numberOfBoxes={numberOfBoxes}
+          setNumberOfBoxes={setNumberOfBoxes}
+          user={user}
+          speed={speed}
+          sprites={sprites}
+        />
+
         <button onClick={logoutButton}>Logout</button>
       </div>
     );
@@ -203,7 +220,7 @@ function App() {
       {/* <Header /> */}
       <PixiComponent
         gameApp={gameApp}
-        char1Sprite={char1Sprite}
+        // char1Sprite={char1Sprite}
         boxSpriteClosed={boxSpriteClosed}
         boxSpriteOpen={boxSpriteOpen}
         coin={coin}
@@ -214,7 +231,7 @@ function App() {
       <p>User: {user}</p>
       <Controls
         gameApp={gameApp}
-        char1Sprite={char1Sprite}
+        // char1Sprite={char1Sprite}
         boxSpriteClosed={boxSpriteClosed}
         fireDB={fireDB}
         room={auth.currentUser.uid}

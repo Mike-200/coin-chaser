@@ -7,7 +7,6 @@ import { updateCharPosition } from "../utils/firebase";
 
 const Controls = ({
   gameApp,
-  char1Sprite,
   boxSpriteClosed,
   fireDB,
   room,
@@ -15,11 +14,12 @@ const Controls = ({
   setNumberOfBoxes,
   user,
   speed,
+  sprites,
 }) => {
   function NewScreenButton() {
     startNewScreen(
       gameApp,
-      char1Sprite,
+      sprites[user],
       boxSpriteClosed,
       fireDB,
       room,
@@ -48,8 +48,8 @@ const Controls = ({
               room,
               user,
               {
-                x: char1Sprite.x,
-                y: char1Sprite.y,
+                x: sprites[user].x,
+                y: sprites[user].y,
               },
               "ArrowLeft",
               speed
@@ -67,8 +67,8 @@ const Controls = ({
                 room,
                 user,
                 {
-                  x: char1Sprite.x,
-                  y: char1Sprite.y,
+                  x: sprites[user].x,
+                  y: sprites[user].y,
                 },
                 "ArrowUp",
                 speed
@@ -85,8 +85,8 @@ const Controls = ({
                 room,
                 user,
                 {
-                  x: char1Sprite.x,
-                  y: char1Sprite.y,
+                  x: sprites[user].x,
+                  y: sprites[user].y,
                 },
                 "ArrowDown",
                 speed
@@ -104,8 +104,8 @@ const Controls = ({
               room,
               user,
               {
-                x: char1Sprite.x,
-                y: char1Sprite.y,
+                x: sprites[user].x,
+                y: sprites[user].y,
               },
               "ArrowRight",
               speed

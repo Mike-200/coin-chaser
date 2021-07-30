@@ -11,6 +11,7 @@ const PixiComponent = ({
   coin,
   fireDB,
   room,
+  sprites,
 }) => {
   const ref = useRef("pixi_canvas");
 
@@ -30,22 +31,21 @@ const PixiComponent = ({
   // did have delta in the brackets below but it was never used
   function gameLoop() {
     //console.log("box-x>>>", boxSpriteClosed.x);
-    gameApp.stage.addChild(char1Sprite);
-    gameApp.stage.addChild(boxSpriteClosed);
-    gameApp.stage.removeChild(coin);
-
-    if (collisionDetect(char1Sprite, boxSpriteClosed)) {
-      fireDB
-        .ref("rooms/" + room + "/gameProps/boxes/1")
-        .get()
-        .then((snap) => {
-          boxSpriteOpen.position.set(snap.val().x, snap.val().y);
-          coin.position.set(snap.val().x, snap.val().y - 50);
-        });
-      gameApp.stage.removeChild(boxSpriteClosed);
-      gameApp.stage.addChild(boxSpriteOpen);
-      gameApp.stage.addChild(coin);
-    }
+    //gameApp.stage.addChild(char1Sprite);
+    //gameApp.stage.addChild(boxSpriteClosed);
+    //gameApp.stage.removeChild(coin);
+    // if (collisionDetect(char1Sprite, boxSpriteClosed)) {
+    //   fireDB
+    //     .ref("rooms/" + room + "/gameProps/boxes/1")
+    //     .get()
+    //     .then((snap) => {
+    //       boxSpriteOpen.position.set(snap.val().x, snap.val().y);
+    //       coin.position.set(snap.val().x, snap.val().y - 50);
+    //     });
+    //   gameApp.stage.removeChild(boxSpriteClosed);
+    //   gameApp.stage.addChild(boxSpriteOpen);
+    //   gameApp.stage.addChild(coin);
+    // }
   }
 
   // from Kaily and Ioanna

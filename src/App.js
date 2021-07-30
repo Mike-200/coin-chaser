@@ -131,6 +131,7 @@ function App() {
 
       document.addEventListener("keydown", function (e) {
         e.preventDefault();
+        console.log({ x: char1Sprite.x, y: char1Sprite.y });
         updateCharPosition(
           fireDB,
           user,

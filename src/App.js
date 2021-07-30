@@ -87,10 +87,12 @@ function App() {
       fireDB
         .ref("rooms/" + user + "/gameProps/characters/" + user)
         .on("value", (snap) => {
-          const { x, y } = snap.val();
-          char1Sprite.x = x;
-          char1Sprite.y = y;
-          //console.log("char1-x>>>", boxSpriteClosed.x);
+          if (snap.val()) {
+            const { x, y } = snap.val();
+            char1Sprite.x = x;
+            char1Sprite.y = y;
+            //console.log("char1-x>>>", boxSpriteClosed.x);
+          }
         });
 
       // listen for changes to box1 positions
@@ -106,22 +108,26 @@ function App() {
 
       // listen to changes to all boxes and allocate to the 'box' array
       // delete the above listener once this is working
-      fireDB.ref("rooms/" + room + "/gameProps/boxes").on("value", (snap) => {
-        if (snap.val()) {
-          //console.log("box info>>>", snap.val()[1]);
-          console.log("lengthOfSnap,val>>>", snap.val().length);
-          for (let i = 1; i <= snap.val().length; i++) {
-            setBox((currValue) => {
-              //console.log("currValue boxArray>>>".currValue);
-              return (currValue[i] = snap.val()[i]);
-            });
-          }
-          console.log("boxArray>>>", box);
-          //const { x, y } = snap.val();
-          //boxSpriteClosed.x = x;
-          //boxSpriteClosed.y = y;
-        }
-      });
+      // fireDB.ref("rooms/" + room + "/gameProps/boxes").on("value", (snap) => {
+
+      //   if (snap.val()) {
+      //     //console.log("snap.val>>>", snap.val());
+      //     const result = snap.val();
+      //     //console.log("snap.val>>>", snap.val());
+      //     console.log("result>>>", result[1]);
+      //     //console.log("box info>>>", snap.val()[1]);
+      //     //console.log("lengthOfSnap,val>>>", snap.val().length);
+      //     // for (let i = 1; i <= snap.val().length; i++) {
+
+      //     //}
+      //     //const { x, y } = snap.val();
+      //     //boxSpriteClosed.x = x;
+      //     //boxSpriteClosed.y = y;
+      //     setBox([1]);
+      //     console.log("boxArray>>>", box);
+      //   }
+
+      // });
 
       document.addEventListener("keydown", function (e) {
         e.preventDefault();
@@ -135,7 +141,7 @@ function App() {
         );
       });
     }
-  }, [startGame]);
+  }, [startGame, box]);
 
   // const [spriteState, setSpriteState] = useState({
   //   char1: { x: 500, y: 450 },

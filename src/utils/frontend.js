@@ -34,7 +34,7 @@ export const startNewScreen = (
   numberOfBoxes,
   setNumberOfBoxes
 ) => {
-  const maxNumberOfBoxes = 6;
+  const maxNumberOfBoxes = 10;
   // console.log("Frontend.boxes.before.change>>>", boxes);
 
   //gameApp.stage.removeChildren();
@@ -51,7 +51,7 @@ export const startNewScreen = (
     writeBoxPosition(fireDB, room, boxSpriteClosed, i);
   }
 
-  if (numberOfBoxes < maxNumberOfBoxes) {
+  if (numberOfBoxes <= maxNumberOfBoxes) {
     setNumberOfBoxes((currValue) => {
       return currValue + 1;
     });

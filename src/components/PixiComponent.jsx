@@ -14,9 +14,6 @@ const PixiComponent = ({
 }) => {
   const ref = useRef(null);
 
-  // something wrong here
-  // line 21 keeps causing a crash
-  // fixed it by adding square brackets on line 27
   useEffect(() => {
     ref.current.appendChild(gameApp.view);
     gameApp.start();
@@ -29,7 +26,7 @@ const PixiComponent = ({
   gameApp.ticker.add((delta) => gameLoop(delta));
 
   // did have delta in the brackets below but it was never used
-  function gameLoop(delta) {
+  function gameLoop() {
     //console.log("box-x>>>", boxSpriteClosed.x);
     gameApp.stage.addChild(char1Sprite);
     gameApp.stage.addChild(boxSpriteClosed);

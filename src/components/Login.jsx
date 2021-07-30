@@ -79,6 +79,7 @@ const Login = ({
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setUser(authUser.uid);
+        // console.log(authUser);
       } else {
         setUser();
       }

@@ -64,41 +64,41 @@ export function startListeningToStartGame(
   });
 }
 
-export function listenToPlayersPositions(
-  fireDB,
-  room,
-  players,
-  gameBoardCoordsRelationalFunc,
-  gameBoardCoordsInverseRelationalFunc,
-  boardWidth,
-  setGameBoard
-) {
-  fireDB
-    .ref("rooms")
-    .child(room)
-    .child("gameProps")
-    .child("characters")
-    .on("value", (snap) => {
-      if (snap.exists()) {
-        const ballsPositions = snap.val();
-        const newGameBoard = Array.from({
-          length: boardWidth * boardWidth,
-        }).map((_, index) => {
-          return {
-            xy: gameBoardCoordsRelationalFunc(index, boardWidth),
-            value: null,
-          };
-        });
-        Object.keys(ballsPositions).forEach((uid) => {
-          const toWhere = ballsPositions[uid];
-          newGameBoard[
-            gameBoardCoordsInverseRelationalFunc(toWhere, boardWidth)
-          ].value = players[uid].slice(0, 1);
-        });
-        setGameBoard(newGameBoard);
-      }
-    });
-}
+// export function listenToPlayersPositions(
+//   fireDB,
+//   room,
+//   players,
+//   gameBoardCoordsRelationalFunc,
+//   gameBoardCoordsInverseRelationalFunc,
+//   boardWidth,
+//   setGameBoard
+// ) {
+//   fireDB
+//     .ref('rooms')
+//     .child(room)
+//     .child('gameProps')
+//     .child('characters')
+//     .on('value', (snap) => {
+//       if (snap.exists()) {
+//         const ballsPositions = snap.val();
+//         const newGameBoard = Array.from({
+//           length: boardWidth * boardWidth,
+//         }).map((_, index) => {
+//           return {
+//             xy: gameBoardCoordsRelationalFunc(index, boardWidth),
+//             value: null,
+//           };
+//         });
+//         Object.keys(ballsPositions).forEach((uid) => {
+//           const toWhere = ballsPositions[uid];
+//           newGameBoard[
+//             gameBoardCoordsInverseRelationalFunc(toWhere, boardWidth)
+//           ].value = players[uid].slice(0, 1);
+//         });
+//         setGameBoard(newGameBoard);
+//       }
+//     });
+// }
 
 export function startListeningToKnocks(fireDB, room, setKnocks) {
   fireDB.ref("rooms/" + room + "/knock").on("value", (snap) => {
@@ -153,4 +153,31 @@ export const updateCharPosition = (
   } else if (direction === "ArrowDown") {
     dbRef.child("y").set(origPos.y + speed);
   }
+};
+
+export const writeCharPosition = (fireDB, room, char) => {
+  fireDB
+    .ref("rooms/" + room + "/gameProps/characters/" + room)
+    .set({ x: char.x, y: char.y });
+};
+
+export const writeBoxPosition = (fireDB, room, box, boxNo) => {
+  //console.log("boxNo>>>", boxNo);
+  fireDB
+    .ref("rooms/" + room + "/gameProps/boxes")
+    .child(boxNo)
+    .set({ x: box.x, y: box.y, contents: "empty", state: "closed" });
+};
+
+export const readBoxPosition = (fireDB, room) => {
+  fireDB
+    .ref("rooms/" + room + "/gameProps/boxes/1")
+    .get()
+    .then((snap) => {
+      console.log("box position>>>", snap.val());
+      // setPlayers(snap.val());
+      // fireDB.ref("rooms/" + room + "/startGame").off();
+      // setStartGame(true);
+      //    return snap.val();
+    });
 };

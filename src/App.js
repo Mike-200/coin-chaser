@@ -11,7 +11,7 @@ import firebase from "./firebase-config";
 import { logout, updateCharPosition } from "./utils/firebase";
 import { useEffect, useState } from "react";
 import Login from "./components/Login";
-import { getAvatar, useStickyState } from "./utils/backend";
+import { getAvatar, useStickyState, startNewScreen } from "./utils/backend";
 import characters from "./characters";
 import { randomCharPosition } from "./utils/frontend";
 import { randomBoxPosition } from "./utils/frontend";
@@ -69,23 +69,9 @@ function App() {
   useEffect(() => {
     if (startGame) {
       if (room === user) {
-        const occupiedPositions = [];
-        Object.keys(players).forEach((player) => {
-          fireDB
-            .ref(
-              "rooms/" +
-                auth.currentUser.uid +
-                "/gameProps/characters/" +
-                player
-            )
-            .set(randomCharPosition(occupiedPositions));
-        });
-
-        fireDB
-          .ref("rooms/" + room + "/gameProps/boxes")
-          .child("box1")
-          .set(randomBoxPosition(occupiedPositions));
+        startNewScreen(fireDB, room, user, players, numberOfBoxes);
       }
+
       fireDB
         .ref("rooms/" + room + "/gameProps/characters/")
         .on("value", (snap) => {
@@ -239,6 +225,7 @@ function App() {
           user={user}
           speed={speed}
           sprites={sprites}
+          players={players}
         />
 
         <button onClick={logoutButton}>Logout</button>
@@ -249,34 +236,34 @@ function App() {
   // going to need to sort this out
   // below was mike and johns code to show the pixi component and the controls
 
-  return (
-    <div className="App">
-      {/* <Header /> */}
-      <PixiComponent
-        gameApp={gameApp}
-        // char1Sprite={char1Sprite}
-        // boxSpriteClosed={boxSpriteClosed}
-        boxSpriteOpen={boxSpriteOpen}
-        coin={coin}
-        fireDB={fireDB}
-        room={auth.currentUser.uid}
-      />
-      <p>User: {username}</p>
-      <p>User: {user}</p>
-      <Controls
-        gameApp={gameApp}
-        // char1Sprite={char1Sprite}
-        // boxSpriteClosed={boxSpriteClosed}
-        fireDB={fireDB}
-        room={auth.currentUser.uid}
-        numberOfBoxes={numberOfBoxes}
-        setNumberOfBoxes={setNumberOfBoxes}
-        user={user}
-        speed={speed}
-      />
-      <button onClick={logoutButton}>Logout</button>
-    </div>
-  );
+  // return (
+  //   <div className="App">
+  //     {/* <Header /> */}
+  //     <PixiComponent
+  //       gameApp={gameApp}
+  //       // char1Sprite={char1Sprite}
+  //       // boxSpriteClosed={boxSpriteClosed}
+  //       boxSpriteOpen={boxSpriteOpen}
+  //       coin={coin}
+  //       fireDB={fireDB}
+  //       room={auth.currentUser.uid}
+  //     />
+  //     <p>User: {username}</p>
+  //     <p>User: {user}</p>
+  //     <Controls
+  //       gameApp={gameApp}
+  //       // char1Sprite={char1Sprite}
+  //       // boxSpriteClosed={boxSpriteClosed}
+  //       fireDB={fireDB}
+  //       room={auth.currentUser.uid}
+  //       numberOfBoxes={numberOfBoxes}
+  //       setNumberOfBoxes={setNumberOfBoxes}
+  //       user={user}
+  //       speed={speed}
+  //     />
+  //     <button onClick={logoutButton}>Logout</button>
+  //   </div>
+  // );
 }
 
 export default App;

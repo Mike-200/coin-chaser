@@ -1,5 +1,29 @@
 import { useState } from "react";
 
+let randomXPosition = 0;
+let randomYPosition = 0;
+let tempObj = {};
+
+export const randomCharPosition = (occupiedPositions) => {
+  do {
+    let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
+    let randomYPosition = 50 * Math.floor((Math.random() * 470) / 50) + 25;
+    tempObj = { x: randomXPosition, y: randomYPosition };
+  } while (occupiedPositions.includes(tempObj));
+  occupiedPositions.push(tempObj);
+  return tempObj;
+};
+
+export const randomBoxPosition = (occupiedPositions) => {
+  do {
+    randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
+    randomYPosition = 50 * Math.floor((Math.random() * 420) / 50) + 75;
+    tempObj = { x: randomXPosition, y: randomYPosition };
+  } while (occupiedPositions.includes(tempObj));
+  occupiedPositions.push(tempObj);
+  return tempObj;
+};
+
 // export function coordsToIndex(coords, base) {
 //   let encodingBase = 10;
 //   while (encodingBase < base) {
@@ -75,6 +99,22 @@ export function useStickyState(key, initialState) {
     }
   }
   return [tempState, setStickyState];
+}
+
+export function startNewScreen(fireDB, room, user, players, numberOfBoxes) {
+  const occupiedPositions = [];
+  Object.keys(players).forEach((player) => {
+    fireDB
+      .ref("rooms/" + user + "/gameProps/characters/" + player)
+      .set(randomCharPosition(occupiedPositions));
+  });
+
+  for (let i = 1; i <= numberOfBoxes; i++) {
+    fireDB
+      .ref("rooms/" + room + "/gameProps/boxes")
+      .child(`box${i}`)
+      .set(randomBoxPosition(occupiedPositions));
+  }
 }
 
 export function cleanup(

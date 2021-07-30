@@ -2,7 +2,7 @@ import up from "../assets/up-arrow.svg";
 import down from "../assets/down-arrow.svg";
 import left from "../assets/left-arrow.svg";
 import right from "../assets/right-arrow.svg";
-import { startNewScreen } from "../utils/frontend";
+import { startNewScreen } from "../utils/backend";
 import { updateCharPosition } from "../utils/firebase";
 
 const Controls = ({
@@ -15,17 +15,20 @@ const Controls = ({
   user,
   speed,
   sprites,
+  players,
 }) => {
   function NewScreenButton() {
-    startNewScreen(
-      gameApp,
-      sprites[user],
-      boxSpriteClosed,
-      fireDB,
-      room,
-      numberOfBoxes,
-      setNumberOfBoxes
-    );
+    startNewScreen(fireDB, room, user, players, numberOfBoxes);
+
+    // startNewScreen(
+    //   gameApp,
+    //   sprites[user],
+    //   boxSpriteClosed,
+    //   fireDB,
+    //   room,
+    //   numberOfBoxes,
+    //   setNumberOfBoxes
+    // );
   }
 
   return (

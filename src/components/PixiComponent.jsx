@@ -12,7 +12,7 @@ const PixiComponent = ({
   fireDB,
   room,
 }) => {
-  const ref = useRef(null);
+  const ref = useRef("pixi_canvas");
 
   useEffect(() => {
     ref.current.appendChild(gameApp.view);
@@ -22,6 +22,8 @@ const PixiComponent = ({
       gameApp.destroy(true, true);
     };
   }, []);
+
+  // collision detection stuff by John
 
   gameApp.ticker.add((delta) => gameLoop(delta));
 
@@ -45,6 +47,15 @@ const PixiComponent = ({
       gameApp.stage.addChild(coin);
     }
   }
+
+  // from Kaily and Ioanna
+
+  useEffect(() => {
+    gameApp.stage.removeChildren();
+    Object.keys(sprites).forEach((sprite) => {
+      gameApp.stage.addChild(sprites[sprite]);
+    });
+  }, [sprites, gameApp]);
 
   return <div className="game-screen" id="game" ref={ref}></div>;
 

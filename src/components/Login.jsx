@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { getAvatar } from "../utils/backend";
 import {
   login,
   startListeningToNewPlayers,
@@ -9,7 +10,10 @@ import {
   removeKnockPlayer,
   startGameHost,
   startListeningToStartGame,
-} from '../utils/firebase';
+} from "../utils/firebase";
+import characters from "../characters";
+import leftArrow from "../assets/left-arrow.svg";
+import rightArrow from "../assets/right-arrow.svg";
 
 const Login = ({
   fireDB,
@@ -20,40 +24,54 @@ const Login = ({
   players,
   setPlayers,
   setRoom,
-  inGame,
-  setInGame,
   startGame,
   setStartGame,
   user,
   room,
   logoutButton,
+  avatar,
+  setAvatar,
 }) => {
-  const loginButton = (e) => {
-    e.preventDefault();
-    if (!username) {
-      setUsername('empty');
-    }
-    login(auth);
-  };
-
   const [roomToBe, setRoomToBe] = useState();
   const [clientsKnocks, setClientsKnocks] = useState({});
+  const [error, setError] = useState();
+  const [inGame, setInGame] = useState(false);
+
+  function loginButton(e) {
+    e.preventDefault();
+    if (!username) {
+      setUsername("empty");
+    }
+    login(auth);
+  }
 
   function client() {
-    setRoom(roomToBe);
-    knockOnRoom(fireDB, roomToBe, user, username);
-    startListeningIfInGame(fireDB, roomToBe, user, setInGame);
+    knockOnRoom(fireDB, roomToBe, user, username, avatar).then((error) => {
+      if (error) {
+        setError(error);
+      } else {
+        setError();
+        setRoom(roomToBe);
+        startListeningIfInGame(fireDB, roomToBe, user, setInGame);
+      }
+    });
   }
 
   function host() {
     setRoom(user);
-    acceptPlayer(fireDB, user, user, username);
+    acceptPlayer(fireDB, user, user, username, avatar);
     setInGame(true);
     startListeningToKnocks(fireDB, user, setClientsKnocks);
   }
 
   function buttonAcceptPlayer(uid) {
-    acceptPlayer(fireDB, room, uid, clientsKnocks[uid]);
+    acceptPlayer(
+      fireDB,
+      room,
+      uid,
+      clientsKnocks[uid].username,
+      clientsKnocks[uid].avatar
+    );
     removeKnockPlayer(fireDB, room, uid);
   }
 
@@ -66,7 +84,7 @@ const Login = ({
         setUser();
       }
     });
-  });
+  }, []);
 
   useEffect(() => {
     if (room) {
@@ -74,6 +92,24 @@ const Login = ({
       startListeningToNewPlayers(fireDB, room, setPlayers);
     }
   }, [fireDB, room]);
+
+  function previousAvatar() {
+    setAvatar((avatar) => {
+      if (avatar - 1 < 0) {
+        return Object.keys(characters).length - 1;
+      }
+      return avatar - 1;
+    });
+  }
+
+  function nextAvatar() {
+    setAvatar((avatar) => {
+      if (avatar + 1 > Object.keys(characters).length - 1) {
+        return 0;
+      }
+      return avatar + 1;
+    });
+  }
 
   if (!user)
     return (
@@ -85,8 +121,8 @@ const Login = ({
             <p>(max 10 characters)</p>
             <input
               type="textbox"
-              maxlength="10"
-              placeHolder="Enter username"
+              maxLength="10"
+              placeholder="Enter username"
               onChange={(e) => {
                 setUsername(e.target.value);
               }}
@@ -94,6 +130,7 @@ const Login = ({
             ></input>
             <button onClick={loginButton}>Enter</button>
           </form>
+          {error ? <p className="errorMessage">{error}</p> : null}
         </div>
       </div>
     );
@@ -116,7 +153,20 @@ const Login = ({
           ></input>
           <button onClick={client}>Join</button>
           <br />
+          <p>Pick your avatar</p>
+          <button onClick={previousAvatar}>
+            <img alt="previous avatar" src={leftArrow}></img>
+          </button>
+          <img
+            className="Avatar"
+            alt="avatar"
+            src={getAvatar(avatar, characters)}
+          ></img>
+          <button onClick={nextAvatar}>
+            <img alt="next avatar" src={rightArrow}></img>
+          </button>
           <br />
+          {error ? <p className="errorMessage">{error}</p> : null}
           <button onClick={logoutButton}>Logout</button>
         </div>
       </div>
@@ -128,8 +178,18 @@ const Login = ({
           <p>Waiting to be let into the game...</p>
           <p>Players already in the game...</p>
           {Object.keys(players).map((uid) => {
-            return <p>{players[uid]}</p>;
+            return (
+              <p>
+                <img
+                  alt="avatar"
+                  className="Avatar"
+                  src={getAvatar(players[uid].avatar, characters)}
+                ></img>
+                {players[uid].username}
+              </p>
+            );
           })}
+          {error ? <p className="errorMessage">{error}</p> : null}
           <button onClick={logoutButton}>Logout</button>
         </div>
       </div>
@@ -144,12 +204,26 @@ const Login = ({
 
             <p>Players already in the game...</p>
             {Object.keys(players).map((uid) => {
-              return <p>{players[uid]}</p>;
+              return (
+                <p>
+                  <img
+                    alt="avatar"
+                    className="Avatar"
+                    src={getAvatar(players[uid].avatar, characters)}
+                  ></img>
+                  {players[uid].username}
+                </p>
+              );
             })}
             <p>Players waiting to be join...</p>
             {Object.keys(clientsKnocks).map((uid) => (
               <p key={uid}>
-                {clientsKnocks[uid]}{' '}
+                <img
+                  alt="avatar"
+                  className="Avatar"
+                  src={getAvatar(clientsKnocks[uid].avatar, characters)}
+                ></img>
+                {clientsKnocks[uid].username}{" "}
                 <button
                   onClick={() => {
                     buttonAcceptPlayer(uid);
@@ -166,6 +240,7 @@ const Login = ({
             >
               Start Game!
             </button>
+            {error ? <p className="errorMessage">{error}</p> : null}
           </div>
         </div>
       );
@@ -176,8 +251,18 @@ const Login = ({
           <p>The game has not started yet</p>
           <p>Players in the game...</p>
           {Object.keys(players).map((uid) => {
-            return <p>{players[uid]}</p>;
+            return (
+              <p>
+                <img
+                  alt="avatar"
+                  className="Avatar"
+                  src={getAvatar(players[uid].avatar, characters)}
+                ></img>
+                {players[uid].username}
+              </p>
+            );
           })}
+          {error ? <p className="errorMessage">{error}</p> : null}
         </div>
       </div>
     );

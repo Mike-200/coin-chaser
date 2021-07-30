@@ -157,7 +157,7 @@ export const writeBoxPosition = (fireDB, room, box, boxNo) => {
   fireDB
     .ref("rooms/" + room + "/gameProps/boxes")
     .child(boxNo)
-    .set({ x: box.x, y: box.y, contents: "coin" });
+    .set({ x: box.x, y: box.y, contents: "empty", state: "closed" });
 };
 
 export const readBoxPosition = (fireDB, room) => {

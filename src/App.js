@@ -14,7 +14,7 @@ import firebase from "./firebase-config";
 //   randomBoxPosition,
 //   startNewScreen,
 // } from "./utils/frontend";
-import { logout, writeBoxPosition, updateCharPosition } from "./utils/firebase";
+import { logout, updateCharPosition } from "./utils/firebase";
 import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import { useStickyState } from "./utils/backend";
@@ -37,8 +37,8 @@ const char1Sprite = Pixi.Sprite.from(ninja);
 char1Sprite.anchor.set(0.5, 0.5);
 char1Sprite.position.set(-400, -100);
 
-const char2Sprite = Pixi.Sprite.from(ghost);
-char2Sprite.position.set(400, 100);
+// const char2Sprite = Pixi.Sprite.from(ghost);
+// char2Sprite.position.set(400, 100);
 
 const boxSpriteClosed = Pixi.Sprite.from(closedBox);
 boxSpriteClosed.anchor.set(0.5, 0.5);
@@ -59,13 +59,19 @@ function App() {
   const [players, setPlayers] = useState({});
   const [inGame, setInGame] = useState(false);
   const [startGame, setStartGame] = useState(false);
-  const [boxes, setBoxes] = useState(1);
+  const [numberOfBoxes, setNumberOfBoxes] = useState(1);
+  const [box, setBox] = useState([]);
+  // needs to take the form
+  // [{1:{x:100,y:200,contents:"empty",state:"closed"}},
+  //  {2:{x:100,y:200,contents:"empty",state:"closed"}}]
 
   useEffect(() => {
     if (startGame) {
-      // console.log("in game");
+      console.log("in game");
       // console.log("user>>>", user);
       // console.log("room>>>", room);
+      // console.log("App.boxes>>>", boxes);
+
       fireDB
         .ref(
           "rooms/" +
@@ -76,7 +82,7 @@ function App() {
         .set({ x: char1Sprite.x, y: char1Sprite.y });
 
       // listen for changes to char1 position
-      // note - it should be rom - not user - but the first
+      // note - it should be room - not user - but the first
       // time it invokes, the db is empty
       fireDB
         .ref("rooms/" + user + "/gameProps/characters/" + user)
@@ -87,12 +93,34 @@ function App() {
           //console.log("char1-x>>>", boxSpriteClosed.x);
         });
 
-      // listen for changes to box position
+      // listen for changes to box1 positions
       fireDB.ref("rooms/" + room + "/gameProps/boxes/1").on("value", (snap) => {
-        const { x, y } = snap.val();
-        boxSpriteClosed.x = x;
-        boxSpriteClosed.y = y;
-        //console.log("box-x>>>", boxSpriteClosed.x);
+        if (snap.val()) {
+          //console.log("Listener.boxes>>>", boxes);
+          const { x, y } = snap.val();
+          boxSpriteClosed.x = x;
+          boxSpriteClosed.y = y;
+          //console.log("box-x>>>", boxSpriteClosed.x);
+        }
+      });
+
+      // listen to changes to all boxes and allocate to the 'box' array
+      // delete the above listener once this is working
+      fireDB.ref("rooms/" + room + "/gameProps/boxes").on("value", (snap) => {
+        if (snap.val()) {
+          //console.log("box info>>>", snap.val()[1]);
+          console.log("lengthOfSnap,val>>>", snap.val().length);
+          for (let i = 1; i <= snap.val().length; i++) {
+            setBox((currValue) => {
+              //console.log("currValue boxArray>>>".currValue);
+              return (currValue[i] = snap.val()[i]);
+            });
+          }
+          console.log("boxArray>>>", box);
+          //const { x, y } = snap.val();
+          //boxSpriteClosed.x = x;
+          //boxSpriteClosed.y = y;
+        }
       });
 
       document.addEventListener("keydown", function (e) {
@@ -109,21 +137,10 @@ function App() {
     }
   }, [startGame]);
 
-  useEffect(() => {
-    if (startGame) {
-      writeBoxPosition(fireDB, auth.currentUser.uid, boxSpriteClosed, 1);
-      // fireDB
-      //   .ref('rooms/' + auth.currentUser.uid + '/gameProps/boxes/box1')
-      //   .set({ x: boxSpriteClosed.x, y: boxSpriteClosed.y });
-    }
-  }, [startGame, boxes]);
-
   // const [spriteState, setSpriteState] = useState({
   //   char1: { x: 500, y: 450 },
   //   char2: { x: 10, y: 10 },
   // });
-
-  // Create Sprites & add to stage
 
   // Event Listeners for keypress movements
 
@@ -179,8 +196,8 @@ function App() {
         boxSpriteClosed={boxSpriteClosed}
         fireDB={fireDB}
         room={auth.currentUser.uid}
-        boxes={boxes}
-        setBoxes={setBoxes}
+        numberOfBoxes={numberOfBoxes}
+        setNumberOfBoxes={setNumberOfBoxes}
       />
       <button onClick={logoutButton}>Logout</button>
     </div>

@@ -31,28 +31,33 @@ export const startNewScreen = (
   boxSpriteClosed,
   fireDB,
   room,
-  boxes,
-  setBoxes
+  numberOfBoxes,
+  setNumberOfBoxes
 ) => {
-  gameApp.stage.removeChildren();
+  const maxNumberOfBoxes = 6;
+  // console.log("Frontend.boxes.before.change>>>", boxes);
+
+  //gameApp.stage.removeChildren();
+
   occupiedPositions = [];
 
   const randCharCoOrds = randomCharPosition();
   char1Sprite.position.set(randCharCoOrds.x, randCharCoOrds.y);
   writeCharPosition(fireDB, room, char1Sprite);
 
-  for (let i = 1; i <= boxes; i++) {
+  for (let i = 1; i <= numberOfBoxes; i++) {
     const randBoxCoOrds = randomBoxPosition();
     boxSpriteClosed.position.set(randBoxCoOrds.x, randBoxCoOrds.y);
-
     writeBoxPosition(fireDB, room, boxSpriteClosed, i);
-    //setBoxes();
-    console.log("boxes>>>", boxes);
+  }
+
+  if (numberOfBoxes < maxNumberOfBoxes) {
+    setNumberOfBoxes((currValue) => {
+      return currValue + 1;
+    });
+    console.log("Frontend.boxes.after.change>>>", numberOfBoxes);
   }
 
   // gameApp.stage.addChild(char1Sprite);
   // gameApp.stage.addChild(boxSpriteClosed);
-  setBoxes((currValue) => {
-    return currValue + 1;
-  });
 };

@@ -10,8 +10,8 @@ const Controls = ({
   boxSpriteClosed,
   fireDB,
   room,
-  boxes,
-  setBoxes,
+  numberOfBoxes,
+  setNumberOfBoxes,
 }) => {
   function NewScreenButton() {
     startNewScreen(
@@ -20,8 +20,8 @@ const Controls = ({
       boxSpriteClosed,
       fireDB,
       room,
-      boxes,
-      setBoxes
+      numberOfBoxes,
+      setNumberOfBoxes
     );
   }
 

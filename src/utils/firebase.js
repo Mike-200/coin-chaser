@@ -1,4 +1,6 @@
 // Firebase Auth
+import { fireDB } from "../App";
+
 export function login(auth) {
   auth.signInAnonymously();
 }
@@ -6,11 +8,11 @@ export function logout(auth) {
   auth.signOut();
 }
 
-export function acceptPlayer(fireDB, room, uid, username, avatar) {
+export function acceptPlayer(room, uid, username, avatar) {
   fireDB.ref("rooms/" + room + "/players/" + uid).set({ username, avatar });
 }
 
-export function removeKnockPlayer(fireDB, room, uid) {
+export function removeKnockPlayer(room, uid) {
   fireDB.ref("rooms/" + room + "/knock/" + uid).remove();
 }
 
@@ -28,38 +30,33 @@ export function authenticationListener(auth, setUser) {
   });
 }
 
-export function startListeningToNewPlayers(fireDB, room, setPlayers) {
+export function startListeningToNewPlayers(room, setPlayers) {
   fireDB
     .ref("rooms/" + room + "/players")
     .on("value", (snap) => setPlayers(snap.val()));
 }
 
-export function stopListeningToNewPlayers(fireDB, room) {
+export function stopListeningToNewPlayers(room) {
   fireDB.ref("rooms/" + room + "/players").off("value");
 }
 
-export function startGameHost(fireDB, room) {
+export function startGameHost(room) {
   fireDB.ref("rooms/" + room + "/startGame").set(true);
   fireDB.ref("rooms/" + room + "/knock").off();
 }
 
-export function startListeningToStartGame(
-  fireDB,
-  room,
-  setStartGame,
-  setPlayers
-) {
+export function startListeningToStartGame(room, setStartGame, setPlayers) {
   fireDB.ref("rooms/" + room + "/startGame").on("value", (snap) => {
     if (snap.val()) {
-      fireDB.ref("rooms/" + room + "/players").off();
       fireDB
         .ref("rooms/" + room + "/players")
         .get()
         .then((snap) => {
           setPlayers(snap.val());
-          fireDB.ref("rooms/" + room + "/startGame").off();
-          setStartGame(true);
         });
+      fireDB.ref("rooms/" + room + "/players").off();
+      fireDB.ref("rooms/" + room + "/startGame").off();
+      setStartGame(true);
     }
   });
 }
@@ -100,7 +97,7 @@ export function startListeningToStartGame(
 //     });
 // }
 
-export function startListeningToKnocks(fireDB, room, setKnocks) {
+export function startListeningToKnocks(room, setKnocks) {
   fireDB.ref("rooms/" + room + "/knock").on("value", (snap) => {
     if (snap.exists()) {
       setKnocks(snap.val());
@@ -110,7 +107,7 @@ export function startListeningToKnocks(fireDB, room, setKnocks) {
   });
 }
 
-export function knockOnRoom(fireDB, room, uid, username, avatar) {
+export function knockOnRoom(room, uid, username, avatar) {
   return fireDB
     .ref("rooms/" + room + "/players")
     .get()
@@ -126,7 +123,7 @@ export function knockOnRoom(fireDB, room, uid, username, avatar) {
     });
 }
 
-export function startListeningIfInGame(fireDB, room, uid, setInGame) {
+export function startListeningIfInGame(room, uid, setInGame) {
   fireDB.ref("rooms/" + room + "/players").on("value", (snap) => {
     if (uid in snap.val()) {
       setInGame(true);
@@ -135,14 +132,7 @@ export function startListeningIfInGame(fireDB, room, uid, setInGame) {
   });
 }
 
-export const updateCharPosition = (
-  fireDB,
-  room,
-  user,
-  origPos,
-  direction,
-  speed
-) => {
+export const updateCharPosition = (room, user, origPos, direction, speed) => {
   const dbRef = fireDB.ref("rooms/" + room + "/gameProps/characters/" + user);
   if (direction === "ArrowRight") {
     dbRef.child("x").set(origPos.x + speed);
@@ -155,13 +145,13 @@ export const updateCharPosition = (
   }
 };
 
-export const writeCharPosition = (fireDB, room, char) => {
+export const writeCharPosition = (room, char) => {
   fireDB
     .ref("rooms/" + room + "/gameProps/characters/" + room)
     .set({ x: char.x, y: char.y });
 };
 
-export const writeBoxPosition = (fireDB, room, box, boxNo) => {
+export const writeBoxPosition = (room, box, boxNo) => {
   //console.log("boxNo>>>", boxNo);
   fireDB
     .ref("rooms/" + room + "/gameProps/boxes")
@@ -169,7 +159,7 @@ export const writeBoxPosition = (fireDB, room, box, boxNo) => {
     .set({ x: box.x, y: box.y, contents: "empty", state: "closed" });
 };
 
-export const readBoxPosition = (fireDB, room) => {
+export const readBoxPosition = (room) => {
   fireDB
     .ref("rooms/" + room + "/gameProps/boxes/1")
     .get()

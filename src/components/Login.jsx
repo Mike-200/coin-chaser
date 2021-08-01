@@ -23,7 +23,9 @@ import { UsernameContext } from "../contexts/Username";
 import { AvatarContext } from "../contexts/Avatar";
 import { SpritesContext } from "../contexts/Sprites";
 
-const Login = ({ fireDB, auth, players, setPlayers, logoutButton }) => {
+import { fireDB } from "../App";
+
+const Login = ({ auth, players, setPlayers, logoutButton }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
   const { room, setRoom } = useContext(RoomContext);
   const { user, setUser } = useContext(UserContext);
@@ -45,33 +47,32 @@ const Login = ({ fireDB, auth, players, setPlayers, logoutButton }) => {
   }
 
   function client() {
-    knockOnRoom(fireDB, roomToBe, user, username, avatar).then((error) => {
+    knockOnRoom(roomToBe, user, username, avatar).then((error) => {
       if (error) {
         setError(error);
       } else {
         setError();
         setRoom(roomToBe);
-        startListeningIfInGame(fireDB, roomToBe, user, setInGame);
+        startListeningIfInGame(roomToBe, user, setInGame);
       }
     });
   }
 
   function host() {
     setRoom(user);
-    acceptPlayer(fireDB, user, user, username, avatar);
+    acceptPlayer(user, user, username, avatar);
     setInGame(true);
-    startListeningToKnocks(fireDB, user, setClientsKnocks);
+    startListeningToKnocks(user, setClientsKnocks);
   }
 
   function buttonAcceptPlayer(uid) {
     acceptPlayer(
-      fireDB,
       room,
       uid,
       clientsKnocks[uid].username,
       clientsKnocks[uid].avatar
     );
-    removeKnockPlayer(fireDB, room, uid);
+    removeKnockPlayer(room, uid);
   }
 
   useEffect(() => {
@@ -87,10 +88,10 @@ const Login = ({ fireDB, auth, players, setPlayers, logoutButton }) => {
 
   useEffect(() => {
     if (room) {
-      startListeningToStartGame(fireDB, room, setStartGame, setPlayers);
-      startListeningToNewPlayers(fireDB, room, setPlayers);
+      startListeningToStartGame(room, setStartGame, setPlayers);
+      startListeningToNewPlayers(room, setPlayers);
     }
-  }, [fireDB, room]);
+  }, [room]);
 
   function previousAvatar() {
     setAvatar((avatar) => {
@@ -234,7 +235,7 @@ const Login = ({ fireDB, auth, players, setPlayers, logoutButton }) => {
             ))}
             <button
               onClick={() => {
-                startGameHost(fireDB, room);
+                startGameHost(room);
               }}
             >
               Start Game!

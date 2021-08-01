@@ -9,8 +9,9 @@ import crownCoin from "./assets/coin.svg";
 
 import firebase from "./firebase-config";
 import { logout, updateCharPosition } from "./utils/firebase";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Login from "./components/Login";
+import Messaging from "./components/Messaging";
 import { getAvatar, useStickyState, startNewScreen } from "./utils/backend";
 import characters from "./characters";
 import { randomCharPosition } from "./utils/frontend";
@@ -26,7 +27,7 @@ import { SpritesContext } from "./contexts/Sprites";
 let speed = 25;
 
 const auth = firebase.auth();
-const fireDB = firebase.database();
+export const fireDB = firebase.database();
 
 const gameApp = new Pixi.Application({
   width: 760,
@@ -77,7 +78,7 @@ function App() {
   useEffect(() => {
     if (startGame) {
       if (room === user) {
-        startNewScreen(fireDB, room, user, players, numberOfBoxes);
+        startNewScreen(room, user, players, numberOfBoxes);
       }
 
       fireDB
@@ -132,6 +133,8 @@ function App() {
     }
   }, [startGame, box]);
 
+  //const pixiCanvas = useRef("ref");
+
   useEffect(() => {
     Object.keys(characterSnapShot).forEach((uid) => {
       if (!Object.keys(sprites).includes(uid)) {
@@ -146,18 +149,34 @@ function App() {
             characterSnapShot[uid].y
           );
           if (uid === user) {
-            // document.removeEventListener("keydown", true);
-            document.addEventListener("keydown", function (e) {
-              e.preventDefault();
-              updateCharPosition(
-                fireDB,
-                room,
-                user,
-                { x: sprites[user].x, y: sprites[user].y },
-                e.key,
-                speed
-              );
-            });
+            //document.getelementbyid does not work in react
+            const pixiCanvas = document.getElementById("pixi_canvas");
+            console.log("pixicanvas>>>", pixiCanvas);
+            pixiCanvas.addEventListener(
+              "focus",
+              (event) => {
+                // console.log("listening for key presses");
+                pixiCanvas.addEventListener("keydown", function (e) {
+                  e.preventDefault();
+                  updateCharPosition(
+                    room,
+                    user,
+                    { x: sprites[user].x, y: sprites[user].y },
+                    e.key,
+                    speed
+                  );
+                });
+              },
+              true
+            );
+            pixiCanvas.addEventListener(
+              "blur",
+              (event) => {
+                console.log("not listening any more");
+                document.removeEventListener("keydown", true);
+              },
+              true
+            );
           }
           return sprites;
         });
@@ -199,7 +218,6 @@ function App() {
                 <SpritesContext.Provider value={{ sprites, setSprites }}>
                   {!startGame ? (
                     <Login
-                      fireDB={fireDB}
                       auth={auth}
                       players={players}
                       setPlayers={setPlayers}
@@ -219,17 +237,13 @@ function App() {
                         <p>User: {user}</p>
 
                         <Controls
-                          gameApp={gameApp}
-                          // char1Sprite={char1Sprite}
-                          // boxSpriteClosed={boxSpriteClosed}
-                          fireDB={fireDB}
                           numberOfBoxes={numberOfBoxes}
                           setNumberOfBoxes={setNumberOfBoxes}
                           speed={speed}
                           players={players}
                         />
-
                         <button onClick={logoutButton}>Logout</button>
+                        <Messaging />
                       </div>
                     </>
                   )}

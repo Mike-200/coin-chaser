@@ -9,7 +9,6 @@ const PixiComponent = ({
   boxSpriteClosed,
   boxSpriteOpen,
   coin,
-  fireDB,
   room,
   sprites,
 }) => {
@@ -57,7 +56,7 @@ const PixiComponent = ({
     // gameApp.stage.addChild(boxSpriteClosed);
   }, [sprites, gameApp]);
 
-  return <div className="game-screen" id="game" ref={ref}></div>;
+  return <div className="game-screen" id="pixi_canvas" ref={ref}></div>;
 
   //     coin.position.set(randomXBoxClosed, randomYBoxClosed - 50);
 

@@ -13,15 +13,9 @@ import { UsernameContext } from "../contexts/Username";
 import { AvatarContext } from "../contexts/Avatar";
 import { SpritesContext } from "../contexts/Sprites";
 
-const Controls = ({
-  gameApp,
-  boxSpriteClosed,
-  fireDB,
-  numberOfBoxes,
-  setNumberOfBoxes,
-  speed,
-  players,
-}) => {
+import { fireDB } from "../App";
+
+const Controls = ({ numberOfBoxes, speed, players }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
   const { room, setRoom } = useContext(RoomContext);
   const { user, setUser } = useContext(UserContext);
@@ -59,7 +53,6 @@ const Controls = ({
         <img
           onClick={() => {
             updateCharPosition(
-              fireDB,
               room,
               user,
               {
@@ -78,7 +71,6 @@ const Controls = ({
           <img
             onClick={() => {
               updateCharPosition(
-                fireDB,
                 room,
                 user,
                 {
@@ -96,7 +88,6 @@ const Controls = ({
           <img
             onClick={() => {
               updateCharPosition(
-                fireDB,
                 room,
                 user,
                 {
@@ -115,7 +106,6 @@ const Controls = ({
         <img
           onClick={() => {
             updateCharPosition(
-              fireDB,
               room,
               user,
               {

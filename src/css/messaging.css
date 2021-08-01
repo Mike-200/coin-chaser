@@ -1,0 +1,123 @@
+/* using these */
+#Messaging__Window {
+  margin: 20px;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 700px;
+  width: 300px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: cornflowerblue;
+  border-radius: 10px;
+  background-color: rgb(247, 247, 217);
+}
+
+#Messages__Title {
+  padding-top: 5px;
+  padding-bottom: 7px;
+  font-size: 20px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: cornflowerblue;
+  border-radius: 10px;
+  text-align: left;
+  font-style: italic;
+  background-color: rgb(192, 180, 114);
+}
+
+#All__Messages {
+  width: 95%;
+  margin: auto;
+  height: 80%;
+  /* overflow: hidden; */
+  overflow-y: scroll;
+}
+
+/* #All__Messages * {
+  overflow-anchor: none;
+} */
+
+#Each__Message {
+  list-style-type: none;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 10px;
+  color: white;
+  width: 60%;
+  font-style: italic;
+  font-weight: bolder;
+  border-bottom: 2px solid black;
+
+  /* overscroll-behavior-y: contain;
+  scroll-snap-type: y proximity; */
+}
+
+.Sent {
+  background-color: rgb(108, 180, 108);
+  margin-right: 5px;
+  float: right;
+  text-align: right;
+}
+
+.Received {
+  background-color: rgb(233, 142, 120);
+  margin-left: 5px;
+  float: left;
+  text-align: left;
+}
+
+/* #Anchor {
+  scroll-snap-align: end; */
+/* overflow-anchor: auto;
+  height: 100px;
+} */
+
+#Message__Form {
+  text-align: center;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #b7b5b9;
+  position: absolute;
+  bottom: 0;
+}
+
+#Message__Input {
+  width: 65%;
+  height: 30px;
+}
+
+#Message__Button {
+  width: 25%;
+  height: 38px;
+}
+
+/* not sure yet */
+
+/* body {
+  background-color: #f3f2f3;
+  margin: 0;
+  padding: 0;
+} */
+
+/* header {
+  text-align: center;
+} */
+
+/* li span {
+  font-style: italic;
+  font-weight: bolder;
+  color: #b5b0b9;
+} */
+
+/* .sent {
+  background-color: #a79cb3;
+  margin-left: 50%;
+} */
+
+/* #sent {
+  color: #6929ca;
+  justify-content: right;
+} */

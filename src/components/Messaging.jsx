@@ -52,42 +52,48 @@ const Messaging = () => {
   //   inline: "nearest",
   // });
 
-  const titleRef = useRef();
-  console.log(titleRef);
+  //console.log(dummy);
 
-  // titleRef.scrollIntoView({
-  //   behavior: "smooth",
-  //   block: "end",
-  //   inline: "nearest",
-  // });
+  const dummy = useRef();
+
+  const scrollToBottom = () =>
+    dummy && dummy.scrollIntoView({ behavior: "smooth" });
+
+  useEffect(() => {
+    if (dummy.current) {
+      dummy.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      });
+    }
+  }, [dummy.current, sortedMessages]);
 
   return (
     <div id="Messaging__Window">
-      <h2>Chat</h2>
-      <h2 ref={titleRef}>A React Titla</h2>
+      <h2>Chat Messages</h2>
       <div id="All__Messages">
-        <ul id="Messages__Title">Messages</ul>
+        {/* <ul id="Messages__Title">Messages</ul> */}
         {Object.entries(sortedMessages).map((item) => {
           return (
             <div>
               {/* note item[0] is the time */}
               {username === item[1].username ? (
                 <li className="Sent" id="Each__Message" key={item[0]}>
-                  <div>
-                    <span id="Sent">sent: </span>
-                    <span> {item[1].messageBody}</span>
-                  </div>
+                  <span id="Sent">sent: </span>
+                  <span> {item[1].messageBody}</span>
+                  <li ref={dummy}></li>
                 </li>
               ) : (
                 <li className="Received" id="Each__Message" key={item[0]}>
                   <span id="Received">received from: {item[1].username}</span>
                   <span> {item[1].messageBody}</span>
+                  <li ref={dummy}></li>
                 </li>
               )}
             </div>
           );
         })}
-        {/* <li id="Anchor"></li> */}
       </div>
       <form id="Message__Form">
         <input

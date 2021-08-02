@@ -39,7 +39,6 @@ const Scores = ({ players, characters }) => {
             </div>
             <span id="Scores__Scores">
               <span>{scores[uid]}</span>
-              {/* scores to go here */}
               <img id="Scores__Icons" alt="coin" src={crownCoin}></img>
             </span>
           </div>

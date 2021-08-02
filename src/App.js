@@ -25,7 +25,7 @@ import { SpritesContext } from "./contexts/Sprites";
 import { ScoresContext } from "./contexts/Scores";
 import { collisionDetect } from "./utils/collision";
 
-const canvasSize = { x: 800, y: 550 };
+const canvasSize = { x: 900, y: 500 };
 let speed = 25;
 
 const auth = firebase.auth();
@@ -97,21 +97,28 @@ function App() {
     }
   }, [startGame]);
 
-  function keyDownHandler(sprites) {
-    return function (e) {
+  function keyHandlers(sprites) {
+    let keyDown = false;
+    function keyDownHandler(e) {
       if (listeningToKeyPresses) {
         e.preventDefault();
-
-        updateCharPosition(
-          room,
-          user,
-          { x: sprites[user].x, y: sprites[user].y },
-          e.key,
-          speed,
-          canvasSize
-        );
+        if (!keyDown) {
+          keyDown = true;
+          updateCharPosition(
+            room,
+            user,
+            { x: sprites[user].x, y: sprites[user].y },
+            e.key,
+            speed,
+            canvasSize
+          );
+        }
       }
-    };
+    }
+    function keyUpHandler(e) {
+      keyDown = false;
+    }
+    return [keyDownHandler, keyUpHandler];
   }
 
   useEffect(() => {
@@ -128,8 +135,10 @@ function App() {
             characterSnapShot[uid].y
           );
           if (uid === user) {
-            window.addEventListener("keydown", keyDownHandler(sprites));
-            const pixiCanvas = document.getElementById("pixi_canvas");
+            const [keyDownHandler, keyUpHandler] = keyHandlers(sprites);
+            window.addEventListener("keydown", keyDownHandler);
+            window.addEventListener("keyup", keyUpHandler);
+            // const pixiCanvas = document.getElementById("pixi_canvas");
             const messenger = document.getElementById("Messaging__Window");
             messenger.addEventListener("mouseout", (event) => {
               if (!listeningToKeyPresses) {

@@ -7,7 +7,7 @@ import { UserContext } from "../contexts/User";
 import { UsernameContext } from "../contexts/Username";
 import { AvatarContext } from "../contexts/Avatar";
 import { SpritesContext } from "../contexts/Sprites";
-// import { Scores } from "../contexts/Scores.js";
+import { ScoresContext } from "../contexts/Scores.js";
 
 import { getAvatar } from "../utils/backend";
 import crownCoin from "../assets/coin.svg";
@@ -19,7 +19,7 @@ const Scores = ({ players, characters }) => {
   const { username, setUsername } = useContext(UsernameContext);
   const { avatar, setAvatar } = useContext(AvatarContext);
   const { sprites, setSprites } = useContext(SpritesContext);
-  //   const { scores } = useContext(Scores);
+  const { scores } = useContext(ScoresContext);
 
   return (
     <div id="Scores__Window">
@@ -38,6 +38,7 @@ const Scores = ({ players, characters }) => {
               </span>
             </div>
             <span id="Scores__Scores">
+              <span>{scores[uid]}</span>
               {/* scores to go here */}
               <img id="Scores__Icons" alt="coin" src={crownCoin}></img>
             </span>

@@ -24,7 +24,7 @@ const Controls = ({ numberOfBoxes, speed, players }) => {
   const { sprites, setSprites } = useContext(SpritesContext);
 
   function NewScreenButton() {
-    startNewScreen(fireDB, room, user, players, numberOfBoxes);
+    startNewScreen(room, user, players, numberOfBoxes);
 
     // startNewScreen(
     //   gameApp,

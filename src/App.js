@@ -194,6 +194,7 @@ function App() {
         setSprites((prevSprites) => {
           const sprites = { ...prevSprites };
           sprites[uid] = Pixi.Sprite.from(closedBox);
+          sprites[uid].anchor.set(0.5, 0.5);
           sprites[uid].position.set(boxSnapShot[uid].x, boxSnapShot[uid].y);
 
           return sprites;

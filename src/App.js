@@ -66,16 +66,16 @@ function App() {
   const [username, setUsername] = useStickyState('username');
   const [avatar, setAvatar] = useState(0);
   const [sprites, setSprites] = useState({});
-  const [boxesContents, setBoxesContents] = useState({});
   const [scores, setScores] = useState({});
 
   // States:-
   const [players, setPlayers] = useState({});
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
   const [box, setBox] = useState([]);
+  const [boxesContents, setBoxesContents] = useState({});
   const [characterSnapShot, setCharacterSnapShot] = useState({});
-
   const [boxSnapShot, setBoxSnapShot] = useState({});
+  const [boxesState, setBoxesState] = useState({});
   // const [inGame, setInGame] = useState(false);
 
   useEffect(() => {
@@ -198,60 +198,69 @@ function App() {
         sprites[uid].x = characterSnapShot[uid].x;
         sprites[uid].y = characterSnapShot[uid].y;
         // Collision logic
-        const characterUids = Object.keys(sprites).filter((uid) => {
-          return !uid.includes('box');
-        });
         Object.keys(sprites).forEach((boxSpriteUid) => {
           if (boxSpriteUid.match(/^box[0-9]*$/)) {
             if (collisionDetect(sprites[boxSpriteUid], sprites[uid])) {
-              // Host collision logic
-              if (user === room) {
+              if (boxesState[boxSpriteUid] === 'closed') {
+                console.log('boxesState >>>', boxesState);
+                // Host collision logic
+                if (user === room) {
+                  if (boxesContents[boxSpriteUid] === 'coin') {
+                    console.log(uid, scores[uid]);
+                    fireDB
+                      .ref('rooms/' + room + '/gameProps/scores/' + uid)
+                      .set(scores[uid] + 1);
+                  }
+                }
+                const boxPos = {
+                  x: sprites[boxSpriteUid].x,
+                  y: sprites[boxSpriteUid].y,
+                };
+                const tempSprite = Pixi.Sprite.from(openBox);
+                tempSprite.position.set(boxPos.x, boxPos.y);
+                tempSprite.anchor.set(0.5, 0.5);
+
+                let tempBoxContent;
                 if (boxesContents[boxSpriteUid] === 'coin') {
-                  fireDB
-                    .ref('rooms/' + room + '/gameProps/scores/' + uid)
-                    .set(scores[uid] + 1);
+                  tempBoxContent = Pixi.Sprite.from(crownCoin);
+                  tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
+                  tempBoxContent.anchor.set(0.5, 0.5);
                 }
-              }
-              const boxPos = {
-                x: sprites[boxSpriteUid].x,
-                y: sprites[boxSpriteUid].y,
-              };
-              const tempSprite = Pixi.Sprite.from(openBox);
-              tempSprite.position.set(boxPos.x, boxPos.y);
-              tempSprite.anchor.set(0.5, 0.5);
 
-              let tempBoxContent;
-              if (boxesContents[boxSpriteUid] === 'coin') {
-                tempBoxContent = Pixi.Sprite.from(crownCoin);
-                tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
-                tempBoxContent.anchor.set(0.5, 0.5);
-              }
+                setSprites((prevSprites) => {
+                  const sprites = { ...prevSprites };
+                  sprites[boxSpriteUid] = tempSprite;
+                  if (tempBoxContent) {
+                    sprites[boxSpriteUid + 'contents'] = tempBoxContent;
+                  }
+                  return sprites;
+                });
 
-              setSprites((prevSprites) => {
-                const sprites = { ...prevSprites };
-                sprites[boxSpriteUid] = tempSprite;
-                if (tempBoxContent) {
-                  sprites[boxSpriteUid + 'contents'] = tempBoxContent;
-                }
-                return sprites;
-              });
-            } else {
-              const boxPos = {
-                x: sprites[boxSpriteUid].x,
-                y: sprites[boxSpriteUid].y,
-              };
-              const tempSprite = Pixi.Sprite.from(closedBox);
-              tempSprite.position.set(boxPos.x, boxPos.y);
-              tempSprite.anchor.set(0.5, 0.5);
-              setSprites((prevSprites) => {
-                const sprites = { ...prevSprites };
-                sprites[boxSpriteUid] = tempSprite;
-                if (sprites[boxSpriteUid + 'contents']) {
-                  delete sprites[boxSpriteUid + 'contents'];
-                }
-                return sprites;
-              });
+                setBoxesState((prevBoxesState) => {
+                  const tempBoxesState = { ...prevBoxesState };
+                  tempBoxesState[boxSpriteUid] = 'open';
+                  return tempBoxesState;
+                });
+              }
             }
+
+            // else {
+            //   const boxPos = {
+            //     x: sprites[boxSpriteUid].x,
+            //     y: sprites[boxSpriteUid].y,
+            //   };
+            //   const tempSprite = Pixi.Sprite.from(closedBox);
+            //   tempSprite.position.set(boxPos.x, boxPos.y);
+            //   tempSprite.anchor.set(0.5, 0.5);
+            //   setSprites((prevSprites) => {
+            //     const sprites = { ...prevSprites };
+            //     sprites[boxSpriteUid] = tempSprite;
+            //     if (sprites[boxSpriteUid + 'contents']) {
+            //       delete sprites[boxSpriteUid + 'contents'];
+            //     }
+            //     return sprites;
+            //   });
+            // }
           }
         });
       }
@@ -260,6 +269,11 @@ function App() {
 
   useEffect(() => {
     Object.keys(boxSnapShot).forEach((uid) => {
+      setBoxesState((prevBoxesState) => {
+        const tempBoxesState = { ...prevBoxesState };
+        tempBoxesState[uid] = 'closed';
+        return tempBoxesState;
+      });
       setBoxesContents((prevBoxesContents) => {
         const tempBoxesContents = { ...prevBoxesContents };
         tempBoxesContents[uid] = boxSnapShot[uid].contains;

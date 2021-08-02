@@ -127,13 +127,13 @@ function App() {
           if (uid === user) {
             window.addEventListener("keydown", keyDownHandler(sprites));
             const pixiCanvas = document.getElementById("pixi_canvas");
-
-            pixiCanvas.addEventListener("mouseover", (event) => {
+            const messenger = document.getElementById("Messaging__Window");
+            messenger.addEventListener("mouseout", (event) => {
               if (!listeningToKeyPresses) {
                 listeningToKeyPresses = true;
               }
             });
-            pixiCanvas.addEventListener("mouseout", (event) => {
+            messenger.addEventListener("mouseover", (event) => {
               if (listeningToKeyPresses) {
                 listeningToKeyPresses = false;
               }

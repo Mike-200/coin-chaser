@@ -71,7 +71,6 @@ function App() {
   // States:-
   const [players, setPlayers] = useState({});
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
-  const [box, setBox] = useState([]);
   const [boxesContents, setBoxesContents] = useState({});
   const [characterSnapShot, setCharacterSnapShot] = useState({});
   const [boxSnapShot, setBoxSnapShot] = useState({});
@@ -108,44 +107,8 @@ function App() {
           setScores(snap.val());
         }
       });
-
-      // from mike and john - relates to boxes
-      // alts needed to make this work
-      // listen for changes to box1 positions
-      // fireDB.ref("rooms/" + room + "/gameProps/boxes/1").on("value", (snap) => {
-      //   if (snap.val()) {
-      //     //console.log("Listener.boxes>>>", boxes);
-      //     const { x, y } = snap.val();
-      //     boxSpriteClosed.x = x;
-      //     boxSpriteClosed.y = y;
-      //     //console.log("box-x>>>", boxSpriteClosed.x);
-      //   }
-      // });
-
-      // listen to changes to all boxes and allocate to the 'box' array
-      // delete the above listener once this is working
-      // fireDB.ref("rooms/" + room + "/gameProps/boxes").on("value", (snap) => {
-
-      //   if (snap.val()) {
-      //     //console.log("snap.val>>>", snap.val());
-      //     const result = snap.val();
-      //     //console.log("snap.val>>>", snap.val());
-      //     console.log("result>>>", result[1]);
-      //     //console.log("box info>>>", snap.val()[1]);
-      //     //console.log("lengthOfSnap,val>>>", snap.val().length);
-      //     // for (let i = 1; i <= snap.val().length; i++) {
-
-      //     //}
-      //     //const { x, y } = snap.val();
-      //     //boxSpriteClosed.x = x;
-      //     //boxSpriteClosed.y = y;
-      //     setBox([1]);
-      //     console.log("boxArray>>>", box);
-      //   }
-
-      // });
     }
-  }, [startGame, box]);
+  }, [startGame]);
 
   //const pixiCanvas = useRef("ref");
 

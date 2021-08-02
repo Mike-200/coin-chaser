@@ -170,6 +170,10 @@ function App() {
                   tempBoxContent = Pixi.Sprite.from(crownCoin);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
+                  setNumberOfBoxes((prevNum) => {
+                    if (prevNum < 4) return prevNum + 1;
+                    return prevNum;
+                  });
                 }
 
                 setSprites((prevSprites) => {

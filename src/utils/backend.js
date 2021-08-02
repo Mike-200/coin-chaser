@@ -116,12 +116,12 @@ export function startNewScreen(room, user, players, numberOfBoxes) {
       .ref("rooms/" + room + "/gameProps/boxes")
       .child(`box${i}`)
       .set(randomBoxPosition(occupiedPositions));
-    fireDB
-      .ref("rooms/" + room + "/gameProps/boxes")
-      .child(`box${i}`)
-      .child("contains")
-      .set("coin");
   }
+  fireDB
+    .ref("rooms/" + room + "/gameProps/boxes")
+    .child(`box1`)
+    .child("contains")
+    .set("coin");
 }
 
 export function cleanup(

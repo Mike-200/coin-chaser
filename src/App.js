@@ -12,6 +12,7 @@ import { logout, updateCharPosition } from "./utils/firebase";
 import { useEffect, useState, useRef } from "react";
 import Login from "./components/Login";
 import Header from "./components/Header";
+import Scores from "./components/Scores";
 import Messaging from "./components/Messaging";
 import { getAvatar, useStickyState, startNewScreen } from "./utils/backend";
 import characters from "./characters";
@@ -210,8 +211,6 @@ function App() {
     });
   }, [startGame, boxSnapShot]);
 
-  
-
   return (
     <div>
       <StartGameContext.Provider value={{ startGame, setStartGame }}>
@@ -230,15 +229,17 @@ function App() {
                   ) : (
                     <>
                       <div className="App">
-                        <Header players={players} characters={characters}/>
+                        <Header players={players} characters={characters} />
                         <PixiComponent
                           sprites={sprites}
                           gameCanvasSize={gameCanvasSize}
                           gameApp={gameApp}
-                          // boxSpriteClosed={boxSpriteClosed}
                         />
-                        <p>User: {username}</p>
-                        <p>User: {user}</p>
+
+                        <Scores players={players} characters={characters} />
+
+                        {/* <p>User: {username}</p>
+                        <p>User: {user}</p> */}
 
                         <Controls
                           numberOfBoxes={numberOfBoxes}
@@ -246,7 +247,7 @@ function App() {
                           speed={speed}
                           players={players}
                         />
-                        <button onClick={logoutButton}>Logout</button>
+                        {/* <button onClick={logoutButton}>Logout</button> */}
                         <Messaging />
                       </div>
                     </>

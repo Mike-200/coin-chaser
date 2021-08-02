@@ -1,5 +1,4 @@
 import './App.css';
-//import Header from './components/Header';
 import PixiComponent from './components/PixiComponent';
 import Controls from './components/Controls';
 import * as Pixi from 'pixi.js';
@@ -22,6 +21,7 @@ import { UsernameContext } from './contexts/Username';
 import { UserContext } from './contexts/User';
 import { AvatarContext } from './contexts/Avatar';
 import { SpritesContext } from './contexts/Sprites';
+import { ScoresContext } from './contexts/Scores';
 import { collisionDetect } from './utils/collision';
 
 let speed = 25;
@@ -67,12 +67,14 @@ function App() {
   const [avatar, setAvatar] = useState(0);
   const [sprites, setSprites] = useState({});
   const [boxesContents, setBoxesContents] = useState({});
+  const [scores, setScores] = useState({});
 
   // States:-
   const [players, setPlayers] = useState({});
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
   const [box, setBox] = useState([]);
   const [characterSnapShot, setCharacterSnapShot] = useState({});
+
   const [boxSnapShot, setBoxSnapShot] = useState({});
   // const [inGame, setInGame] = useState(false);
 
@@ -80,6 +82,11 @@ function App() {
     if (startGame) {
       if (room === user) {
         startNewScreen(room, user, players, numberOfBoxes);
+        const tempScores = {};
+        Object.keys(players).forEach((player) => {
+          tempScores[player] = 0;
+        });
+        fireDB.ref('rooms/' + room + '/gameProps/scores').set(tempScores);
       }
 
       fireDB
@@ -93,6 +100,12 @@ function App() {
       fireDB.ref('rooms/' + room + '/gameProps/boxes').on('value', (snap) => {
         if (snap.exists()) {
           setBoxSnapShot(snap.val());
+        }
+      });
+
+      fireDB.ref('rooms/' + room + '/gameProps/scores').on('value', (snap) => {
+        if (snap.exists()) {
+          setScores(snap.val());
         }
       });
 
@@ -184,22 +197,31 @@ function App() {
       } else {
         sprites[uid].x = characterSnapShot[uid].x;
         sprites[uid].y = characterSnapShot[uid].y;
+        // Collision logic
         const characterUids = Object.keys(sprites).filter((uid) => {
           return !uid.includes('box');
         });
-        Object.keys(sprites).forEach((spriteUid) => {
-          if (spriteUid.match(/^box[0-9]*$/)) {
-            if (collisionDetect(sprites[spriteUid], sprites[uid])) {
+        Object.keys(sprites).forEach((boxSpriteUid) => {
+          if (boxSpriteUid.match(/^box[0-9]*$/)) {
+            if (collisionDetect(sprites[boxSpriteUid], sprites[uid])) {
+              // Host collision logic
+              if (user === room) {
+                if (boxesContents[boxSpriteUid] === 'coin') {
+                  fireDB
+                    .ref('rooms/' + room + '/gameProps/scores/' + uid)
+                    .set(scores[uid] + 1);
+                }
+              }
               const boxPos = {
-                x: sprites[spriteUid].x,
-                y: sprites[spriteUid].y,
+                x: sprites[boxSpriteUid].x,
+                y: sprites[boxSpriteUid].y,
               };
               const tempSprite = Pixi.Sprite.from(openBox);
               tempSprite.position.set(boxPos.x, boxPos.y);
               tempSprite.anchor.set(0.5, 0.5);
 
               let tempBoxContent;
-              if (boxesContents[spriteUid] === 'coin') {
+              if (boxesContents[boxSpriteUid] === 'coin') {
                 tempBoxContent = Pixi.Sprite.from(crownCoin);
                 tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                 tempBoxContent.anchor.set(0.5, 0.5);
@@ -207,25 +229,25 @@ function App() {
 
               setSprites((prevSprites) => {
                 const sprites = { ...prevSprites };
-                sprites[spriteUid] = tempSprite;
+                sprites[boxSpriteUid] = tempSprite;
                 if (tempBoxContent) {
-                  sprites[spriteUid + 'contents'] = tempBoxContent;
+                  sprites[boxSpriteUid + 'contents'] = tempBoxContent;
                 }
                 return sprites;
               });
             } else {
               const boxPos = {
-                x: sprites[spriteUid].x,
-                y: sprites[spriteUid].y,
+                x: sprites[boxSpriteUid].x,
+                y: sprites[boxSpriteUid].y,
               };
               const tempSprite = Pixi.Sprite.from(closedBox);
               tempSprite.position.set(boxPos.x, boxPos.y);
               tempSprite.anchor.set(0.5, 0.5);
               setSprites((prevSprites) => {
                 const sprites = { ...prevSprites };
-                sprites[spriteUid] = tempSprite;
-                if (sprites[spriteUid + 'contents']) {
-                  delete sprites[spriteUid + 'contents'];
+                sprites[boxSpriteUid] = tempSprite;
+                if (sprites[boxSpriteUid + 'contents']) {
+                  delete sprites[boxSpriteUid + 'contents'];
                 }
                 return sprites;
               });
@@ -271,37 +293,39 @@ function App() {
             <UsernameContext.Provider value={{ username, setUsername }}>
               <AvatarContext.Provider value={{ avatar, setAvatar }}>
                 <SpritesContext.Provider value={{ sprites, setSprites }}>
-                  {!startGame ? (
-                    <Login
-                      auth={auth}
-                      players={players}
-                      setPlayers={setPlayers}
-                      logoutButton={logoutButton}
-                    />
-                  ) : (
-                    <>
-                      <div className="App">
-                        <Header />
-                        <PixiComponent
-                          sprites={sprites}
-                          gameCanvasSize={gameCanvasSize}
-                          gameApp={gameApp}
-                          // boxSpriteClosed={boxSpriteClosed}
-                        />
-                        <p>User: {username}</p>
-                        <p>User: {user}</p>
+                  <ScoresContext.Provider value={{ scores, setScores }}>
+                    {!startGame ? (
+                      <Login
+                        auth={auth}
+                        players={players}
+                        setPlayers={setPlayers}
+                        logoutButton={logoutButton}
+                      />
+                    ) : (
+                      <>
+                        <div className="App">
+                          <Header />
+                          <PixiComponent
+                            sprites={sprites}
+                            gameCanvasSize={gameCanvasSize}
+                            gameApp={gameApp}
+                            // boxSpriteClosed={boxSpriteClosed}
+                          />
+                          <p>User: {username}</p>
+                          <p>User: {user}</p>
 
-                        <Controls
-                          numberOfBoxes={numberOfBoxes}
-                          setNumberOfBoxes={setNumberOfBoxes}
-                          speed={speed}
-                          players={players}
-                        />
-                        <button onClick={logoutButton}>Logout</button>
-                        <Messaging />
-                      </div>
-                    </>
-                  )}
+                          <Controls
+                            numberOfBoxes={numberOfBoxes}
+                            setNumberOfBoxes={setNumberOfBoxes}
+                            speed={speed}
+                            players={players}
+                          />
+                          <button onClick={logoutButton}>Logout</button>
+                          <Messaging />
+                        </div>
+                      </>
+                    )}
+                  </ScoresContext.Provider>
                 </SpritesContext.Provider>
               </AvatarContext.Provider>
             </UsernameContext.Provider>

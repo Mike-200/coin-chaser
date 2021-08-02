@@ -1,0 +1,10 @@
+@font-face {
+  font-family: "coin";
+  src: local("coin"), url("../assets/fonts/coin.ttf") format("truetype");
+}
+
+.Login__Name {
+  font-size: 50px;
+  font-family: coin;
+  margin-top: 45px;
+}

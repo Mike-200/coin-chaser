@@ -23,6 +23,10 @@ import { UsernameContext } from "../contexts/Username";
 import { AvatarContext } from "../contexts/Avatar";
 import { SpritesContext } from "../contexts/Sprites";
 
+import "../css/login.css";
+import coin from "../assets/coin.svg";
+import "../assets/fonts/coin.ttf";
+
 import { fireDB } from "../App";
 
 const Login = ({ auth, players, setPlayers, logoutButton }) => {
@@ -116,7 +120,13 @@ const Login = ({ auth, players, setPlayers, logoutButton }) => {
       <div className="CardHolder">
         <div className="LoginCard">
           <form>
-            <p className="Logo">COIN CHASER</p>
+            <div className="Login__Name">
+              <span>C</span>
+              <span>
+                <img className="Header_coin" alt="coin" src={coin}></img>
+              </span>
+              <span>IN CHASER</span>
+            </div>
             <p>Enter a username to play</p>
             <p>(max 10 characters)</p>
             <input

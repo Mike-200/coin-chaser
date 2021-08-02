@@ -59,6 +59,10 @@ coin.anchor.set(0.5, 0.5);
 coin.position.set(-700, -700);
 const gameCanvasSize = { width: 760, height: 520 };
 
+export function logoutButton() {
+  logout(auth);
+}
+
 function App() {
   // User Contexts:-
   const [startGame, setStartGame] = useState(false);
@@ -206,9 +210,7 @@ function App() {
     });
   }, [startGame, boxSnapShot]);
 
-  function logoutButton() {
-    logout(auth);
-  }
+  
 
   return (
     <div>
@@ -228,7 +230,7 @@ function App() {
                   ) : (
                     <>
                       <div className="App">
-                        <Header />
+                        <Header players={players} characters={characters}/>
                         <PixiComponent
                           sprites={sprites}
                           gameCanvasSize={gameCanvasSize}

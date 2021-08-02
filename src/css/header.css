@@ -1,0 +1,32 @@
+#Header__Avatar {
+    position: absolute;
+    right: 15px;
+    top: 25px;
+}
+
+#Header__username {
+    position: absolute;
+    right: 80px;
+    top: 25px;
+    text-align: right;
+}
+
+.container {
+    padding: 40px;
+}
+  
+@font-face {
+    font-family: "coin";
+    src:local("coin"), url("../assets/fonts/coin.ttf") format("truetype")
+}
+  
+.Header_name {
+    font-size: 40px;
+    font-family: coin;
+}
+  
+.Header_coin {
+    width: 45px;
+    height: 45px;
+}
+

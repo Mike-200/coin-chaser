@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { fireDB } from "../App";
+import { fireDB } from '../App';
 
 let randomXPosition = 0;
 let randomYPosition = 0;
@@ -73,9 +73,9 @@ export const randomBoxPosition = (occupiedPositions) => {
 function isFunction(functionToCheck) {
   return (
     (functionToCheck &&
-      {}.toString.call(functionToCheck) === "[object Function]") ||
+      {}.toString.call(functionToCheck) === '[object Function]') ||
     (functionToCheck &&
-      {}.toString.call(functionToCheck) === "[object AsyncFunction]")
+      {}.toString.call(functionToCheck) === '[object AsyncFunction]')
   );
 }
 
@@ -107,15 +107,20 @@ export function startNewScreen(room, user, players, numberOfBoxes) {
   const occupiedPositions = [];
   Object.keys(players).forEach((player) => {
     fireDB
-      .ref("rooms/" + user + "/gameProps/characters/" + player)
+      .ref('rooms/' + user + '/gameProps/characters/' + player)
       .set(randomCharPosition(occupiedPositions));
   });
 
   for (let i = 1; i <= numberOfBoxes; i++) {
     fireDB
-      .ref("rooms/" + room + "/gameProps/boxes")
+      .ref('rooms/' + room + '/gameProps/boxes')
       .child(`box${i}`)
       .set(randomBoxPosition(occupiedPositions));
+    fireDB
+      .ref('rooms/' + room + '/gameProps/boxes')
+      .child(`box${i}`)
+      .child('contains')
+      .set('coin');
   }
 }
 
@@ -129,15 +134,15 @@ export function cleanup(
   setRoom
 ) {
   // client/host listening to players moves
-  fireDB.ref("rooms/" + room + "/gameProps/characters").off();
+  fireDB.ref('rooms/' + room + '/gameProps/characters').off();
   // host listening to knocks
-  fireDB.ref("rooms/" + room + "/knock").off();
+  fireDB.ref('rooms/' + room + '/knock').off();
   // client/host waiting to start game
-  fireDB.ref("rooms/" + room + "/startGame").off();
+  fireDB.ref('rooms/' + room + '/startGame').off();
   // if you are the client waiting to be let in
-  fireDB.ref("rooms/" + room + "/players").off();
+  fireDB.ref('rooms/' + room + '/players').off();
   if (host) {
-    fireDB.ref("rooms/" + room).remove();
+    fireDB.ref('rooms/' + room).remove();
   }
   setStartGame(false);
   setInGame(false);

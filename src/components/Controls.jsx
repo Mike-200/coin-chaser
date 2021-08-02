@@ -25,30 +25,11 @@ const Controls = ({ numberOfBoxes, speed, players }) => {
 
   function NewScreenButton() {
     startNewScreen(room, user, players, numberOfBoxes);
-
-    // startNewScreen(
-    //   gameApp,
-    //   sprites[user],
-    //   boxSpriteClosed,
-    //   fireDB,
-    //   room,
-    //   numberOfBoxes,
-    //   setNumberOfBoxes
-    // );
   }
 
   return (
     <section className="playing container">
       <button onClick={NewScreenButton}>New Screen</button>
-
-      <button
-      // onClick={() => {
-      //   startNewGame();
-      // }}
-      >
-        Start Game
-      </button>
-
       <div className="playing-controls">
         <img
           onClick={() => {

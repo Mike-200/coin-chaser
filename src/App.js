@@ -11,6 +11,7 @@ import { logout, updateCharPosition } from "./utils/firebase";
 import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import Header from "./components/Header";
+import Scores from "./components/Scores";
 import Messaging from "./components/Messaging";
 import { getAvatar, useStickyState, startNewScreen } from "./utils/backend";
 import characters from "./characters";
@@ -37,6 +38,10 @@ const gameApp = new Pixi.Application({
   resolution: window.devicePixelRatio,
   autoDensity: true,
 });
+
+export function logoutButton() {
+  logout(auth);
+}
 
 function App() {
   // User Contexts:-
@@ -224,10 +229,6 @@ function App() {
     });
   }, [startGame, boxSnapShot]);
 
-  function logoutButton() {
-    logout(auth);
-  }
-
   return (
     <div>
       <StartGameContext.Provider value={{ startGame, setStartGame }}>
@@ -247,13 +248,13 @@ function App() {
                     ) : (
                       <>
                         <div className="App">
-                          <Header />
-                          <PixiComponent
-                            sprites={sprites}
-                            gameApp={gameApp}
-                          />
-                          <p>User: {username}</p>
-                          <p>User: {user}</p>
+                          <Header players={players} characters={characters} />
+                          <PixiComponent sprites={sprites} gameApp={gameApp} />
+
+                          <Scores players={players} characters={characters} />
+
+                          {/* <p>User: {username}</p>
+                        <p>User: {user}</p> */}
 
                           <Controls
                             numberOfBoxes={numberOfBoxes}
@@ -261,7 +262,7 @@ function App() {
                             speed={speed}
                             players={players}
                           />
-                          <button onClick={logoutButton}>Logout</button>
+                          {/* <button onClick={logoutButton}>Logout</button> */}
                           <Messaging />
                         </div>
                       </>

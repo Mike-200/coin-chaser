@@ -153,3 +153,4 @@ export function cleanup(
 export function getAvatar(id, characters) {
   return characters[Object.keys(characters)[id]].default;
 }
+

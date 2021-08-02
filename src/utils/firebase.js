@@ -4,6 +4,7 @@ import { fireDB } from "../App";
 export function login(auth) {
   auth.signInAnonymously();
 }
+
 export function logout(auth) {
   auth.signOut();
 }

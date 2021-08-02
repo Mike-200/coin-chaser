@@ -1,29 +1,28 @@
-import "./App.css";
+import './App.css';
 //import Header from './components/Header';
-import PixiComponent from "./components/PixiComponent";
-import Controls from "./components/Controls";
-import * as Pixi from "pixi.js";
-import closedBox from "./assets/box-closed.svg";
-import openBox from "./assets/opened-box.svg";
-import crownCoin from "./assets/coin.svg";
+import PixiComponent from './components/PixiComponent';
+import Controls from './components/Controls';
+import * as Pixi from 'pixi.js';
+import closedBox from './assets/box-closed.svg';
+import openBox from './assets/opened-box.svg';
+import crownCoin from './assets/coin.svg';
 
-import firebase from "./firebase-config";
-import { logout, updateCharPosition } from "./utils/firebase";
-import { useEffect, useState, useRef } from "react";
-import Login from "./components/Login";
-import Header from "./components/Header";
-import Messaging from "./components/Messaging";
-import { getAvatar, useStickyState, startNewScreen } from "./utils/backend";
-import characters from "./characters";
-import { randomCharPosition } from "./utils/frontend";
-import { randomBoxPosition } from "./utils/frontend";
+import firebase from './firebase-config';
+import { logout, updateCharPosition } from './utils/firebase';
+import { useEffect, useState, useRef } from 'react';
+import Login from './components/Login';
+import Header from './components/Header';
+import Messaging from './components/Messaging';
+import { getAvatar, useStickyState, startNewScreen } from './utils/backend';
+import characters from './characters';
 
-import { StartGameContext } from "./contexts/StartGame";
-import { RoomContext } from "./contexts/Room";
-import { UsernameContext } from "./contexts/Username";
-import { UserContext } from "./contexts/User";
-import { AvatarContext } from "./contexts/Avatar";
-import { SpritesContext } from "./contexts/Sprites";
+import { StartGameContext } from './contexts/StartGame';
+import { RoomContext } from './contexts/Room';
+import { UsernameContext } from './contexts/Username';
+import { UserContext } from './contexts/User';
+import { AvatarContext } from './contexts/Avatar';
+import { SpritesContext } from './contexts/Sprites';
+import { collisionDetect } from './utils/collision';
 
 let speed = 25;
 
@@ -64,9 +63,10 @@ function App() {
   const [startGame, setStartGame] = useState(false);
   const [room, setRoom] = useState();
   const [user, setUser] = useState();
-  const [username, setUsername] = useStickyState("username");
+  const [username, setUsername] = useStickyState('username');
   const [avatar, setAvatar] = useState(0);
   const [sprites, setSprites] = useState({});
+  const [boxesContents, setBoxesContents] = useState({});
 
   // States:-
   const [players, setPlayers] = useState({});
@@ -83,14 +83,14 @@ function App() {
       }
 
       fireDB
-        .ref("rooms/" + room + "/gameProps/characters/")
-        .on("value", (snap) => {
+        .ref('rooms/' + room + '/gameProps/characters/')
+        .on('value', (snap) => {
           if (snap.exists()) {
             setCharacterSnapShot(snap.val());
           }
         });
 
-      fireDB.ref("rooms/" + room + "/gameProps/boxes").on("value", (snap) => {
+      fireDB.ref('rooms/' + room + '/gameProps/boxes').on('value', (snap) => {
         if (snap.exists()) {
           setBoxSnapShot(snap.val());
         }
@@ -151,13 +151,13 @@ function App() {
           );
           if (uid === user) {
             //document.getelementbyid does not work in react
-            const pixiCanvas = document.getElementById("pixi_canvas");
-            console.log("pixicanvas>>>", pixiCanvas);
+            const pixiCanvas = document.getElementById('pixi_canvas');
+            console.log('pixicanvas>>>', pixiCanvas);
             pixiCanvas.addEventListener(
-              "focus",
+              'focus',
               (event) => {
                 // console.log("listening for key presses");
-                pixiCanvas.addEventListener("keydown", function (e) {
+                pixiCanvas.addEventListener('keydown', function (e) {
                   e.preventDefault();
                   updateCharPosition(
                     room,
@@ -171,10 +171,10 @@ function App() {
               true
             );
             pixiCanvas.addEventListener(
-              "blur",
+              'blur',
               (event) => {
-                console.log("not listening any more");
-                document.removeEventListener("keydown", true);
+                console.log('not listening any more');
+                document.removeEventListener('keydown', true);
               },
               true
             );
@@ -184,12 +184,65 @@ function App() {
       } else {
         sprites[uid].x = characterSnapShot[uid].x;
         sprites[uid].y = characterSnapShot[uid].y;
+        const characterUids = Object.keys(sprites).filter((uid) => {
+          return !uid.includes('box');
+        });
+        Object.keys(sprites).forEach((spriteUid) => {
+          if (spriteUid.match(/^box[0-9]*$/)) {
+            if (collisionDetect(sprites[spriteUid], sprites[uid])) {
+              const boxPos = {
+                x: sprites[spriteUid].x,
+                y: sprites[spriteUid].y,
+              };
+              const tempSprite = Pixi.Sprite.from(openBox);
+              tempSprite.position.set(boxPos.x, boxPos.y);
+              tempSprite.anchor.set(0.5, 0.5);
+
+              let tempBoxContent;
+              if (boxesContents[spriteUid] === 'coin') {
+                tempBoxContent = Pixi.Sprite.from(crownCoin);
+                tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
+                tempBoxContent.anchor.set(0.5, 0.5);
+              }
+
+              setSprites((prevSprites) => {
+                const sprites = { ...prevSprites };
+                sprites[spriteUid] = tempSprite;
+                if (tempBoxContent) {
+                  sprites[spriteUid + 'contents'] = tempBoxContent;
+                }
+                return sprites;
+              });
+            } else {
+              const boxPos = {
+                x: sprites[spriteUid].x,
+                y: sprites[spriteUid].y,
+              };
+              const tempSprite = Pixi.Sprite.from(closedBox);
+              tempSprite.position.set(boxPos.x, boxPos.y);
+              tempSprite.anchor.set(0.5, 0.5);
+              setSprites((prevSprites) => {
+                const sprites = { ...prevSprites };
+                sprites[spriteUid] = tempSprite;
+                if (sprites[spriteUid + 'contents']) {
+                  delete sprites[spriteUid + 'contents'];
+                }
+                return sprites;
+              });
+            }
+          }
+        });
       }
     });
   }, [startGame, characterSnapShot]);
 
   useEffect(() => {
     Object.keys(boxSnapShot).forEach((uid) => {
+      setBoxesContents((prevBoxesContents) => {
+        const tempBoxesContents = { ...prevBoxesContents };
+        tempBoxesContents[uid] = boxSnapShot[uid].contains;
+        return tempBoxesContents;
+      });
       if (!Object.keys(sprites).includes(uid)) {
         setSprites((prevSprites) => {
           const sprites = { ...prevSprites };

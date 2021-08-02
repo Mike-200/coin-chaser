@@ -1,7 +1,7 @@
 // import * as Pixi from 'pixi.js';
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 //import { Application } from "pixi.js";
-import { collisionDetect } from "../utils/collision";
+import { collisionDetect } from '../utils/collision';
 
 const PixiComponent = ({
   gameApp,
@@ -12,7 +12,7 @@ const PixiComponent = ({
   room,
   sprites,
 }) => {
-  const ref = useRef("pixi_canvas");
+  const ref = useRef('pixi_canvas');
 
   useEffect(() => {
     ref.current.appendChild(gameApp.view);

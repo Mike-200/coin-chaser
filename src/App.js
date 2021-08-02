@@ -5,6 +5,8 @@ import * as Pixi from "pixi.js";
 import closedBox from "./assets/box-closed.svg";
 import openBox from "./assets/opened-box.svg";
 import crownCoin from "./assets/coin.svg";
+import rocket from "./assets/shuttle.svg";
+import slime from "./assets/splash.svg";
 
 import firebase from "./firebase-config";
 import { logout, updateCharPosition } from "./utils/firebase";
@@ -182,12 +184,24 @@ function App() {
                   tempBoxContent = Pixi.Sprite.from(crownCoin);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
+                  speed = 25;
                   setNumberOfBoxes((prevNum) => {
                     if (prevNum < 4) return prevNum + 1;
                     return prevNum;
                   });
                 }
-
+                if (boxesContents[boxSpriteUid] === "rocket") {
+                  tempBoxContent = Pixi.Sprite.from(rocket);
+                  tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
+                  tempBoxContent.anchor.set(0.5, 0.5);
+                  if (uid === user) speed = 50;
+                }
+                if (boxesContents[boxSpriteUid] === "slime") {
+                  tempBoxContent = Pixi.Sprite.from(slime);
+                  tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
+                  tempBoxContent.anchor.set(0.5, 0.5);
+                  if (uid === user) speed = 12.5;
+                }
                 setSprites((prevSprites) => {
                   const sprites = { ...prevSprites };
                   sprites[boxSpriteUid] = tempSprite;

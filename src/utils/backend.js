@@ -122,6 +122,20 @@ export function startNewScreen(room, user, players, numberOfBoxes) {
     .child(`box1`)
     .child("contains")
     .set("coin");
+  if (numberOfBoxes > 2) {
+    fireDB
+      .ref("rooms/" + room + "/gameProps/boxes")
+      .child(`box3`)
+      .child("contains")
+      .set("slime");
+  }
+  if (numberOfBoxes > 3) {
+    fireDB
+      .ref("rooms/" + room + "/gameProps/boxes")
+      .child(`box4`)
+      .child("contains")
+      .set("rocket");
+  }
 }
 
 export function cleanup(

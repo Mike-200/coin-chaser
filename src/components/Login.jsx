@@ -15,23 +15,24 @@ import characters from "../characters";
 import leftArrow from "../assets/left-arrow.svg";
 import rightArrow from "../assets/right-arrow.svg";
 
-const Login = ({
-  fireDB,
-  auth,
-  username,
-  setUsername,
-  setUser,
-  players,
-  setPlayers,
-  setRoom,
-  startGame,
-  setStartGame,
-  user,
-  room,
-  logoutButton,
-  avatar,
-  setAvatar,
-}) => {
+import { useContext } from "react";
+import { StartGameContext } from "../contexts/StartGame";
+import { RoomContext } from "../contexts/Room";
+import { UserContext } from "../contexts/User";
+import { UsernameContext } from "../contexts/Username";
+import { AvatarContext } from "../contexts/Avatar";
+import { SpritesContext } from "../contexts/Sprites";
+
+import { fireDB } from "../App";
+
+const Login = ({ auth, players, setPlayers, logoutButton }) => {
+  const { startGame, setStartGame } = useContext(StartGameContext);
+  const { room, setRoom } = useContext(RoomContext);
+  const { user, setUser } = useContext(UserContext);
+  const { username, setUsername } = useContext(UsernameContext);
+  const { avatar, setAvatar } = useContext(AvatarContext);
+  const { sprites, setSprites } = useContext(SpritesContext);
+
   const [roomToBe, setRoomToBe] = useState();
   const [clientsKnocks, setClientsKnocks] = useState({});
   const [error, setError] = useState();
@@ -46,33 +47,32 @@ const Login = ({
   }
 
   function client() {
-    knockOnRoom(fireDB, roomToBe, user, username, avatar).then((error) => {
+    knockOnRoom(roomToBe, user, username, avatar).then((error) => {
       if (error) {
         setError(error);
       } else {
         setError();
         setRoom(roomToBe);
-        startListeningIfInGame(fireDB, roomToBe, user, setInGame);
+        startListeningIfInGame(roomToBe, user, setInGame);
       }
     });
   }
 
   function host() {
     setRoom(user);
-    acceptPlayer(fireDB, user, user, username, avatar);
+    acceptPlayer(user, user, username, avatar);
     setInGame(true);
-    startListeningToKnocks(fireDB, user, setClientsKnocks);
+    startListeningToKnocks(user, setClientsKnocks);
   }
 
   function buttonAcceptPlayer(uid) {
     acceptPlayer(
-      fireDB,
       room,
       uid,
       clientsKnocks[uid].username,
       clientsKnocks[uid].avatar
     );
-    removeKnockPlayer(fireDB, room, uid);
+    removeKnockPlayer(room, uid);
   }
 
   useEffect(() => {
@@ -88,10 +88,10 @@ const Login = ({
 
   useEffect(() => {
     if (room) {
-      startListeningToStartGame(fireDB, room, setStartGame, setPlayers);
-      startListeningToNewPlayers(fireDB, room, setPlayers);
+      startListeningToStartGame(room, setStartGame, setPlayers);
+      startListeningToNewPlayers(room, setPlayers);
     }
-  }, [fireDB, room]);
+  }, [room]);
 
   function previousAvatar() {
     setAvatar((avatar) => {
@@ -205,7 +205,7 @@ const Login = ({
             <p>Players already in the game...</p>
             {Object.keys(players).map((uid) => {
               return (
-                <p>
+                <p key={uid}>
                   <img
                     alt="avatar"
                     className="Avatar"
@@ -215,7 +215,7 @@ const Login = ({
                 </p>
               );
             })}
-            <p>Players waiting to be join...</p>
+            <p>Players waiting to join the game...</p>
             {Object.keys(clientsKnocks).map((uid) => (
               <p key={uid}>
                 <img
@@ -235,7 +235,7 @@ const Login = ({
             ))}
             <button
               onClick={() => {
-                startGameHost(fireDB, room);
+                startGameHost(room);
               }}
             >
               Start Game!

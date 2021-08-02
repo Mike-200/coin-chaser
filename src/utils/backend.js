@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { fireDB } from "../App";
+
 let randomXPosition = 0;
 let randomYPosition = 0;
 let tempObj = {};
@@ -101,7 +103,7 @@ export function useStickyState(key, initialState) {
   return [tempState, setStickyState];
 }
 
-export function startNewScreen(fireDB, room, user, players, numberOfBoxes) {
+export function startNewScreen(room, user, players, numberOfBoxes) {
   const occupiedPositions = [];
   Object.keys(players).forEach((player) => {
     fireDB

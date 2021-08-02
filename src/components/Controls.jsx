@@ -5,20 +5,26 @@ import right from "../assets/right-arrow.svg";
 import { startNewScreen } from "../utils/backend";
 import { updateCharPosition } from "../utils/firebase";
 
-const Controls = ({
-  gameApp,
-  boxSpriteClosed,
-  fireDB,
-  room,
-  numberOfBoxes,
-  setNumberOfBoxes,
-  user,
-  speed,
-  sprites,
-  players,
-}) => {
+import { useContext } from "react";
+import { StartGameContext } from "../contexts/StartGame";
+import { RoomContext } from "../contexts/Room";
+import { UserContext } from "../contexts/User";
+import { UsernameContext } from "../contexts/Username";
+import { AvatarContext } from "../contexts/Avatar";
+import { SpritesContext } from "../contexts/Sprites";
+
+import { fireDB } from "../App";
+
+const Controls = ({ numberOfBoxes, speed, players }) => {
+  const { startGame, setStartGame } = useContext(StartGameContext);
+  const { room, setRoom } = useContext(RoomContext);
+  const { user, setUser } = useContext(UserContext);
+  const { username, setUsername } = useContext(UsernameContext);
+  const { avatar, setAvatar } = useContext(AvatarContext);
+  const { sprites, setSprites } = useContext(SpritesContext);
+
   function NewScreenButton() {
-    startNewScreen(fireDB, room, user, players, numberOfBoxes);
+    startNewScreen(room, user, players, numberOfBoxes);
 
     // startNewScreen(
     //   gameApp,
@@ -47,7 +53,6 @@ const Controls = ({
         <img
           onClick={() => {
             updateCharPosition(
-              fireDB,
               room,
               user,
               {
@@ -66,7 +71,6 @@ const Controls = ({
           <img
             onClick={() => {
               updateCharPosition(
-                fireDB,
                 room,
                 user,
                 {
@@ -84,7 +88,6 @@ const Controls = ({
           <img
             onClick={() => {
               updateCharPosition(
-                fireDB,
                 room,
                 user,
                 {
@@ -103,7 +106,6 @@ const Controls = ({
         <img
           onClick={() => {
             updateCharPosition(
-              fireDB,
               room,
               user,
               {

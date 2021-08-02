@@ -9,17 +9,26 @@ import crownCoin from "./assets/coin.svg";
 
 import firebase from "./firebase-config";
 import { logout, updateCharPosition } from "./utils/firebase";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Login from "./components/Login";
+import Header from "./components/Header";
+import Messaging from "./components/Messaging";
 import { getAvatar, useStickyState, startNewScreen } from "./utils/backend";
 import characters from "./characters";
 import { randomCharPosition } from "./utils/frontend";
 import { randomBoxPosition } from "./utils/frontend";
 
+import { StartGameContext } from "./contexts/StartGame";
+import { RoomContext } from "./contexts/Room";
+import { UsernameContext } from "./contexts/Username";
+import { UserContext } from "./contexts/User";
+import { AvatarContext } from "./contexts/Avatar";
+import { SpritesContext } from "./contexts/Sprites";
+
 let speed = 25;
 
 const auth = firebase.auth();
-const fireDB = firebase.database();
+export const fireDB = firebase.database();
 
 const gameApp = new Pixi.Application({
   width: 760,
@@ -51,25 +60,26 @@ coin.position.set(-700, -700);
 const gameCanvasSize = { width: 760, height: 520 };
 
 function App() {
-  // const [inGame, setInGame] = useState(false);
+  // User Contexts:-
+  const [startGame, setStartGame] = useState(false);
+  const [room, setRoom] = useState();
+  const [user, setUser] = useState();
   const [username, setUsername] = useStickyState("username");
   const [avatar, setAvatar] = useState(0);
-  const [user, setUser] = useState();
-  const [room, setRoom] = useState();
+  const [sprites, setSprites] = useState({});
+
+  // States:-
   const [players, setPlayers] = useState({});
-  const [startGame, setStartGame] = useState(false);
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
   const [box, setBox] = useState([]);
-
   const [characterSnapShot, setCharacterSnapShot] = useState({});
   const [boxSnapShot, setBoxSnapShot] = useState({});
-
-  const [sprites, setSprites] = useState({});
+  // const [inGame, setInGame] = useState(false);
 
   useEffect(() => {
     if (startGame) {
       if (room === user) {
-        startNewScreen(fireDB, room, user, players, numberOfBoxes);
+        startNewScreen(room, user, players, numberOfBoxes);
       }
 
       fireDB
@@ -124,6 +134,8 @@ function App() {
     }
   }, [startGame, box]);
 
+  //const pixiCanvas = useRef("ref");
+
   useEffect(() => {
     Object.keys(characterSnapShot).forEach((uid) => {
       if (!Object.keys(sprites).includes(uid)) {
@@ -138,18 +150,34 @@ function App() {
             characterSnapShot[uid].y
           );
           if (uid === user) {
-            // document.removeEventListener("keydown", true);
-            document.addEventListener("keydown", function (e) {
-              e.preventDefault();
-              updateCharPosition(
-                fireDB,
-                room,
-                user,
-                { x: sprites[user].x, y: sprites[user].y },
-                e.key,
-                speed
-              );
-            });
+            //document.getelementbyid does not work in react
+            const pixiCanvas = document.getElementById("pixi_canvas");
+            console.log("pixicanvas>>>", pixiCanvas);
+            pixiCanvas.addEventListener(
+              "focus",
+              (event) => {
+                // console.log("listening for key presses");
+                pixiCanvas.addEventListener("keydown", function (e) {
+                  e.preventDefault();
+                  updateCharPosition(
+                    room,
+                    user,
+                    { x: sprites[user].x, y: sprites[user].y },
+                    e.key,
+                    speed
+                  );
+                });
+              },
+              true
+            );
+            pixiCanvas.addEventListener(
+              "blur",
+              (event) => {
+                console.log("not listening any more");
+                document.removeEventListener("keydown", true);
+              },
+              true
+            );
           }
           return sprites;
         });
@@ -166,6 +194,7 @@ function App() {
         setSprites((prevSprites) => {
           const sprites = { ...prevSprites };
           sprites[uid] = Pixi.Sprite.from(closedBox);
+          sprites[uid].anchor.set(0.5, 0.5);
           sprites[uid].position.set(boxSnapShot[uid].x, boxSnapShot[uid].y);
 
           return sprites;
@@ -181,57 +210,53 @@ function App() {
     logout(auth);
   }
 
-  if (!startGame) {
-    return (
-      <Login
-        fireDB={fireDB}
-        auth={auth}
-        username={username}
-        setUsername={setUsername}
-        setUser={setUser}
-        players={players}
-        setPlayers={setPlayers}
-        setRoom={setRoom}
-        startGame={startGame}
-        setStartGame={setStartGame}
-        user={user}
-        room={room}
-        logoutButton={logoutButton}
-        avatar={avatar}
-        setAvatar={setAvatar}
-      />
-    );
-  } else {
-    return (
-      <div className="App">
-        {/* <Header /> */}
-        <PixiComponent
-          sprites={sprites}
-          gameCanvasSize={gameCanvasSize}
-          gameApp={gameApp}
-          // boxSpriteClosed={boxSpriteClosed}
-        />
-        <p>User: {username}</p>
-        <p>User: {user}</p>
+  return (
+    <div>
+      <StartGameContext.Provider value={{ startGame, setStartGame }}>
+        <RoomContext.Provider value={{ room, setRoom }}>
+          <UserContext.Provider value={{ user, setUser }}>
+            <UsernameContext.Provider value={{ username, setUsername }}>
+              <AvatarContext.Provider value={{ avatar, setAvatar }}>
+                <SpritesContext.Provider value={{ sprites, setSprites }}>
+                  {!startGame ? (
+                    <Login
+                      auth={auth}
+                      players={players}
+                      setPlayers={setPlayers}
+                      logoutButton={logoutButton}
+                    />
+                  ) : (
+                    <>
+                      <div className="App">
+                        <Header />
+                        <PixiComponent
+                          sprites={sprites}
+                          gameCanvasSize={gameCanvasSize}
+                          gameApp={gameApp}
+                          // boxSpriteClosed={boxSpriteClosed}
+                        />
+                        <p>User: {username}</p>
+                        <p>User: {user}</p>
 
-        <Controls
-          gameApp={gameApp}
-          // char1Sprite={char1Sprite}
-          // boxSpriteClosed={boxSpriteClosed}
-          fireDB={fireDB}
-          room={auth.currentUser.uid}
-          numberOfBoxes={numberOfBoxes}
-          setNumberOfBoxes={setNumberOfBoxes}
-          user={user}
-          speed={speed}
-          sprites={sprites}
-          players={players}
-        />
-
-        <button onClick={logoutButton}>Logout</button>
-      </div>
-    );
-  }
+                        <Controls
+                          numberOfBoxes={numberOfBoxes}
+                          setNumberOfBoxes={setNumberOfBoxes}
+                          speed={speed}
+                          players={players}
+                        />
+                        <button onClick={logoutButton}>Logout</button>
+                        <Messaging />
+                      </div>
+                    </>
+                  )}
+                </SpritesContext.Provider>
+              </AvatarContext.Provider>
+            </UsernameContext.Provider>
+          </UserContext.Provider>
+        </RoomContext.Provider>
+      </StartGameContext.Provider>
+    </div>
+  );
 
   // going to need to sort this out
   // below was mike and johns code to show the pixi component and the controls

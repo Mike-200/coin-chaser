@@ -41,43 +41,28 @@ const Messaging = () => {
     }
   }
 
-  // document .getelementbyid does not work in react
-
-  // auto scroll to bottom
-
-  // const lockScroll = document.getElementById("Messages__Title");
-  // lockScroll.scrollIntoView({
-  //   behavior: "smooth",
-  //   block: "end",
-  //   inline: "nearest",
-  // });
-
-  //console.log(dummy);
-
   const dummy = useRef();
-
-  const scrollToBottom = () =>
-    dummy && dummy.scrollIntoView({ behavior: "smooth" });
 
   useEffect(() => {
     if (dummy.current) {
       dummy.current.scrollIntoView({
         behavior: "smooth",
         block: "end",
-        inline: "nearest",
+        // inline: "nearest",
       });
     }
   }, [dummy.current, sortedMessages]);
 
   return (
     <div id="Messaging__Window">
-      <h2>Chat Messages</h2>
+      <h3>Chat Messages</h3>
       <div id="All__Messages">
         {/* <ul id="Messages__Title">Messages</ul> */}
         {Object.entries(sortedMessages).map((item) => {
           return (
             <div>
               {/* note item[0] is the time */}
+
               {username === item[1].username ? (
                 <li className="Sent" id="Each__Message" key={item[0]}>
                   <span id="Sent">sent: </span>
@@ -86,8 +71,8 @@ const Messaging = () => {
                 </li>
               ) : (
                 <li className="Received" id="Each__Message" key={item[0]}>
-                  <span id="Received">received from: {item[1].username}</span>
-                  <span> {item[1].messageBody}</span>
+                  <div id="Received">from: {item[1].username}</div>
+                  <div> {item[1].messageBody}</div>
                   <li ref={dummy}></li>
                 </li>
               )}
@@ -95,6 +80,7 @@ const Messaging = () => {
           );
         })}
       </div>
+
       <form id="Message__Form">
         <input
           id="Message__Input"

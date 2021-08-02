@@ -11,6 +11,7 @@ import firebase from "./firebase-config";
 import { logout, updateCharPosition } from "./utils/firebase";
 import { useEffect, useState, useRef } from "react";
 import Login from "./components/Login";
+import Header from "./components/Header";
 import Messaging from "./components/Messaging";
 import { getAvatar, useStickyState, startNewScreen } from "./utils/backend";
 import characters from "./characters";
@@ -226,7 +227,7 @@ function App() {
                   ) : (
                     <>
                       <div className="App">
-                        {/* <Header /> */}
+                        <Header />
                         <PixiComponent
                           sprites={sprites}
                           gameCanvasSize={gameCanvasSize}

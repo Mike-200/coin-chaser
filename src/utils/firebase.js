@@ -133,16 +133,29 @@ export function startListeningIfInGame(room, uid, setInGame) {
   });
 }
 
-export const updateCharPosition = (room, user, origPos, direction, speed) => {
+export const updateCharPosition = (
+  room,
+  user,
+  origPos,
+  direction,
+  speed,
+  canvasSize
+) => {
   const dbRef = fireDB.ref("rooms/" + room + "/gameProps/characters/" + user);
   if (direction === "ArrowRight") {
-    dbRef.child("x").set(origPos.x + speed);
+    const tempX =
+      origPos.x + speed <= canvasSize.x - 25 ? origPos.x + speed : origPos.x;
+    dbRef.child("x").set(tempX);
   } else if (direction === "ArrowLeft") {
-    dbRef.child("x").set(origPos.x - speed);
+    const tempX = origPos.x - speed >= 25 ? origPos.x - speed : origPos.x;
+    dbRef.child("x").set(tempX);
   } else if (direction === "ArrowUp") {
-    dbRef.child("y").set(origPos.y - speed);
+    const tempY = origPos.y - speed >= 25 ? origPos.y - speed : origPos.y;
+    dbRef.child("y").set(tempY);
   } else if (direction === "ArrowDown") {
-    dbRef.child("y").set(origPos.y + speed);
+    const tempY =
+      origPos.y + speed <= canvasSize.y - 25 ? origPos.y + speed : origPos.y;
+    dbRef.child("y").set(tempY);
   }
 };
 

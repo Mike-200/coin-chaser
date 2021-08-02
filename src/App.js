@@ -25,14 +25,15 @@ import { SpritesContext } from "./contexts/Sprites";
 import { ScoresContext } from "./contexts/Scores";
 import { collisionDetect } from "./utils/collision";
 
+const canvasSize = { x: 800, y: 550 };
 let speed = 25;
 
 const auth = firebase.auth();
 export const fireDB = firebase.database();
 
 const gameApp = new Pixi.Application({
-  width: 760,
-  height: 520,
+  width: canvasSize.x,
+  height: canvasSize.y,
   backgroundColor: 0x8fc0a9,
   antialias: true,
   resolution: window.devicePixelRatio,
@@ -100,12 +101,14 @@ function App() {
     return function (e) {
       if (listeningToKeyPresses) {
         e.preventDefault();
+
         updateCharPosition(
           room,
           user,
           { x: sprites[user].x, y: sprites[user].y },
           e.key,
-          speed
+          speed,
+          canvasSize
         );
       }
     };

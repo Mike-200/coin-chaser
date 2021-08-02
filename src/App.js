@@ -8,7 +8,7 @@ import crownCoin from "./assets/coin.svg";
 
 import firebase from "./firebase-config";
 import { logout, updateCharPosition } from "./utils/firebase";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Login from "./components/Login";
 import Header from "./components/Header";
 import Messaging from "./components/Messaging";
@@ -38,26 +38,6 @@ const gameApp = new Pixi.Application({
   autoDensity: true,
 });
 
-// const char1Sprite = Pixi.Sprite.from(ninja);
-// char1Sprite.anchor.set(0.5, 0.5);
-// char1Sprite.position.set(-400, -100);
-
-// const char2Sprite = Pixi.Sprite.from(ghost);
-// char2Sprite.position.set(400, 100);
-
-// const boxSpriteClosed = Pixi.Sprite.from(closedBox);
-// boxSpriteClosed.anchor.set(0.5, 0.5);
-// boxSpriteClosed.position.set(400, 300);
-
-const boxSpriteOpen = Pixi.Sprite.from(openBox);
-boxSpriteOpen.anchor.set(0.5, 0.5);
-boxSpriteOpen.position.set(-600, -600);
-
-const coin = Pixi.Sprite.from(crownCoin);
-coin.anchor.set(0.5, 0.5);
-coin.position.set(-700, -700);
-const gameCanvasSize = { width: 760, height: 520 };
-
 function App() {
   // User Contexts:-
   const [startGame, setStartGame] = useState(false);
@@ -75,7 +55,6 @@ function App() {
   const [characterSnapShot, setCharacterSnapShot] = useState({});
   const [boxSnapShot, setBoxSnapShot] = useState({});
   const [boxesState, setBoxesState] = useState({});
-  // const [inGame, setInGame] = useState(false);
 
   useEffect(() => {
     if (startGame) {
@@ -109,8 +88,6 @@ function App() {
       });
     }
   }, [startGame]);
-
-  //const pixiCanvas = useRef("ref");
 
   useEffect(() => {
     Object.keys(characterSnapShot).forEach((uid) => {
@@ -204,24 +181,6 @@ function App() {
                 });
               }
             }
-
-            // else {
-            //   const boxPos = {
-            //     x: sprites[boxSpriteUid].x,
-            //     y: sprites[boxSpriteUid].y,
-            //   };
-            //   const tempSprite = Pixi.Sprite.from(closedBox);
-            //   tempSprite.position.set(boxPos.x, boxPos.y);
-            //   tempSprite.anchor.set(0.5, 0.5);
-            //   setSprites((prevSprites) => {
-            //     const sprites = { ...prevSprites };
-            //     sprites[boxSpriteUid] = tempSprite;
-            //     if (sprites[boxSpriteUid + 'contents']) {
-            //       delete sprites[boxSpriteUid + 'contents'];
-            //     }
-            //     return sprites;
-            //   });
-            // }
           }
         });
       }
@@ -291,9 +250,7 @@ function App() {
                           <Header />
                           <PixiComponent
                             sprites={sprites}
-                            gameCanvasSize={gameCanvasSize}
                             gameApp={gameApp}
-                            // boxSpriteClosed={boxSpriteClosed}
                           />
                           <p>User: {username}</p>
                           <p>User: {user}</p>
@@ -318,38 +275,6 @@ function App() {
       </StartGameContext.Provider>
     </div>
   );
-
-  // going to need to sort this out
-  // below was mike and johns code to show the pixi component and the controls
-
-  // return (
-  //   <div className="App">
-  //     {/* <Header /> */}
-  //     <PixiComponent
-  //       gameApp={gameApp}
-  //       // char1Sprite={char1Sprite}
-  //       // boxSpriteClosed={boxSpriteClosed}
-  //       boxSpriteOpen={boxSpriteOpen}
-  //       coin={coin}
-  //       fireDB={fireDB}
-  //       room={auth.currentUser.uid}
-  //     />
-  //     <p>User: {username}</p>
-  //     <p>User: {user}</p>
-  //     <Controls
-  //       gameApp={gameApp}
-  //       // char1Sprite={char1Sprite}
-  //       // boxSpriteClosed={boxSpriteClosed}
-  //       fireDB={fireDB}
-  //       room={auth.currentUser.uid}
-  //       numberOfBoxes={numberOfBoxes}
-  //       setNumberOfBoxes={setNumberOfBoxes}
-  //       user={user}
-  //       speed={speed}
-  //     />
-  //     <button onClick={logoutButton}>Logout</button>
-  //   </div>
-  // );
 }
 
 export default App;

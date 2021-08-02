@@ -43,6 +43,8 @@ export function logoutButton() {
   logout(auth);
 }
 
+let listeningToKeyPresses = true;
+
 function App() {
   // User Contexts:-
   const [startGame, setStartGame] = useState(false);
@@ -94,6 +96,21 @@ function App() {
     }
   }, [startGame]);
 
+  function keyDownHandler(sprites) {
+    return function (e) {
+      if (listeningToKeyPresses) {
+        e.preventDefault();
+        updateCharPosition(
+          room,
+          user,
+          { x: sprites[user].x, y: sprites[user].y },
+          e.key,
+          speed
+        );
+      }
+    };
+  }
+
   useEffect(() => {
     Object.keys(characterSnapShot).forEach((uid) => {
       if (!Object.keys(sprites).includes(uid)) {
@@ -108,34 +125,19 @@ function App() {
             characterSnapShot[uid].y
           );
           if (uid === user) {
-            //document.getelementbyid does not work in react
+            window.addEventListener("keydown", keyDownHandler(sprites));
             const pixiCanvas = document.getElementById("pixi_canvas");
-            console.log("pixicanvas>>>", pixiCanvas);
-            pixiCanvas.addEventListener(
-              "focus",
-              (event) => {
-                // console.log("listening for key presses");
-                pixiCanvas.addEventListener("keydown", function (e) {
-                  e.preventDefault();
-                  updateCharPosition(
-                    room,
-                    user,
-                    { x: sprites[user].x, y: sprites[user].y },
-                    e.key,
-                    speed
-                  );
-                });
-              },
-              true
-            );
-            pixiCanvas.addEventListener(
-              "blur",
-              (event) => {
-                console.log("not listening any more");
-                document.removeEventListener("keydown", true);
-              },
-              true
-            );
+
+            pixiCanvas.addEventListener("mouseover", (event) => {
+              if (!listeningToKeyPresses) {
+                listeningToKeyPresses = true;
+              }
+            });
+            pixiCanvas.addEventListener("mouseout", (event) => {
+              if (listeningToKeyPresses) {
+                listeningToKeyPresses = false;
+              }
+            });
           }
           return sprites;
         });

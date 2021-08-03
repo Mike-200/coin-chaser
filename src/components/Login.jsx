@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getAvatar } from "../utils/backend";
+import { useEffect, useState } from 'react';
+import { getAvatar } from '../utils/backend';
 import {
   login,
   startListeningToNewPlayers,
@@ -10,24 +10,24 @@ import {
   removeKnockPlayer,
   startGameHost,
   startListeningToStartGame,
-} from "../utils/firebase";
-import characters from "../characters";
-import leftArrow from "../assets/left-arrow.svg";
-import rightArrow from "../assets/right-arrow.svg";
+} from '../utils/firebase';
+import characters from '../characters';
+import leftArrow from '../assets/left-arrow.svg';
+import rightArrow from '../assets/right-arrow.svg';
 
-import { useContext } from "react";
-import { StartGameContext } from "../contexts/StartGame";
-import { RoomContext } from "../contexts/Room";
-import { UserContext } from "../contexts/User";
-import { UsernameContext } from "../contexts/Username";
-import { AvatarContext } from "../contexts/Avatar";
-import { SpritesContext } from "../contexts/Sprites";
+import { useContext } from 'react';
+import { StartGameContext } from '../contexts/StartGame';
+import { RoomContext } from '../contexts/Room';
+import { UserContext } from '../contexts/User';
+import { UsernameContext } from '../contexts/Username';
+import { AvatarContext } from '../contexts/Avatar';
+import { SpritesContext } from '../contexts/Sprites';
 
-import "../css/login.css";
-import coin from "../assets/coin.svg";
-import "../assets/fonts/coin.ttf";
+import '../css/login.css';
+import coin from '../assets/coin.svg';
+import '../assets/fonts/coin.ttf';
 
-import { fireDB } from "../App";
+import { fireDB } from '../App';
 
 const Login = ({ auth, players, setPlayers, logoutButton }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
@@ -45,7 +45,7 @@ const Login = ({ auth, players, setPlayers, logoutButton }) => {
   function loginButton(e) {
     e.preventDefault();
     if (!username) {
-      setUsername("empty");
+      setUsername('empty');
     }
     login(auth);
   }
@@ -117,20 +117,21 @@ const Login = ({ auth, players, setPlayers, logoutButton }) => {
 
   if (!user)
     return (
-      <div className="CardHolder">
+      <section className="CardHolder">
         <div className="LoginCard">
-          <form>
-            <div className="Login__Name">
-              <span>C</span>
-              <span>
-                <img className="Header_coin" alt="coin" src={coin}></img>
-              </span>
-              <span>IN CHASER</span>
-            </div>
+          <div className="Login__Name">
+            <span>C</span>
+            <span>
+              <img className="Header_coin" alt="coin" src={coin}></img>
+            </span>
+            <span>IN CHASER</span>
+          </div>
+          <form className="Login__Name_form">
             <p>Enter a username to play</p>
-            <p>(max 10 characters)</p>
+
             <input
               type="textbox"
+              className="Login__Name_input"
               maxLength="10"
               placeholder="Enter username"
               onChange={(e) => {
@@ -138,46 +139,54 @@ const Login = ({ auth, players, setPlayers, logoutButton }) => {
               }}
               value={username}
             ></input>
-            <button onClick={loginButton}>Enter</button>
+            <button className="Login__Name_button" onClick={loginButton}>
+              Enter
+            </button>
           </form>
           {error ? <p className="errorMessage">{error}</p> : null}
         </div>
-      </div>
+      </section>
     );
   else if (!room)
     return (
       <div className="CardHolder">
-        <div className="LoginCard">
-          <p>Host a new game for other players to join</p>
-          <button onClick={host}>Host new game</button>
-          <br />
-          <br />
-          <div>or</div>
-          <p>Enter a room key to join another game</p>
-          <input
-            type="textbox"
-            onChange={(event) => {
-              setRoomToBe(event.target.value);
-            }}
-            value={roomToBe}
-          ></input>
-          <button onClick={client}>Join</button>
-          <br />
-          <p>Pick your avatar</p>
-          <button onClick={previousAvatar}>
-            <img alt="previous avatar" src={leftArrow}></img>
+        <div className="LoggedInCard">
+          <div className="pick-your-avatar">
+            <p>Select Your Avatar</p>
+            <button className="avatarButton" onClick={previousAvatar}>
+              <img alt="previous avatar" src={leftArrow}></img>
+            </button>
+            <img
+              id="LoginAvatar"
+              alt="avatar"
+              src={getAvatar(avatar, characters)}
+            ></img>
+            <button className="avatarButton" onClick={nextAvatar}>
+              <img alt="next avatar" src={rightArrow}></img>
+            </button>
+            <br />
+            {error ? <p className="errorMessage">{error}</p> : null}
+          </div>
+
+          <div className="host-new-game">
+            <p>Host a new game for other players to join</p>
+            <button onClick={host}>Host new game</button>
+            <p className="new-game-p">
+              Or enter a room key to join another game
+            </p>
+            <input
+              type="textbox"
+              onChange={(event) => {
+                setRoomToBe(event.target.value);
+              }}
+              value={roomToBe}
+            ></input>
+            <button onClick={client}>Join</button>
+          </div>
+
+          <button className="logout" onClick={logoutButton}>
+            Logout
           </button>
-          <img
-            className="Avatar"
-            alt="avatar"
-            src={getAvatar(avatar, characters)}
-          ></img>
-          <button onClick={nextAvatar}>
-            <img alt="next avatar" src={rightArrow}></img>
-          </button>
-          <br />
-          {error ? <p className="errorMessage">{error}</p> : null}
-          <button onClick={logoutButton}>Logout</button>
         </div>
       </div>
     );
@@ -192,7 +201,6 @@ const Login = ({ auth, players, setPlayers, logoutButton }) => {
               <p>
                 <img
                   alt="avatar"
-                  className="Avatar"
                   src={getAvatar(players[uid].avatar, characters)}
                 ></img>
                 {players[uid].username}
@@ -233,7 +241,7 @@ const Login = ({ auth, players, setPlayers, logoutButton }) => {
                   className="Avatar"
                   src={getAvatar(clientsKnocks[uid].avatar, characters)}
                 ></img>
-                {clientsKnocks[uid].username}{" "}
+                {clientsKnocks[uid].username}{' '}
                 <button
                   onClick={() => {
                     buttonAcceptPlayer(uid);

@@ -1,10 +1,101 @@
-@font-face {
-  font-family: "coin";
-  src: local("coin"), url("../assets/fonts/coin.ttf") format("truetype");
-}
-
 .Login__Name {
   font-size: 50px;
   font-family: coin;
-  margin-top: 45px;
+  margin: 45px 0 40px 0;
+}
+
+.LoginCard p {
+  margin-bottom: 15px;
+}
+
+.Login__Name_button {
+  margin-top: 15px;
+}
+
+.Login__Name_input {
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.Login__Name_form {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.CardHolder {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.LoginCard {
+  position: absolute;
+  top: 20%;
+  border-left: auto;
+  border-right: auto;
+  background-color: #f7ffd7;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  width: 400px;
+  min-height: 375px;
+  padding: 10px;
+  font-size: 20px;
+  border-style: solid;
+  border-width: 3px;
+  border-color: darkgoldenrod;
+  border-radius: 20px;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.LoggedInCard {
+  position: absolute;
+  top: 20%;
+  border: 0 auto;
+  background-color: #f7ffd7;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  width: 600px;
+  min-height: 375px;
+  padding: 10px;
+  font-size: 20px;
+  border-style: solid;
+  border-width: 3px;
+  border-color: darkgoldenrod;
+  border-radius: 20px;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.avatarButton img {
+  width: 30px;
+  height: 30px;
+}
+
+#LoginAvatar {
+  width: 75px;
+  height: 75px;
+}
+
+.host-new-game {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.host-new-game p {
+  margin-bottom: 20px;
+}
+
+.new-game-p {
+  margin-top: 20px;
+}
+
+.host-new-game input {
+  margin-bottom: 20px;
+}
+
+.pick-your-avatar {
+  margin-bottom: 20px;
 }

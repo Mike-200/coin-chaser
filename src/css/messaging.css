@@ -1,16 +1,14 @@
 /* using these */
 #Messaging__Window {
-  margin: 20px;
-  padding: 0;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 500px;
+  top: 0;
+  left: 15px;
+  height: 498px;
   width: 225px;
   border-style: solid;
   border-width: 2px;
   border-color: cornflowerblue;
-  border-radius: 10px;
+
   background-color: rgb(247, 247, 217);
 }
 
@@ -42,12 +40,8 @@
 #Each__Message {
   list-style-type: none;
   margin-top: 5px;
-  /* padding: 5px; */
-  padding-top: 5px;
-  /* padding-bottom: 5px; */
-  padding-left: 5px;
-  padding-right: 5px;
-  border-radius: 10px;
+  padding: 8px;
+  border-radius: 20px 10px 20px 0px;
   color: white;
   width: 60%;
   font-style: italic;
@@ -92,11 +86,13 @@
 #Message__Input {
   width: 65%;
   height: 19px;
+  margin-top: 10px;
 }
 
 #Message__Button {
   width: 25%;
-  height: 25px;
+  height: 40px;
+  margin: 10px 0 10px 0;
 }
 
 /* not sure yet */

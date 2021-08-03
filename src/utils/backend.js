@@ -101,7 +101,7 @@ export function cleanup(
   fireDB,
   room,
   setStartGame,
-  setInGame,
+  // setInGame,
   setPlayers,
   setRoom
 ) {
@@ -117,7 +117,7 @@ export function cleanup(
     fireDB.ref("rooms/" + room).remove();
   }
   setStartGame(false);
-  setInGame(false);
+  // setInGame(false);
   setPlayers({});
   setRoom();
 }

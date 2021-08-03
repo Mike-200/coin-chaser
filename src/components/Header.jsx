@@ -11,9 +11,9 @@ import { getAvatar } from "../utils/backend";
 import "../css/header.css";
 import coin from "../assets/coin.svg";
 import "../assets/fonts/coin.ttf";
-import { logoutButton } from "../App";
 
-const Header = ({ uid, characters }) => {
+
+const Header = ({ characters, logoutButton }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
   const { room, setRoom } = useContext(RoomContext);
   const { user, setUser } = useContext(UserContext);

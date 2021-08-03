@@ -11,11 +11,12 @@ import slime from "./assets/splash.svg";
 import firebase from "./firebase-config";
 import { logout, updateCharPosition } from "./utils/firebase";
 import { useEffect, useState } from "react";
+import { useBeforeunload } from "react-beforeunload"
 import Login from "./components/Login";
 import Header from "./components/Header";
 import Scores from "./components/Scores";
 import Messaging from "./components/Messaging";
-import { getAvatar, useStickyState, startNewScreen } from "./utils/backend";
+import { getAvatar, useStickyState, startNewScreen, cleanup } from "./utils/backend";
 import characters from "./characters";
 
 import { StartGameContext } from "./contexts/StartGame";
@@ -43,9 +44,6 @@ const gameApp = new Pixi.Application({
   autoDensity: true,
 });
 
-export function logoutButton() {
-  logout(auth);
-}
 
 let listeningToKeyPresses = true;
 
@@ -66,6 +64,29 @@ function App() {
   const [characterSnapShot, setCharacterSnapShot] = useState({});
   const [boxSnapShot, setBoxSnapShot] = useState({});
   const [boxesState, setBoxesState] = useState({});
+
+  function logoutButton() {
+    cleanup(user === room,
+      fireDB,
+      room,
+      setStartGame,
+      setPlayers,
+      setRoom,
+      );
+      logout(auth);
+      window.location.reload()
+  }
+
+  useBeforeunload(() => {
+      cleanup(user === room,
+        fireDB,
+        room,
+        setStartGame,
+        setPlayers,
+        setRoom,
+        );
+        logout(auth);
+  })
 
   useEffect(() => {
     if (startGame) {
@@ -280,7 +301,7 @@ function App() {
                     ) : (
                       <>
                         <div className="App">
-                          <Header characters={characters} />
+                          <Header characters={characters} logoutButton={logoutButton}/>
                           <PixiComponent sprites={sprites} gameApp={gameApp} />
 
                           <Scores characters={characters} />

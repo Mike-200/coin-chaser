@@ -81,14 +81,28 @@ function App() {
   const [boxesState, setBoxesState] = useState({});
 
   function logoutButton() {
-    cleanup(user === room, fireDB, room, setStartGame, setPlayers, setRoom);
-    logout(auth);
+    cleanup(
+      user === room,
+      fireDB,
+      room,
+      setStartGame,
+      () => {
+        logout(auth);
+      }
+    );
     window.location.reload();
   }
 
   useBeforeunload(() => {
-    cleanup(user === room, fireDB, room, setStartGame, setPlayers, setRoom);
-    logout(auth);
+    cleanup(
+      user === room,
+      fireDB,
+      room,
+      setStartGame,
+      () => {
+        logout(auth);
+      }
+    );
   });
 
   useEffect(() => {
@@ -107,6 +121,7 @@ function App() {
               message: "Host Disconnected! Please Logout",
               error: true,
             });
+            logoutButton();
           }
         });
       }

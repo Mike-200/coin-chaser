@@ -16,7 +16,6 @@ import { AvatarContext } from "../contexts/Avatar";
 import { SpritesContext } from "../contexts/Sprites";
 import { PlayersContext } from "../contexts/Players";
 import { GameEventContext } from "../contexts/GameEvent";
-import { useEffect } from "react/cjs/react.development";
 
 const Header = ({ characters, logoutButton }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
@@ -27,7 +26,7 @@ const Header = ({ characters, logoutButton }) => {
   const { sprites, setSprites } = useContext(SpritesContext);
   const { players, setPlayers } = useContext(PlayersContext);
   const { gameEvent } = useContext(GameEventContext);
-  useEffect(() => {}, [gameEvent]);
+
   return (
     <header>
       <div className="container">

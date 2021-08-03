@@ -103,9 +103,7 @@ export function cleanup(
   fireDB,
   room,
   setStartGame,
-  // setInGame,
-  setPlayers,
-  setRoom
+  callback
 ) {
   // client/host listening to players moves
   fireDB.ref("rooms/" + room + "/gameProps/characters").off();
@@ -119,9 +117,9 @@ export function cleanup(
     fireDB.ref("rooms/" + room).remove();
   }
   setStartGame(false);
-  // setInGame(false);
-  setPlayers({});
-  setRoom();
+  if (callback) {
+    callback();
+  }
 }
 
 export function getAvatar(id, characters) {

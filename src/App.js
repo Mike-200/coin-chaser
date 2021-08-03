@@ -103,7 +103,6 @@ function App() {
       } else {
         fireDB.ref("rooms/" + room + "/startGame").on("value", (snap) => {
           if (!snap.val()) {
-            console.log("room dissapeared!");
             setGameEvent({
               message: "Host Disconnected! Please Logout",
               error: true,
@@ -175,7 +174,6 @@ function App() {
             const [keyDownHandler, keyUpHandler] = keyHandlers(sprites);
             window.addEventListener("keydown", keyDownHandler);
             window.addEventListener("keyup", keyUpHandler);
-            // const pixiCanvas = document.getElementById("pixi_canvas");
             const messenger = document.getElementById("Messaging__Window");
             messenger.addEventListener("mouseout", (event) => {
               if (!listeningToKeyPresses) {
@@ -220,6 +218,10 @@ function App() {
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
                   speed = 25;
+                  setGameEvent({
+                    message: `${players[uid].username} got the Coin!`,
+                    error: false,
+                  });
                   setNumberOfBoxes((prevNum) => {
                     if (prevNum < 4) return prevNum + 1;
                     return prevNum;
@@ -229,12 +231,20 @@ function App() {
                   tempBoxContent = Pixi.Sprite.from(rocket);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
+                  setGameEvent({
+                    message: `${players[uid].username} got the Rocket!`,
+                    error: false,
+                  });
                   if (uid === user) speed = 50;
                 }
                 if (boxesContents[boxSpriteUid] === "slime") {
                   tempBoxContent = Pixi.Sprite.from(slime);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
+                  setGameEvent({
+                    message: `${players[uid].username} got the Slime!`,
+                    error: false,
+                  });
                   if (uid === user) speed = 12.5;
                 }
                 setSprites((prevSprites) => {

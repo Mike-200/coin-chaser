@@ -3,11 +3,13 @@ import { useState } from "react";
 import { fireDB } from "../App";
 
 const checkIfOccupiedPosition = (occupiedPositions, posObj) => {
- return !occupiedPositions.every(occPos => occPos.x !== posObj.x || occPos.y !== posObj.y)
-}
+  return !occupiedPositions.every(
+    (occPos) => occPos.x !== posObj.x || occPos.y !== posObj.y
+  );
+};
 
 export const randomCharPosition = (occupiedPositions) => {
-  let tempObj
+  let tempObj;
   do {
     let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
     let randomYPosition = 50 * Math.floor((Math.random() * 470) / 50) + 25;
@@ -18,7 +20,7 @@ export const randomCharPosition = (occupiedPositions) => {
 };
 
 export const randomBoxPosition = (occupiedPositions) => {
-  let tempObj
+  let tempObj;
   do {
     let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
     let randomYPosition = 50 * Math.floor((Math.random() * 420) / 50) + 75;

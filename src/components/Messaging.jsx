@@ -1,12 +1,12 @@
-import { useState, useContext, useEffect, useRef } from "react";
-import { StartGameContext } from "../contexts/StartGame";
-import { UsernameContext } from "../contexts/Username";
-import { RoomContext } from "../contexts/Room";
-import { AvatarContext } from "../contexts/Avatar";
+import { useState, useContext, useEffect, useRef } from 'react';
+import { StartGameContext } from '../contexts/StartGame';
+import { UsernameContext } from '../contexts/Username';
+import { RoomContext } from '../contexts/Room';
+import { AvatarContext } from '../contexts/Avatar';
 
-import { fireDB } from "../App";
+import { fireDB } from '../App';
 
-import "../css/messaging.css";
+import '../css/messaging.css';
 
 const Messaging = () => {
   const { startGame } = useContext(StartGameContext);
@@ -14,11 +14,11 @@ const Messaging = () => {
   const { room } = useContext(RoomContext);
   const { avatar } = useContext(AvatarContext);
 
-  const [messageBody, setMessageBody] = useState("");
+  const [messageBody, setMessageBody] = useState('');
   const [sortedMessages, setSortedMessages] = useState([]);
   useEffect(() => {
     if (startGame) {
-      fireDB.ref("rooms/" + room + "/messages/").on("value", (snap) => {
+      fireDB.ref('rooms/' + room + '/messages/').on('value', (snap) => {
         if (snap.exists()) {
           setSortedMessages(snap.val());
         }
@@ -33,11 +33,11 @@ const Messaging = () => {
     e.preventDefault();
     if (messageBody) {
       const timestamp = Date.now();
-      fireDB.ref("rooms/" + room + "/messages/" + timestamp).set({
+      fireDB.ref('rooms/' + room + '/messages/' + timestamp).set({
         username,
         messageBody,
       });
-      setMessageBody("");
+      setMessageBody('');
     }
   }
 
@@ -46,8 +46,8 @@ const Messaging = () => {
   useEffect(() => {
     if (dummy.current) {
       dummy.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
+        behavior: 'smooth',
+        block: 'end',
         // inline: "nearest",
       });
     }
@@ -55,7 +55,7 @@ const Messaging = () => {
 
   return (
     <div id="Messaging__Window">
-      <h3>Chat Messages</h3>
+      <h2>Chat Messages</h2>
       <div id="All__Messages">
         {/* <ul id="Messages__Title">Messages</ul> */}
         {Object.entries(sortedMessages).map((item) => {

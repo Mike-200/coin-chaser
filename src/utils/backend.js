@@ -2,73 +2,31 @@ import { useState } from "react";
 
 import { fireDB } from "../App";
 
-let randomXPosition = 0;
-let randomYPosition = 0;
-let tempObj = {};
+const checkIfOccupiedPosition = (occupiedPositions, posObj) => {
+ return !occupiedPositions.every(occPos => occPos.x !== posObj.x || occPos.y !== posObj.y)
+}
 
 export const randomCharPosition = (occupiedPositions) => {
+  let tempObj
   do {
     let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
     let randomYPosition = 50 * Math.floor((Math.random() * 470) / 50) + 25;
     tempObj = { x: randomXPosition, y: randomYPosition };
-  } while (occupiedPositions.includes(tempObj));
+  } while (checkIfOccupiedPosition(occupiedPositions, tempObj));
   occupiedPositions.push(tempObj);
   return tempObj;
 };
 
 export const randomBoxPosition = (occupiedPositions) => {
+  let tempObj
   do {
-    randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
-    randomYPosition = 50 * Math.floor((Math.random() * 420) / 50) + 75;
+    let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
+    let randomYPosition = 50 * Math.floor((Math.random() * 420) / 50) + 75;
     tempObj = { x: randomXPosition, y: randomYPosition };
-  } while (occupiedPositions.includes(tempObj));
+  } while (checkIfOccupiedPosition(occupiedPositions, tempObj));
   occupiedPositions.push(tempObj);
   return tempObj;
 };
-
-// export function coordsToIndex(coords, base) {
-//   let encodingBase = 10;
-//   while (encodingBase < base) {
-//     encodingBase = encodingBase * 10;
-//   }
-//   const yCoords = Math.floor(coords / encodingBase);
-//   return yCoords * base + coords - yCoords * encodingBase;
-// }
-
-// export function indexToCoords(index, base) {
-//   let encodingBase = 10;
-//   while (encodingBase < base) {
-//     encodingBase = encodingBase * 10;
-//   }
-//   const yCoords = Math.floor(index / base);
-//   return yCoords * encodingBase + index - yCoords * base;
-// }
-
-// export function coordsToXY(coords, base) {
-//   let encodingBase = 10;
-//   while (encodingBase < base) {
-//     encodingBase = encodingBase * 10;
-//   }
-//   const yCoords = Math.floor(coords / encodingBase);
-//   return { x: coords - yCoords * encodingBase, y: yCoords };
-// }
-
-// export function XYToCoords(xy, base) {
-//   let encodingBase = 10;
-//   while (encodingBase < base) {
-//     encodingBase = encodingBase * 10;
-//   }
-//   return xy.y * encodingBase + xy.x;
-// }
-
-// export function XYToIndex(xy, base) {
-//   return xy.y * base + xy.x;
-// }
-
-// export function indexToXY(index, base) {
-//   const y = Math.floor(index / base);
-//   return { x: index - y * base, y };
-// }
 
 function isFunction(functionToCheck) {
   return (

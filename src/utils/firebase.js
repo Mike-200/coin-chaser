@@ -128,7 +128,6 @@ export function startListeningIfInGame(room, uid, setInGame) {
   fireDB.ref("rooms/" + room + "/players").on("value", (snap) => {
     if (uid in snap.val()) {
       setInGame(true);
-      fireDB.ref("rooms/" + room + "/players").off();
     }
   });
 }

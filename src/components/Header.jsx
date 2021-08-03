@@ -1,29 +1,36 @@
+// Styling
+import '../css/header.css';
+import '../assets/fonts/coin.ttf';
+
+// Dependencies
 import { useContext } from 'react';
+import { getAvatar } from '../utils/backend';
+import coin from '../assets/coin.svg';
+
+// Contexts
 import { StartGameContext } from '../contexts/StartGame';
 import { RoomContext } from '../contexts/Room';
 import { UserContext } from '../contexts/User';
 import { UsernameContext } from '../contexts/Username';
 import { AvatarContext } from '../contexts/Avatar';
 import { SpritesContext } from '../contexts/Sprites';
+import { PlayersContext } from '../contexts/Players';
+import { GameEventContext } from '../contexts/GameEvent';
 
-import { getAvatar } from '../utils/backend';
-import '../css/header.css';
-import coin from '../assets/coin.svg';
-import '../assets/fonts/coin.ttf';
-import { logoutButton } from '../App';
-
-const Header = ({ players, uid, characters }) => {
+const Header = ({ characters, logoutButton }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
   const { room, setRoom } = useContext(RoomContext);
   const { user, setUser } = useContext(UserContext);
   const { username, setUsername } = useContext(UsernameContext);
   const { avatar, setAvatar } = useContext(AvatarContext);
   const { sprites, setSprites } = useContext(SpritesContext);
+  const { players, setPlayers } = useContext(PlayersContext);
+  const { gameEvent } = useContext(GameEventContext);
 
   return (
     <header>
       <div className="container">
-        <div className="user">
+        {/* <div className="user">
           <img
             id="Header__Avatar"
             alt="avatar"
@@ -40,7 +47,33 @@ const Header = ({ players, uid, characters }) => {
           <span>IN CHASER</span>
         </div>
 
-        <button onClick={logoutButton}>Logout</button>
+        <button onClick={logoutButton}>Logout</button> */}
+        <div className="Header_name">
+          C<img className="Header_coin" alt="coin" src={coin}></img>
+          IN CHASER
+        </div>
+        <br />
+        {gameEvent.message ? (
+          gameEvent.error ? (
+            <span className="event-error">{gameEvent.message}</span>
+          ) : (
+            <span className="event">{gameEvent.message}</span>
+          )
+        ) : null}
+        <nav>
+          <span id="Header__username">
+            <div>{username}</div>
+            <br />
+            <button onClick={logoutButton}>Logout</button>
+          </span>
+          <span>
+            <img
+              id="Header__Avatar"
+              alt="avatar"
+              src={getAvatar(players[user].avatar, characters)}
+            ></img>
+          </span>
+        </nav>
       </div>
     </header>
   );

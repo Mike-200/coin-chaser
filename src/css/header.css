@@ -29,3 +29,13 @@
 .user p {
   margin-left: 10px;
 }
+
+.event {
+  font-weight: bold;
+  color: aqua;
+}
+
+.event-error {
+  font-weight: bold;
+  color: red;
+}

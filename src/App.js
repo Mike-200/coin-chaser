@@ -290,6 +290,7 @@ function App() {
                             <Scores players={players} characters={characters} />
                             <Messaging />
                           </div>
+
                           {/* <p>User: {username}</p>
                         <p>User: {user}</p> */}
 

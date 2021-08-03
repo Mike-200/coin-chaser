@@ -16,7 +16,7 @@ import { PlayersContext } from "../contexts/Players";
 
 import { fireDB } from "../App";
 
-const Controls = ({ numberOfBoxes, speed }) => {
+const Controls = ({ numberOfBoxes, speed, canvasSize }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
   const { room, setRoom } = useContext(RoomContext);
   const { user, setUser } = useContext(UserContext);
@@ -45,7 +45,8 @@ const Controls = ({ numberOfBoxes, speed }) => {
                 y: sprites[user].y,
               },
               "ArrowLeft",
-              speed
+              speed,
+              canvasSize
             );
           }}
           value="left"
@@ -63,7 +64,8 @@ const Controls = ({ numberOfBoxes, speed }) => {
                   y: sprites[user].y,
                 },
                 "ArrowUp",
-                speed
+                speed,
+                canvasSize
               );
             }}
             value="up"
@@ -80,7 +82,8 @@ const Controls = ({ numberOfBoxes, speed }) => {
                   y: sprites[user].y,
                 },
                 "ArrowDown",
-                speed
+                speed, 
+                canvasSize
               );
             }}
             value="down"
@@ -98,7 +101,8 @@ const Controls = ({ numberOfBoxes, speed }) => {
                 y: sprites[user].y,
               },
               "ArrowRight",
-              speed
+              speed,
+              canvasSize
             );
           }}
           value="right"

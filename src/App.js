@@ -291,7 +291,8 @@ function App() {
                           <Controls
                             numberOfBoxes={numberOfBoxes}
                             setNumberOfBoxes={setNumberOfBoxes}
-                            speed={speed}                          />
+                            speed={speed}   
+                            canvasSize={canvasSize}                       />
                           {/* <button onClick={logoutButton}>Logout</button> */}
                           <Messaging />
                         </div>

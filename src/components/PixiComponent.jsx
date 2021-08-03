@@ -1,6 +1,4 @@
-// import * as Pixi from 'pixi.js';
 import React, { useRef, useEffect } from "react";
-//import { Application } from "pixi.js";
 
 const PixiComponent = ({ gameApp, sprites }) => {
   const ref = useRef("pixi_canvas");

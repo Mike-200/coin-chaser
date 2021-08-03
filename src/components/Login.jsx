@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAvatar } from "../utils/backend";
+import { getAvatar } from "../utils/characters";
 import {
   login,
   startListeningToNewPlayers,
@@ -10,25 +10,27 @@ import {
   removeKnockPlayer,
   startGameHost,
   startListeningToStartGame,
-} from "../utils/firebase";
-import characters from "../characters";
+} from "../utils/login";
+
+// styling
+import "../css/login.css";
+import "../assets/fonts/coin.ttf";
+
+// sprites
+import characters from "../utils/characters";
 import leftArrow from "../assets/left-arrow.svg";
 import rightArrow from "../assets/right-arrow.svg";
+import coin from "../assets/coin.svg";
 
+// contexts
 import { useContext } from "react";
 import { StartGameContext } from "../contexts/StartGame";
 import { RoomContext } from "../contexts/Room";
 import { UserContext } from "../contexts/User";
 import { UsernameContext } from "../contexts/Username";
 import { AvatarContext } from "../contexts/Avatar";
-import { SpritesContext } from "../contexts/Sprites";
 import { PlayersContext } from "../contexts/Players";
 
-import "../css/login.css";
-import coin from "../assets/coin.svg";
-import "../assets/fonts/coin.ttf";
-
-import { fireDB } from "../App";
 
 const Login = ({ auth, logoutButton }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
@@ -36,7 +38,6 @@ const Login = ({ auth, logoutButton }) => {
   const { user, setUser } = useContext(UserContext);
   const { username, setUsername } = useContext(UsernameContext);
   const { avatar, setAvatar } = useContext(AvatarContext);
-  const { sprites, setSprites } = useContext(SpritesContext);
   const { players, setPlayers } = useContext(PlayersContext);
 
   const [roomToBe, setRoomToBe] = useState();
@@ -51,6 +52,16 @@ const Login = ({ auth, logoutButton }) => {
     }
     login(auth);
   }
+
+  useEffect(() => {
+    auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        setUser(authUser.uid);
+      } else {
+        setUser();
+      }
+    });
+  }, []);
 
   function client() {
     knockOnRoom(roomToBe, user, username, avatar).then((error) => {
@@ -80,17 +91,6 @@ const Login = ({ auth, logoutButton }) => {
     );
     removeKnockPlayer(room, uid);
   }
-
-  useEffect(() => {
-    auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        setUser(authUser.uid);
-        // console.log(authUser);
-      } else {
-        setUser();
-      }
-    });
-  }, []);
 
   useEffect(() => {
     if (room) {
@@ -170,7 +170,7 @@ const Login = ({ auth, logoutButton }) => {
             <img alt="previous avatar" src={leftArrow}></img>
           </button>
           <img
-            className="Avatar"
+            className="avatar"
             alt="avatar"
             src={getAvatar(avatar, characters)}
           ></img>
@@ -194,7 +194,7 @@ const Login = ({ auth, logoutButton }) => {
               <p>
                 <img
                   alt="avatar"
-                  className="Avatar"
+                  className="avatar"
                   src={getAvatar(players[uid].avatar, characters)}
                 ></img>
                 {players[uid].username}
@@ -212,7 +212,7 @@ const Login = ({ auth, logoutButton }) => {
         <div className="CardHolder">
           <div className="LoginCard">
             <p>Provide the room key shown below to the other players</p>
-            <p className="Bold">{room}</p>
+            <p className="bold">{room}</p>
 
             <p>Players already in the game...</p>
             {Object.keys(players).map((uid) => {
@@ -220,7 +220,7 @@ const Login = ({ auth, logoutButton }) => {
                 <p key={uid}>
                   <img
                     alt="avatar"
-                    className="Avatar"
+                    className="avatar"
                     src={getAvatar(players[uid].avatar, characters)}
                   ></img>
                   {players[uid].username}
@@ -232,7 +232,7 @@ const Login = ({ auth, logoutButton }) => {
               <p key={uid}>
                 <img
                   alt="avatar"
-                  className="Avatar"
+                  className="avatar"
                   src={getAvatar(clientsKnocks[uid].avatar, characters)}
                 ></img>
                 {clientsKnocks[uid].username}{" "}
@@ -256,7 +256,6 @@ const Login = ({ auth, logoutButton }) => {
           </div>
         </div>
       );
-
     return (
       <div className="CardHolder">
         <div className="LoginCard">
@@ -267,7 +266,7 @@ const Login = ({ auth, logoutButton }) => {
               <p>
                 <img
                   alt="avatar"
-                  className="Avatar"
+                  className="avatar"
                   src={getAvatar(players[uid].avatar, characters)}
                 ></img>
                 {players[uid].username}

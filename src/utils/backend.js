@@ -1,6 +1,5 @@
-import { useState } from "react";
-
 import { fireDB } from "../App";
+import * as Pixi from "pixi.js";
 
 const checkIfOccupiedPosition = (occupiedPositions, posObj) => {
   return !occupiedPositions.every(
@@ -8,7 +7,7 @@ const checkIfOccupiedPosition = (occupiedPositions, posObj) => {
   );
 };
 
-export const randomCharPosition = (occupiedPositions) => {
+const randomCharPosition = (occupiedPositions) => {
   let tempObj;
   do {
     let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
@@ -19,7 +18,7 @@ export const randomCharPosition = (occupiedPositions) => {
   return tempObj;
 };
 
-export const randomBoxPosition = (occupiedPositions) => {
+const randomBoxPosition = (occupiedPositions) => {
   let tempObj;
   do {
     let randomXPosition = 50 * Math.floor((Math.random() * 710) / 50) + 25;
@@ -29,39 +28,6 @@ export const randomBoxPosition = (occupiedPositions) => {
   occupiedPositions.push(tempObj);
   return tempObj;
 };
-
-function isFunction(functionToCheck) {
-  return (
-    (functionToCheck &&
-      {}.toString.call(functionToCheck) === "[object Function]") ||
-    (functionToCheck &&
-      {}.toString.call(functionToCheck) === "[object AsyncFunction]")
-  );
-}
-
-export function useStickyState(key, initialState) {
-  const storedState = localStorage.getItem(key);
-  const [tempState, setTempState] = useState(storedState ?? initialState);
-  function setStickyState(newState) {
-    if (isFunction(newState)) {
-      setTempState((previousState) => {
-        const tempNewState = newState(previousState);
-        if (tempNewState) {
-          localStorage.setItem(key, tempNewState);
-        } else {
-          localStorage.removeItem(key);
-        }
-        return tempNewState;
-      });
-    } else {
-      if (newState) {
-        localStorage.setItem(key, newState);
-      } else localStorage.removeItem(key, newState);
-      setTempState(newState);
-    }
-  }
-  return [tempState, setStickyState];
-}
 
 export function startNewScreen(room, user, players, numberOfBoxes) {
   const occupiedPositions = [];
@@ -98,13 +64,7 @@ export function startNewScreen(room, user, players, numberOfBoxes) {
   }
 }
 
-export function cleanup(
-  host,
-  fireDB,
-  room,
-  setStartGame,
-  callback
-) {
+export function cleanup(host, fireDB, room, setStartGame, callback) {
   // client/host listening to players moves
   fireDB.ref("rooms/" + room + "/gameProps/characters").off();
   // host listening to knocks
@@ -122,6 +82,121 @@ export function cleanup(
   }
 }
 
-export function getAvatar(id, characters) {
-  return characters[Object.keys(characters)[id]].default;
+export const updateCharPosition = (
+  room,
+  user,
+  origPos,
+  direction,
+  speed,
+  canvasSize
+) => {
+  const dbRef = fireDB.ref("rooms/" + room + "/gameProps/characters/" + user);
+  if (direction === "ArrowRight") {
+    const tempX =
+      origPos.x + speed <= canvasSize.x - 25 ? origPos.x + speed : origPos.x;
+    dbRef.child("x").set(tempX);
+  } else if (direction === "ArrowLeft") {
+    const tempX = origPos.x - speed >= 25 ? origPos.x - speed : origPos.x;
+    dbRef.child("x").set(tempX);
+  } else if (direction === "ArrowUp") {
+    const tempY = origPos.y - speed >= 25 ? origPos.y - speed : origPos.y;
+    dbRef.child("y").set(tempY);
+  } else if (direction === "ArrowDown") {
+    const tempY =
+      origPos.y + speed <= canvasSize.y - 25 ? origPos.y + speed : origPos.y;
+    dbRef.child("y").set(tempY);
+  }
+};
+
+export function initScores(players, room) {
+  const tempScores = {};
+  Object.keys(players).forEach((player) => {
+    tempScores[player] = 0;
+  });
+  fireDB.ref("rooms/" + room + "/gameProps/scores").set(tempScores);
+}
+
+export function startListeningIfRoomDissapears(room, setGameEvent, logoutFn) {
+  fireDB.ref("rooms/" + room + "/startGame").on("value", (snap) => {
+    if (!snap.val()) {
+      setGameEvent({
+        message: "Host Disconnected! Logging out in 5",
+        error: true,
+      });
+      setTimeout(() => {
+        setGameEvent({
+          message: "Host Disconnected! Logging out in 4",
+          error: true,
+        });
+        clearTimeout();
+        setTimeout(() => {
+          setGameEvent({
+            message: "Host Disconnected! Logging out in 3",
+            error: true,
+          });
+          setTimeout(() => {
+            setGameEvent({
+              message: "Host Disconnected! Logging out in 2",
+              error: true,
+            });
+            setTimeout(() => {
+              setGameEvent({
+                message: "Host Disconnected! Logging out in 1",
+                error: true,
+              });
+              setTimeout(() => {
+                logoutFn();
+              }, 1000);
+            }, 1000);
+          }, 1000);
+        }, 1000);
+      }, 1000);
+    }
+  });
+}
+
+export function startGenericGameListeners(
+  room,
+  setCharacters,
+  setBoxes,
+  setScores
+) {
+  fireDB.ref("rooms/" + room + "/gameProps/characters/").on("value", (snap) => {
+    if (snap.exists()) {
+      setCharacters(snap.val());
+    }
+  });
+
+  fireDB.ref("rooms/" + room + "/gameProps/boxes").on("value", (snap) => {
+    if (snap.exists()) {
+      setBoxes(snap.val());
+    }
+  });
+
+  fireDB.ref("rooms/" + room + "/gameProps/scores").on("value", (snap) => {
+    if (snap.exists()) {
+      setScores(snap.val());
+    }
+  });
+}
+
+export function pixiSpriteBuilder(asset, startPos) {
+  const tempSprite = Pixi.Sprite.from(asset);
+  tempSprite.anchor.set(0.5, 0.5);
+  tempSprite.position.set(startPos.x, startPos.y);
+  return tempSprite;
+}
+
+export function pixiBoxContentSpriteBuilder(asset, startPos) {
+  const newPos = { ...startPos };
+  newPos.y -= 50;
+  return pixiSpriteBuilder(asset, newPos);
+}
+
+export function checkIfSpriteUidIsBox(spriteUid) {
+  return spriteUid.match(/^box[0-9]*$/);
+}
+
+export function checkIfSpriteUidIsBoxContent(spriteUid){
+  return spriteUid.match(/box[0-9]*contents/)
 }

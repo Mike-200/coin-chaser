@@ -15,21 +15,29 @@ import openBox from "./assets/opened-box.svg";
 import crownCoin from "./assets/coin.svg";
 import rocket from "./assets/shuttle.svg";
 import slime from "./assets/splash.svg";
-import characters from "./characters";
+import characters from "./utils/characters";
 
 // Functions, utils, dependencies...
 import * as Pixi from "pixi.js";
 import firebase from "./firebase-config";
-import { logout, updateCharPosition } from "./utils/firebase";
+import { logout } from "./utils/login";
 import { useEffect, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import {
-  getAvatar,
-  useStickyState,
   startNewScreen,
   cleanup,
+  updateCharPosition,
+  initScores,
+  startListeningIfRoomDissapears,
+  startGenericGameListeners,
+  pixiSpriteBuilder,
+  checkIfSpriteUidIsBox,
+  pixiBoxContentSpriteBuilder,
+  checkIfSpriteUidIsBoxContent,
 } from "./utils/backend";
-import { collisionDetect } from "./utils/collision";
+import useStickyState from "./utils/stickyState";
+import collisionDetect from "./utils/collision";
+import { getAvatar } from "./utils/characters";
 
 // Contexts
 import { StartGameContext } from "./contexts/StartGame";
@@ -80,89 +88,6 @@ function App() {
   const [boxSnapShot, setBoxSnapShot] = useState({});
   const [boxesState, setBoxesState] = useState({});
 
-  function logoutButton() {
-    cleanup(user === room, fireDB, room, setStartGame, () => {
-      logout(auth);
-    });
-    window.location.reload();
-  }
-
-  useBeforeunload(() => {
-    cleanup(user === room, fireDB, room, setStartGame, () => {
-      logout(auth);
-    });
-  });
-
-  useEffect(() => {
-    if (startGame) {
-      if (room === user) {
-        startNewScreen(room, user, players, numberOfBoxes);
-        const tempScores = {};
-        Object.keys(players).forEach((player) => {
-          tempScores[player] = 0;
-        });
-        fireDB.ref("rooms/" + room + "/gameProps/scores").set(tempScores);
-      } else {
-        fireDB.ref("rooms/" + room + "/startGame").on("value", (snap) => {
-          if (!snap.val()) {
-            setGameEvent({
-              message: "Host Disconnected! Logging out in 5",
-              error: true,
-            });
-            setTimeout(() => {
-              setGameEvent({
-                message: "Host Disconnected! Logging out in 4",
-                error: true,
-              });
-              clearTimeout();
-              setTimeout(() => {
-                setGameEvent({
-                  message: "Host Disconnected! Logging out in 3",
-                  error: true,
-                });
-                setTimeout(() => {
-                  setGameEvent({
-                    message: "Host Disconnected! Logging out in 2",
-                    error: true,
-                  });
-                  setTimeout(() => {
-                    setGameEvent({
-                      message: "Host Disconnected! Logging out in 1",
-                      error: true,
-                    });
-                    setTimeout(() => {
-                      logoutButton();
-                    }, 1000);
-                  }, 1000);
-                }, 1000);
-              }, 1000);
-            }, 1000);
-          }
-        });
-      }
-
-      fireDB
-        .ref("rooms/" + room + "/gameProps/characters/")
-        .on("value", (snap) => {
-          if (snap.exists()) {
-            setCharacterSnapShot(snap.val());
-          }
-        });
-
-      fireDB.ref("rooms/" + room + "/gameProps/boxes").on("value", (snap) => {
-        if (snap.exists()) {
-          setBoxSnapShot(snap.val());
-        }
-      });
-
-      fireDB.ref("rooms/" + room + "/gameProps/scores").on("value", (snap) => {
-        if (snap.exists()) {
-          setScores(snap.val());
-        }
-      });
-    }
-  }, [startGame]);
-
   function keyHandlers(sprites) {
     let keyDown = false;
     function keyDownHandler(e) {
@@ -187,34 +112,67 @@ function App() {
     return [keyDownHandler, keyUpHandler];
   }
 
+  function listenToMouseOverMessenger() {
+    const messenger = document.getElementById("Messaging__Window");
+    messenger.addEventListener("mouseout", (event) => {
+      if (!listeningToKeyPresses) {
+        listeningToKeyPresses = true;
+      }
+    });
+    messenger.addEventListener("mouseover", (event) => {
+      if (listeningToKeyPresses) {
+        listeningToKeyPresses = false;
+      }
+    });
+  }
+
+  function logoutButton() {
+    cleanup(user === room, fireDB, room, setStartGame, () => {
+      logout(auth);
+    });
+    window.location.reload();
+  }
+
+  useBeforeunload(() => {
+    cleanup(user === room, fireDB, room, setStartGame, () => {
+      logout(auth);
+    });
+  });
+
+  // Game Init
+  useEffect(() => {
+    if (startGame) {
+      if (room === user) {
+        startNewScreen(room, user, players, numberOfBoxes);
+        initScores(players, room);
+      } else {
+        startListeningIfRoomDissapears(room, setGameEvent, logoutButton);
+      }
+      startGenericGameListeners(
+        room,
+        setCharacterSnapShot,
+        setBoxSnapShot,
+        setScores
+      );
+    }
+  }, [startGame]);
+
+  // On characters change
   useEffect(() => {
     Object.keys(characterSnapShot).forEach((uid) => {
       if (!Object.keys(sprites).includes(uid)) {
         setSprites((prevSprites) => {
           const sprites = { ...prevSprites };
-          sprites[uid] = Pixi.Sprite.from(
-            getAvatar(players[uid].avatar, characters)
-          );
-          sprites[uid].anchor.set(0.5, 0.5);
-          sprites[uid].position.set(
-            characterSnapShot[uid].x,
-            characterSnapShot[uid].y
+          sprites[uid] = pixiSpriteBuilder(
+            getAvatar(players[uid].avatar, characters),
+            characterSnapShot[uid]
           );
           if (uid === user) {
+            // Key Presses Listener and zone trigger
             const [keyDownHandler, keyUpHandler] = keyHandlers(sprites);
             window.addEventListener("keydown", keyDownHandler);
             window.addEventListener("keyup", keyUpHandler);
-            const messenger = document.getElementById("Messaging__Window");
-            messenger.addEventListener("mouseout", (event) => {
-              if (!listeningToKeyPresses) {
-                listeningToKeyPresses = true;
-              }
-            });
-            messenger.addEventListener("mouseover", (event) => {
-              if (listeningToKeyPresses) {
-                listeningToKeyPresses = false;
-              }
-            });
+            listenToMouseOverMessenger();
           }
           return sprites;
         });
@@ -222,117 +180,100 @@ function App() {
         sprites[uid].x = characterSnapShot[uid].x;
         sprites[uid].y = characterSnapShot[uid].y;
         // Collision logic
-        Object.keys(sprites).forEach((boxSpriteUid) => {
-          if (boxSpriteUid.match(/^box[0-9]*$/)) {
-            if (collisionDetect(sprites[boxSpriteUid], sprites[uid])) {
-              if (boxesState[boxSpriteUid] === "closed") {
-                // Host collision logic
-                if (user === room) {
-                  if (boxesContents[boxSpriteUid] === "coin") {
-                    fireDB
-                      .ref("rooms/" + room + "/gameProps/scores/" + uid)
-                      .set(scores[uid] + 1);
-                  }
-                }
-                const boxPos = {
-                  x: sprites[boxSpriteUid].x,
-                  y: sprites[boxSpriteUid].y,
-                };
-                const tempSprite = Pixi.Sprite.from(openBox);
-                tempSprite.position.set(boxPos.x, boxPos.y);
-                tempSprite.anchor.set(0.5, 0.5);
+        Object.keys(sprites)
+          .filter((spriteUid) => checkIfSpriteUidIsBox(spriteUid))
+          .filter((boxSpriteUid) =>
+            collisionDetect(sprites[boxSpriteUid], sprites[uid])
+          )
+          .filter((boxSpriteUid) => boxesState[boxSpriteUid] === "closed")
+          .forEach((boxSpriteUid) => {
+            const boxPos = {
+              x: sprites[boxSpriteUid].x,
+              y: sprites[boxSpriteUid].y,
+            };
+            const openBoxSprite = Pixi.Sprite.from(openBox);
+            openBoxSprite.position.set(boxPos.x, boxPos.y);
+            openBoxSprite.anchor.set(0.5, 0.5);
 
-                let tempBoxContent;
-                if (boxesContents[boxSpriteUid] === "coin") {
-                  tempBoxContent = Pixi.Sprite.from(crownCoin);
-                  tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
-                  tempBoxContent.anchor.set(0.5, 0.5);
-                  speed = 25;
-                  setGameEvent({
-                    message: `${players[uid].username} got the Coin!`,
-                    error: false,
-                  });
-                  setNumberOfBoxes((prevNum) => {
-                    if (prevNum < 4) return prevNum + 1;
-                    return prevNum;
-                  });
-                }
-                if (boxesContents[boxSpriteUid] === "rocket") {
-                  tempBoxContent = Pixi.Sprite.from(rocket);
-                  tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
-                  tempBoxContent.anchor.set(0.5, 0.5);
-                  setGameEvent({
-                    message: `${players[uid].username} got the Rocket!`,
-                    error: false,
-                  });
-                  if (uid === user) speed = 50;
-                }
-                if (boxesContents[boxSpriteUid] === "slime") {
-                  tempBoxContent = Pixi.Sprite.from(slime);
-                  tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
-                  tempBoxContent.anchor.set(0.5, 0.5);
-                  setGameEvent({
-                    message: `${players[uid].username} got the Slime!`,
-                    error: false,
-                  });
-                  if (uid === user) speed = 12.5;
-                }
-                setSprites((prevSprites) => {
-                  const sprites = { ...prevSprites };
-                  sprites[boxSpriteUid] = tempSprite;
-                  if (tempBoxContent) {
-                    sprites[boxSpriteUid + "contents"] = tempBoxContent;
-                  }
-                  return sprites;
-                });
-
-                setBoxesState((prevBoxesState) => {
-                  const tempBoxesState = { ...prevBoxesState };
-                  tempBoxesState[boxSpriteUid] = "open";
-                  return tempBoxesState;
-                });
+            let boxContentSprite;
+            if (boxesContents[boxSpriteUid] === "coin") {
+              if (user === room) {
+                fireDB
+                  .ref("rooms/" + room + "/gameProps/scores/" + uid)
+                  .set(scores[uid] + 1);
               }
+              boxContentSprite = pixiBoxContentSpriteBuilder(crownCoin, boxPos);
+              speed = 25;
+              setGameEvent({
+                message: `${players[uid].username} got the Coin!`,
+                error: false,
+              });
+              setNumberOfBoxes((prevNum) => {
+                if (prevNum < 4) return prevNum + 1;
+                return prevNum;
+              });
             }
-          }
-        });
+            if (boxesContents[boxSpriteUid] === "rocket") {
+              boxContentSprite = pixiBoxContentSpriteBuilder(rocket, boxPos);
+              setGameEvent({
+                message: `${players[uid].username} got the Rocket!`,
+                error: false,
+              });
+              if (uid === user) speed = 50;
+            }
+            if (boxesContents[boxSpriteUid] === "slime") {
+              boxContentSprite = pixiBoxContentSpriteBuilder(slime, boxPos);
+              setGameEvent({
+                message: `${players[uid].username} got the Slime!`,
+                error: false,
+              });
+              if (uid === user) speed = 12.5;
+            }
+            setSprites((prevSprites) => {
+              const sprites = { ...prevSprites };
+              sprites[boxSpriteUid] = pixiSpriteBuilder(openBox, boxPos);
+              if (boxContentSprite) {
+                sprites[boxSpriteUid + "contents"] = boxContentSprite;
+              }
+              return sprites;
+            });
+
+            setBoxesState((prevBoxesState) => {
+              const tempBoxesState = { ...prevBoxesState };
+              tempBoxesState[boxSpriteUid] = "open";
+              return tempBoxesState;
+            });
+          });
       }
     });
   }, [startGame, characterSnapShot]);
 
+  // On boxes change
   useEffect(() => {
-    if (
-      !Object.keys(sprites).every(
-        (spriteUid) => !spriteUid.match(/box[0-9]*contents/)
-      )
-    ) {
+    // Clean stage off boxes contents - coins, rockets, slimes
+    const boxContentsOnStage = Object.keys(sprites).filter((spriteUid) =>
+      checkIfSpriteUidIsBoxContent(spriteUid)
+    );
+    if (boxContentsOnStage.length > 0) {
       setSprites((prevSprites) => {
-        const tempSprites = { ...prevSprites };
-        Object.keys(sprites)
-          .filter((spriteUid) => spriteUid.match(/box[0-9]*contents/))
-          .forEach((spriteUid) => {
-            delete tempSprites[spriteUid];
-          });
-        return tempSprites;
+        const newSprites = { ...prevSprites };
+        boxContentsOnStage.forEach((spriteUid) => delete newSprites[spriteUid]);
+        return newSprites;
       });
     }
+    // reset boxes sprites
+    const newBoxesState = {};
+    const newBoxesContents = {};
+    const newSprites = {};
     Object.keys(boxSnapShot).forEach((uid) => {
-      setBoxesState((prevBoxesState) => {
-        const tempBoxesState = { ...prevBoxesState };
-        tempBoxesState[uid] = "closed";
-        return tempBoxesState;
-      });
-      setBoxesContents((prevBoxesContents) => {
-        const tempBoxesContents = { ...prevBoxesContents };
-        tempBoxesContents[uid] = boxSnapShot[uid].contains;
-        return tempBoxesContents;
-      });
-      setSprites((prevSprites) => {
-        const sprites = { ...prevSprites };
-        sprites[uid] = Pixi.Sprite.from(closedBox);
-        sprites[uid].anchor.set(0.5, 0.5);
-        sprites[uid].position.set(boxSnapShot[uid].x, boxSnapShot[uid].y);
-        return sprites;
-      });
+      newBoxesState[uid] = "closed";
+      newBoxesContents[uid] = boxSnapShot[uid].contains;
+      newSprites[uid] = pixiSpriteBuilder(closedBox, boxSnapShot[uid]);
+    });
+    setBoxesState(newBoxesState);
+    setBoxesContents(newBoxesContents);
+    setSprites((prevSprites) => {
+      return { ...prevSprites, ...newSprites };
     });
   }, [startGame, boxSnapShot]);
 

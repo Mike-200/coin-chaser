@@ -11,10 +11,6 @@
   text-align: right;
 }
 
-.container {
-  padding: 40px;
-}
-
 @font-face {
   font-family: "coin";
   src: local("coin"), url("../assets/fonts/coin.ttf") format("truetype");

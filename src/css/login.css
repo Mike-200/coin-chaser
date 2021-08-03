@@ -8,3 +8,41 @@
   font-family: coin;
   margin-top: 45px;
 }
+
+.CardHolder {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.LoginCard {
+  position: absolute;
+  top: 20%;
+  border-left: auto;
+  border-right: auto;
+  background-color: #f7ffd7;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  width: 400px;
+  min-height: 375px;
+  padding: 10px;
+  font-size: 20px;
+  border-style: solid;
+  border-width: 3px;
+  border-color: darkgoldenrod;
+  border-radius: 20px;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+}
+
+.errorMessage {
+  color: red;
+}
+
+.bold {
+  font-weight: bold;
+}

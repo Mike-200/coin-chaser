@@ -29,7 +29,9 @@ const Controls = ({ numberOfBoxes, speed, players }) => {
 
   return (
     <section className="playing container">
-      <button onClick={NewScreenButton}>New Screen</button>
+      {room === user ? (
+        <button onClick={NewScreenButton}>Next level</button>
+      ) : null}
       <div className="playing-controls">
         <img
           onClick={() => {

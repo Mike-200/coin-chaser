@@ -5,6 +5,8 @@ import * as Pixi from "pixi.js";
 import closedBox from "./assets/box-closed.svg";
 import openBox from "./assets/opened-box.svg";
 import crownCoin from "./assets/coin.svg";
+import rocket from "./assets/shuttle.svg";
+import slime from "./assets/splash.svg";
 
 import firebase from "./firebase-config";
 import { logout, updateCharPosition } from "./utils/firebase";
@@ -25,14 +27,15 @@ import { SpritesContext } from "./contexts/Sprites";
 import { ScoresContext } from "./contexts/Scores";
 import { collisionDetect } from "./utils/collision";
 
+const canvasSize = { x: 900, y: 500 };
 let speed = 25;
 
 const auth = firebase.auth();
 export const fireDB = firebase.database();
 
 const gameApp = new Pixi.Application({
-  width: 760,
-  height: 520,
+  width: canvasSize.x,
+  height: canvasSize.y,
   backgroundColor: 0x8fc0a9,
   antialias: true,
   resolution: window.devicePixelRatio,
@@ -96,19 +99,28 @@ function App() {
     }
   }, [startGame]);
 
-  function keyDownHandler(sprites) {
-    return function (e) {
+  function keyHandlers(sprites) {
+    let keyDown = false;
+    function keyDownHandler(e) {
       if (listeningToKeyPresses) {
         e.preventDefault();
-        updateCharPosition(
-          room,
-          user,
-          { x: sprites[user].x, y: sprites[user].y },
-          e.key,
-          speed
-        );
+        if (!keyDown) {
+          keyDown = true;
+          updateCharPosition(
+            room,
+            user,
+            { x: sprites[user].x, y: sprites[user].y },
+            e.key,
+            speed,
+            canvasSize
+          );
+        }
       }
-    };
+    }
+    function keyUpHandler(e) {
+      keyDown = false;
+    }
+    return [keyDownHandler, keyUpHandler];
   }
 
   useEffect(() => {
@@ -125,15 +137,17 @@ function App() {
             characterSnapShot[uid].y
           );
           if (uid === user) {
-            window.addEventListener("keydown", keyDownHandler(sprites));
-            const pixiCanvas = document.getElementById("pixi_canvas");
-
-            pixiCanvas.addEventListener("mouseover", (event) => {
+            const [keyDownHandler, keyUpHandler] = keyHandlers(sprites);
+            window.addEventListener("keydown", keyDownHandler);
+            window.addEventListener("keyup", keyUpHandler);
+            // const pixiCanvas = document.getElementById("pixi_canvas");
+            const messenger = document.getElementById("Messaging__Window");
+            messenger.addEventListener("mouseout", (event) => {
               if (!listeningToKeyPresses) {
                 listeningToKeyPresses = true;
               }
             });
-            pixiCanvas.addEventListener("mouseout", (event) => {
+            messenger.addEventListener("mouseover", (event) => {
               if (listeningToKeyPresses) {
                 listeningToKeyPresses = false;
               }
@@ -170,8 +184,24 @@ function App() {
                   tempBoxContent = Pixi.Sprite.from(crownCoin);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
+                  speed = 25;
+                  setNumberOfBoxes((prevNum) => {
+                    if (prevNum < 4) return prevNum + 1;
+                    return prevNum;
+                  });
                 }
-
+                if (boxesContents[boxSpriteUid] === "rocket") {
+                  tempBoxContent = Pixi.Sprite.from(rocket);
+                  tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
+                  tempBoxContent.anchor.set(0.5, 0.5);
+                  if (uid === user) speed = 50;
+                }
+                if (boxesContents[boxSpriteUid] === "slime") {
+                  tempBoxContent = Pixi.Sprite.from(slime);
+                  tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
+                  tempBoxContent.anchor.set(0.5, 0.5);
+                  if (uid === user) speed = 12.5;
+                }
                 setSprites((prevSprites) => {
                   const sprites = { ...prevSprites };
                   sprites[boxSpriteUid] = tempSprite;

@@ -116,11 +116,25 @@ export function startNewScreen(room, user, players, numberOfBoxes) {
       .ref("rooms/" + room + "/gameProps/boxes")
       .child(`box${i}`)
       .set(randomBoxPosition(occupiedPositions));
+  }
+  fireDB
+    .ref("rooms/" + room + "/gameProps/boxes")
+    .child(`box1`)
+    .child("contains")
+    .set("coin");
+  if (numberOfBoxes > 2) {
     fireDB
       .ref("rooms/" + room + "/gameProps/boxes")
-      .child(`box${i}`)
+      .child(`box3`)
       .child("contains")
-      .set("coin");
+      .set("slime");
+  }
+  if (numberOfBoxes > 3) {
+    fireDB
+      .ref("rooms/" + room + "/gameProps/boxes")
+      .child(`box4`)
+      .child("contains")
+      .set("rocket");
   }
 }
 

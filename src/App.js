@@ -25,6 +25,7 @@ import { UserContext } from "./contexts/User";
 import { AvatarContext } from "./contexts/Avatar";
 import { SpritesContext } from "./contexts/Sprites";
 import { ScoresContext } from "./contexts/Scores";
+import { PlayersContext } from "./contexts/Players";
 import { collisionDetect } from "./utils/collision";
 
 const canvasSize = { x: 900, y: 500 };
@@ -57,9 +58,9 @@ function App() {
   const [avatar, setAvatar] = useState(0);
   const [sprites, setSprites] = useState({});
   const [scores, setScores] = useState({});
+  const [players, setPlayers] = useState({});
 
   // States:-
-  const [players, setPlayers] = useState({});
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
   const [boxesContents, setBoxesContents] = useState({});
   const [characterSnapShot, setCharacterSnapShot] = useState({});
@@ -270,20 +271,19 @@ function App() {
               <AvatarContext.Provider value={{ avatar, setAvatar }}>
                 <SpritesContext.Provider value={{ sprites, setSprites }}>
                   <ScoresContext.Provider value={{ scores, setScores }}>
+                    <PlayersContext.Provider value={{ players, setPlayers }}>
                     {!startGame ? (
                       <Login
                         auth={auth}
-                        players={players}
-                        setPlayers={setPlayers}
                         logoutButton={logoutButton}
                       />
                     ) : (
                       <>
                         <div className="App">
-                          <Header players={players} characters={characters} />
+                          <Header characters={characters} />
                           <PixiComponent sprites={sprites} gameApp={gameApp} />
 
-                          <Scores players={players} characters={characters} />
+                          <Scores characters={characters} />
 
                           {/* <p>User: {username}</p>
                         <p>User: {user}</p> */}
@@ -291,14 +291,13 @@ function App() {
                           <Controls
                             numberOfBoxes={numberOfBoxes}
                             setNumberOfBoxes={setNumberOfBoxes}
-                            speed={speed}
-                            players={players}
-                          />
+                            speed={speed}                          />
                           {/* <button onClick={logoutButton}>Logout</button> */}
                           <Messaging />
                         </div>
                       </>
                     )}
+                    </PlayersContext.Provider>
                   </ScoresContext.Provider>
                 </SpritesContext.Provider>
               </AvatarContext.Provider>

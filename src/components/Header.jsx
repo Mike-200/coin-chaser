@@ -5,6 +5,7 @@ import { UserContext } from "../contexts/User";
 import { UsernameContext } from "../contexts/Username";
 import { AvatarContext } from "../contexts/Avatar";
 import { SpritesContext } from "../contexts/Sprites";
+import { PlayersContext } from "../contexts/Players";
 
 import { getAvatar } from "../utils/backend";
 import "../css/header.css";
@@ -12,13 +13,14 @@ import coin from "../assets/coin.svg";
 import "../assets/fonts/coin.ttf";
 import { logoutButton } from "../App";
 
-const Header = ({ players, uid, characters }) => {
+const Header = ({ uid, characters }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
   const { room, setRoom } = useContext(RoomContext);
   const { user, setUser } = useContext(UserContext);
   const { username, setUsername } = useContext(UsernameContext);
   const { avatar, setAvatar } = useContext(AvatarContext);
   const { sprites, setSprites } = useContext(SpritesContext);
+  const { players, setPlayers } = useContext(PlayersContext);
 
   return (
     <header>

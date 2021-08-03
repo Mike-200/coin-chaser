@@ -16,7 +16,7 @@ import { UserContext } from "../contexts/User";
 import { SpritesContext } from "../contexts/Sprites";
 import { PlayersContext } from "../contexts/Players";
 
-const Controls = ({ numberOfBoxes, speed, canvasSize }) => {
+const Controls = ({ numberOfBoxes, speed, canvasSize, gameEnd }) => {
   const { room } = useContext(RoomContext);
   const { user } = useContext(UserContext);
   const { sprites } = useContext(SpritesContext);
@@ -42,7 +42,7 @@ const Controls = ({ numberOfBoxes, speed, canvasSize }) => {
 
   return (
     <section className="container">
-      {room === user ? (
+      {room === user && !gameEnd ? (
         <button onClick={NewScreenButton}>Next level</button>
       ) : null}
       <div className="playing-controls">
@@ -55,22 +55,22 @@ const Controls = ({ numberOfBoxes, speed, canvasSize }) => {
           <img src={left} alt="arrow left"></img>
         </button>
         <div className="up-down-arrows">
-        <button
-          onClick={() => {
-            move("ArrowUp");
-          }}
-          className="arrow-button"
-        >
-          <img src={up} alt="arrow up"></img>
-        </button>
-        <button
-          onClick={() => {
-            move("ArrowDown");
-          }}
-          className="arrow-button"
-        >
-          <img src={down} alt="arrow down"></img>
-        </button>
+          <button
+            onClick={() => {
+              move("ArrowUp");
+            }}
+            className="arrow-button"
+          >
+            <img src={up} alt="arrow up"></img>
+          </button>
+          <button
+            onClick={() => {
+              move("ArrowDown");
+            }}
+            className="arrow-button"
+          >
+            <img src={down} alt="arrow down"></img>
+          </button>
         </div>
         <button
           onClick={() => {

@@ -87,6 +87,7 @@ function App() {
   const [characterSnapShot, setCharacterSnapShot] = useState({});
   const [boxSnapShot, setBoxSnapShot] = useState({});
   const [boxesState, setBoxesState] = useState({});
+  const [gameEnd, setGameEnd] = useState(false);
 
   function keyHandlers(sprites) {
     let keyDown = false;
@@ -156,6 +157,19 @@ function App() {
       );
     }
   }, [startGame]);
+
+  // On Score Change
+  useEffect(() => {
+    Object.keys(scores).forEach((uid) => {
+      if (scores[uid] === 10) {
+        setGameEnd(true);
+        setGameEvent({
+          message: `${players[uid].username} won the game!`,
+          error: false,
+        });
+      }
+    });
+  }, [scores]);
 
   // On characters change
   useEffect(() => {
@@ -309,6 +323,7 @@ function App() {
                                 setNumberOfBoxes={setNumberOfBoxes}
                                 speed={speed}
                                 canvasSize={canvasSize}
+                                gameEnd={gameEnd}
                               />
                               <Messaging />
                             </div>

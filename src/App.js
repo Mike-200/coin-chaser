@@ -191,6 +191,10 @@ function App() {
           return sprites;
         });
       } else {
+        if (sprites[uid].x > characterSnapShot[uid].x) {
+          sprites[uid].scale.x = -1;
+        } else if (sprites[uid].x < characterSnapShot[uid].x)
+          sprites[uid].scale.x = 1;
         sprites[uid].x = characterSnapShot[uid].x;
         sprites[uid].y = characterSnapShot[uid].y;
         // Collision logic

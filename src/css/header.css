@@ -29,3 +29,13 @@
   width: 55px;
   height: 55px;
 }
+
+.event {
+  font-weight: bold;
+  color: aqua;
+}
+
+.event-error {
+  font-weight: bold;
+  color: red;
+}

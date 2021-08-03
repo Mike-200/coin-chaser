@@ -1,23 +1,37 @@
+// Styling
 import "./App.css";
+
+// Components
 import PixiComponent from "./components/PixiComponent";
 import Controls from "./components/Controls";
-import * as Pixi from "pixi.js";
+import Login from "./components/Login";
+import Header from "./components/Header";
+import Scores from "./components/Scores";
+import Messaging from "./components/Messaging";
+
+// Sprites
 import closedBox from "./assets/box-closed.svg";
 import openBox from "./assets/opened-box.svg";
 import crownCoin from "./assets/coin.svg";
 import rocket from "./assets/shuttle.svg";
 import slime from "./assets/splash.svg";
+import characters from "./characters";
 
+// Functions, utils, dependencies...
+import * as Pixi from "pixi.js";
 import firebase from "./firebase-config";
 import { logout, updateCharPosition } from "./utils/firebase";
 import { useEffect, useState } from "react";
-import Login from "./components/Login";
-import Header from "./components/Header";
-import Scores from "./components/Scores";
-import Messaging from "./components/Messaging";
-import { getAvatar, useStickyState, startNewScreen } from "./utils/backend";
-import characters from "./characters";
+import { useBeforeunload } from "react-beforeunload";
+import {
+  getAvatar,
+  useStickyState,
+  startNewScreen,
+  cleanup,
+} from "./utils/backend";
+import { collisionDetect } from "./utils/collision";
 
+// Contexts
 import { StartGameContext } from "./contexts/StartGame";
 import { RoomContext } from "./contexts/Room";
 import { UsernameContext } from "./contexts/Username";
@@ -25,7 +39,10 @@ import { UserContext } from "./contexts/User";
 import { AvatarContext } from "./contexts/Avatar";
 import { SpritesContext } from "./contexts/Sprites";
 import { ScoresContext } from "./contexts/Scores";
-import { collisionDetect } from "./utils/collision";
+import { PlayersContext } from "./contexts/Players";
+import { GameEventContext } from "./contexts/GameEvent";
+
+// Variables init
 
 const canvasSize = { x: 900, y: 500 };
 let speed = 25;
@@ -42,10 +59,6 @@ const gameApp = new Pixi.Application({
   autoDensity: true,
 });
 
-export function logoutButton() {
-  logout(auth);
-}
-
 let listeningToKeyPresses = true;
 
 function App() {
@@ -57,14 +70,28 @@ function App() {
   const [avatar, setAvatar] = useState(0);
   const [sprites, setSprites] = useState({});
   const [scores, setScores] = useState({});
+  const [players, setPlayers] = useState({});
+  const [gameEvent, setGameEvent] = useState({ message: null, error: false });
 
   // States:-
-  const [players, setPlayers] = useState({});
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
   const [boxesContents, setBoxesContents] = useState({});
   const [characterSnapShot, setCharacterSnapShot] = useState({});
   const [boxSnapShot, setBoxSnapShot] = useState({});
   const [boxesState, setBoxesState] = useState({});
+
+  function logoutButton() {
+    cleanup(user === room, fireDB, room, setStartGame, () => {
+      logout(auth);
+    });
+    window.location.reload();
+  }
+
+  useBeforeunload(() => {
+    cleanup(user === room, fireDB, room, setStartGame, () => {
+      logout(auth);
+    });
+  });
 
   useEffect(() => {
     if (startGame) {
@@ -75,6 +102,43 @@ function App() {
           tempScores[player] = 0;
         });
         fireDB.ref("rooms/" + room + "/gameProps/scores").set(tempScores);
+      } else {
+        fireDB.ref("rooms/" + room + "/startGame").on("value", (snap) => {
+          if (!snap.val()) {
+            setGameEvent({
+              message: "Host Disconnected! Logging out in 5",
+              error: true,
+            });
+            setTimeout(() => {
+              setGameEvent({
+                message: "Host Disconnected! Logging out in 4",
+                error: true,
+              });
+              clearTimeout();
+              setTimeout(() => {
+                setGameEvent({
+                  message: "Host Disconnected! Logging out in 3",
+                  error: true,
+                });
+                setTimeout(() => {
+                  setGameEvent({
+                    message: "Host Disconnected! Logging out in 2",
+                    error: true,
+                  });
+                  setTimeout(() => {
+                    setGameEvent({
+                      message: "Host Disconnected! Logging out in 1",
+                      error: true,
+                    });
+                    setTimeout(() => {
+                      logoutButton();
+                    }, 1000);
+                  }, 1000);
+                }, 1000);
+              }, 1000);
+            }, 1000);
+          }
+        });
       }
 
       fireDB
@@ -140,7 +204,6 @@ function App() {
             const [keyDownHandler, keyUpHandler] = keyHandlers(sprites);
             window.addEventListener("keydown", keyDownHandler);
             window.addEventListener("keyup", keyUpHandler);
-            // const pixiCanvas = document.getElementById("pixi_canvas");
             const messenger = document.getElementById("Messaging__Window");
             messenger.addEventListener("mouseout", (event) => {
               if (!listeningToKeyPresses) {
@@ -185,6 +248,10 @@ function App() {
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
                   speed = 25;
+                  setGameEvent({
+                    message: `${players[uid].username} got the Coin!`,
+                    error: false,
+                  });
                   setNumberOfBoxes((prevNum) => {
                     if (prevNum < 4) return prevNum + 1;
                     return prevNum;
@@ -194,12 +261,20 @@ function App() {
                   tempBoxContent = Pixi.Sprite.from(rocket);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
+                  setGameEvent({
+                    message: `${players[uid].username} got the Rocket!`,
+                    error: false,
+                  });
                   if (uid === user) speed = 50;
                 }
                 if (boxesContents[boxSpriteUid] === "slime") {
                   tempBoxContent = Pixi.Sprite.from(slime);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
+                  setGameEvent({
+                    message: `${players[uid].username} got the Slime!`,
+                    error: false,
+                  });
                   if (uid === user) speed = 12.5;
                 }
                 setSprites((prevSprites) => {
@@ -270,35 +345,36 @@ function App() {
               <AvatarContext.Provider value={{ avatar, setAvatar }}>
                 <SpritesContext.Provider value={{ sprites, setSprites }}>
                   <ScoresContext.Provider value={{ scores, setScores }}>
-                    {!startGame ? (
-                      <Login
-                        auth={auth}
-                        players={players}
-                        setPlayers={setPlayers}
-                        logoutButton={logoutButton}
-                      />
-                    ) : (
-                      <>
-                        <div className="App">
-                          <Header players={players} characters={characters} />
-                          <PixiComponent sprites={sprites} gameApp={gameApp} />
-
-                          <Scores players={players} characters={characters} />
-
-                          {/* <p>User: {username}</p>
-                        <p>User: {user}</p> */}
-
-                          <Controls
-                            numberOfBoxes={numberOfBoxes}
-                            setNumberOfBoxes={setNumberOfBoxes}
-                            speed={speed}
-                            players={players}
-                          />
-                          {/* <button onClick={logoutButton}>Logout</button> */}
-                          <Messaging />
-                        </div>
-                      </>
-                    )}
+                    <PlayersContext.Provider value={{ players, setPlayers }}>
+                      <GameEventContext.Provider
+                        value={{ gameEvent, setGameEvent }}
+                      >
+                        {!startGame ? (
+                          <Login auth={auth} logoutButton={logoutButton} />
+                        ) : (
+                          <>
+                            <div className="App">
+                              <Header
+                                characters={characters}
+                                logoutButton={logoutButton}
+                              />
+                              <PixiComponent
+                                sprites={sprites}
+                                gameApp={gameApp}
+                              />
+                              <Scores characters={characters} />
+                              <Controls
+                                numberOfBoxes={numberOfBoxes}
+                                setNumberOfBoxes={setNumberOfBoxes}
+                                speed={speed}
+                                canvasSize={canvasSize}
+                              />
+                              <Messaging />
+                            </div>
+                          </>
+                        )}
+                      </GameEventContext.Provider>
+                    </PlayersContext.Provider>
                   </ScoresContext.Provider>
                 </SpritesContext.Provider>
               </AvatarContext.Provider>

@@ -12,16 +12,18 @@ import { UserContext } from "../contexts/User";
 import { UsernameContext } from "../contexts/Username";
 import { AvatarContext } from "../contexts/Avatar";
 import { SpritesContext } from "../contexts/Sprites";
+import { PlayersContext } from "../contexts/Players";
 
 import { fireDB } from "../App";
 
-const Controls = ({ numberOfBoxes, speed, players }) => {
+const Controls = ({ numberOfBoxes, speed, canvasSize }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
   const { room, setRoom } = useContext(RoomContext);
   const { user, setUser } = useContext(UserContext);
   const { username, setUsername } = useContext(UsernameContext);
   const { avatar, setAvatar } = useContext(AvatarContext);
   const { sprites, setSprites } = useContext(SpritesContext);
+  const { players, setPlayers } = useContext(PlayersContext);
 
   function NewScreenButton() {
     startNewScreen(room, user, players, numberOfBoxes);
@@ -43,7 +45,8 @@ const Controls = ({ numberOfBoxes, speed, players }) => {
                 y: sprites[user].y,
               },
               "ArrowLeft",
-              speed
+              speed,
+              canvasSize
             );
           }}
           value="left"
@@ -61,7 +64,8 @@ const Controls = ({ numberOfBoxes, speed, players }) => {
                   y: sprites[user].y,
                 },
                 "ArrowUp",
-                speed
+                speed,
+                canvasSize
               );
             }}
             value="up"
@@ -78,7 +82,8 @@ const Controls = ({ numberOfBoxes, speed, players }) => {
                   y: sprites[user].y,
                 },
                 "ArrowDown",
-                speed
+                speed, 
+                canvasSize
               );
             }}
             value="down"
@@ -96,7 +101,8 @@ const Controls = ({ numberOfBoxes, speed, players }) => {
                 y: sprites[user].y,
               },
               "ArrowRight",
-              speed
+              speed,
+              canvasSize
             );
           }}
           value="right"

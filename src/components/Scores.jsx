@@ -8,11 +8,12 @@ import { UsernameContext } from "../contexts/Username";
 import { AvatarContext } from "../contexts/Avatar";
 import { SpritesContext } from "../contexts/Sprites";
 import { ScoresContext } from "../contexts/Scores.js";
+import { PlayersContext } from "../contexts/Players";
 
 import { getAvatar } from "../utils/backend";
 import crownCoin from "../assets/coin.svg";
 
-const Scores = ({ players, characters }) => {
+const Scores = ({ characters }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
   const { room, setRoom } = useContext(RoomContext);
   const { user, setUser } = useContext(UserContext);
@@ -20,6 +21,7 @@ const Scores = ({ players, characters }) => {
   const { avatar, setAvatar } = useContext(AvatarContext);
   const { sprites, setSprites } = useContext(SpritesContext);
   const { scores } = useContext(ScoresContext);
+  const { players, setPlayers } = useContext(PlayersContext);
 
   return (
     <div id="Scores__Window">

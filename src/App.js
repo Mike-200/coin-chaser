@@ -81,28 +81,16 @@ function App() {
   const [boxesState, setBoxesState] = useState({});
 
   function logoutButton() {
-    cleanup(
-      user === room,
-      fireDB,
-      room,
-      setStartGame,
-      () => {
-        logout(auth);
-      }
-    );
+    cleanup(user === room, fireDB, room, setStartGame, () => {
+      logout(auth);
+    });
     window.location.reload();
   }
 
   useBeforeunload(() => {
-    cleanup(
-      user === room,
-      fireDB,
-      room,
-      setStartGame,
-      () => {
-        logout(auth);
-      }
-    );
+    cleanup(user === room, fireDB, room, setStartGame, () => {
+      logout(auth);
+    });
   });
 
   useEffect(() => {
@@ -118,10 +106,37 @@ function App() {
         fireDB.ref("rooms/" + room + "/startGame").on("value", (snap) => {
           if (!snap.val()) {
             setGameEvent({
-              message: "Host Disconnected! Please Logout",
+              message: "Host Disconnected! Logging out in 5",
               error: true,
             });
-            logoutButton();
+            setTimeout(() => {
+              setGameEvent({
+                message: "Host Disconnected! Logging out in 4",
+                error: true,
+              });
+              clearTimeout();
+              setTimeout(() => {
+                setGameEvent({
+                  message: "Host Disconnected! Logging out in 3",
+                  error: true,
+                });
+                setTimeout(() => {
+                  setGameEvent({
+                    message: "Host Disconnected! Logging out in 2",
+                    error: true,
+                  });
+                  setTimeout(() => {
+                    setGameEvent({
+                      message: "Host Disconnected! Logging out in 1",
+                      error: true,
+                    });
+                    setTimeout(() => {
+                      logoutButton();
+                    }, 1000);
+                  }, 1000);
+                }, 1000);
+              }, 1000);
+            }, 1000);
           }
         });
       }

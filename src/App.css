@@ -1,19 +1,19 @@
 @font-face {
-  font-family: 'OpenSans';
-  src: local('OpenSans'),
-    url('./assets/fonts/OpenSans-Regular.ttf') format('truetype');
+  font-family: "OpenSans";
+  src: local("OpenSans"),
+    url("./assets/fonts/OpenSans-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'coin';
-  src: local('coin'), url('./assets/fonts/coin.ttf') format('truetype');
+  font-family: "coin";
+  src: local("coin"), url("./assets/fonts/coin.ttf") format("truetype");
 }
 
 .App {
   text-align: center;
   /* background-color: red; */
   color: #000;
-  font-family: 'OpenSans';
+  font-family: "OpenSans";
 }
 
 button {
@@ -44,4 +44,19 @@ button {
 #hero {
   /* background-color: red; */
   position: relative;
+}
+
+#Messaging__Window {
+  border-color: cornflowerblue;
+  background-color: #c2948d;
+}
+
+#Scores__Window {
+  border-color: cornflowerblue;
+  background-color: #c2948d;
+}
+
+.Rules__Window {
+  border-color: cornflowerblue;
+  background-color: #c2bb8c;
 }

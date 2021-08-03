@@ -1,21 +1,21 @@
 // Styling
-import '../css/header.css';
-import '../assets/fonts/coin.ttf';
+import "../css/header.css";
+import "../assets/fonts/coin.ttf";
 
 // Dependencies
-import { useContext } from 'react';
-import { getAvatar } from '../utils/backend';
-import coin from '../assets/coin.svg';
+import { useContext } from "react";
+import { getAvatar } from "../utils/backend";
+import coin from "../assets/coin.svg";
 
 // Contexts
-import { StartGameContext } from '../contexts/StartGame';
-import { RoomContext } from '../contexts/Room';
-import { UserContext } from '../contexts/User';
-import { UsernameContext } from '../contexts/Username';
-import { AvatarContext } from '../contexts/Avatar';
-import { SpritesContext } from '../contexts/Sprites';
-import { PlayersContext } from '../contexts/Players';
-import { GameEventContext } from '../contexts/GameEvent';
+import { StartGameContext } from "../contexts/StartGame";
+import { RoomContext } from "../contexts/Room";
+import { UserContext } from "../contexts/User";
+import { UsernameContext } from "../contexts/Username";
+import { AvatarContext } from "../contexts/Avatar";
+import { SpritesContext } from "../contexts/Sprites";
+import { PlayersContext } from "../contexts/Players";
+import { GameEventContext } from "../contexts/GameEvent";
 
 const Header = ({ characters, logoutButton }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
@@ -30,14 +30,7 @@ const Header = ({ characters, logoutButton }) => {
   return (
     <header>
       <div className="container">
-        {/* <div className="user">
-          <img
-            id="Header__Avatar"
-            alt="avatar"
-            src={getAvatar(players[user].avatar, characters)}
-          ></img>
-          <p>{username}</p>
-        </div>
+        <button onClick={logoutButton}>Logout</button>
 
         <div className="Header_name">
           <span>C</span>
@@ -47,8 +40,24 @@ const Header = ({ characters, logoutButton }) => {
           <span>IN CHASER</span>
         </div>
 
-        <button onClick={logoutButton}>Logout</button> */}
-        <div className="Header_name">
+        {/* {gameEvent.message ? (
+          gameEvent.error ? (
+            <span className="event-error">{gameEvent.message}</span>
+          ) : (
+            <span className="event">{gameEvent.message}</span>
+          )
+        ) : null} */}
+
+        <div className="user">
+          <p>{username}</p>
+          <img
+            id="Header__Avatar"
+            alt="avatar"
+            src={getAvatar(players[user].avatar, characters)}
+          ></img>
+        </div>
+
+        {/* <div className="Header_name">
           C<img className="Header_coin" alt="coin" src={coin}></img>
           IN CHASER
         </div>
@@ -73,7 +82,7 @@ const Header = ({ characters, logoutButton }) => {
               src={getAvatar(players[user].avatar, characters)}
             ></img>
           </span>
-        </nav>
+        </nav> */}
       </div>
     </header>
   );

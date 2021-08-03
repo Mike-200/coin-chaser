@@ -28,14 +28,16 @@
 
 .user p {
   margin-left: 10px;
+  margin-right: 10px;
+  font-weight: bold;
 }
 
-.event {
+/* .event {
   font-weight: bold;
   color: aqua;
-}
+} */
 
-.event-error {
+/* .event-error {
   font-weight: bold;
   color: red;
-}
+} */

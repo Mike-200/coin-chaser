@@ -18,9 +18,8 @@
 
 .playing-container {
   display: grid;
-  grid-template-areas: 'key arrows buttons';
+  grid-template-areas: "key arrows buttons";
   grid-template-columns: 30% 40% 30%;
-
   text-align: center;
 }
 
@@ -39,12 +38,14 @@
   justify-content: center;
 }
 
-.Key__Window {
-  width: 400px;
+.Rules__Window {
+  width: 425px;
+  height: 250px;
   border-style: solid;
   border-width: 2px;
-  border-color: cornflowerblue;
+  /* border-color: cornflowerblue;
   background-color: khaki;
+  SEE APP.JS FOR ALL COLOURS OF BOXES TOGETHER */
   margin-left: 15px;
 }
 
@@ -64,6 +65,11 @@
   margin-bottom: 5px;
 }
 
+.Key__AllModifiersContainer {
+  display: flex;
+  flex-direction: column;
+}
+
 .Key__EachModifer {
   display: flex;
   align-items: left;
@@ -79,4 +85,14 @@
 .arrow {
   width: 75px;
   height: 75px;
+}
+
+.Controls__GameEvent {
+  color: black;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.event-error {
+  color: red;
 }

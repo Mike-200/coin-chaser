@@ -21,7 +21,7 @@ const PixiComponent = ({ gameApp, sprites }) => {
     });
   }, [sprites, gameApp]);
 
-  return <div className="game-screen" id="pixi_canvas" ref={ref}></div>;
+  return <div id="pixi_canvas" ref={ref}></div>;
 };
 
 export default PixiComponent;

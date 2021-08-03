@@ -6,8 +6,9 @@
   width: 225px;
   border-style: solid;
   border-width: 2px;
-  border-color: cornflowerblue;
+  /* border-color: cornflowerblue;
   background-color: darkgray;
+  SEE APP.JS FOR ALL COLOURS OF BOXES TOGETHER */
 }
 
 #Scores__List {
@@ -23,6 +24,7 @@
   align-items: center;
   justify-content: space-between;
   margin: 5px 0;
+  font-weight: bold;
 }
 
 #Scores__Scores {

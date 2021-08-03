@@ -7,9 +7,9 @@
   width: 225px;
   border-style: solid;
   border-width: 2px;
-  border-color: cornflowerblue;
-
+  /* border-color: cornflowerblue;
   background-color: rgb(247, 247, 217);
+  SEE APP.JS FOR ALL COLOURS OF BOXES TOGETHER */
 }
 
 #Messages__Title {

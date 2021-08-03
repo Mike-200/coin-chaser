@@ -1,50 +1,50 @@
 // Styling
-import './App.css';
+import "./App.css";
 
 // Components
-import PixiComponent from './components/PixiComponent';
-import Controls from './components/Controls';
-import Login from './components/Login';
-import Header from './components/Header';
-import Scores from './components/Scores';
-import Messaging from './components/Messaging';
+import PixiComponent from "./components/PixiComponent";
+import Controls from "./components/Controls";
+import Login from "./components/Login";
+import Header from "./components/Header";
+import Scores from "./components/Scores";
+import Messaging from "./components/Messaging";
 
 // Sprites
-import closedBox from './assets/box-closed.svg';
-import openBox from './assets/opened-box.svg';
-import crownCoin from './assets/coin.svg';
-import rocket from './assets/shuttle.svg';
-import slime from './assets/splash.svg';
-import characters from './characters';
+import closedBox from "./assets/box-closed.svg";
+import openBox from "./assets/opened-box.svg";
+import crownCoin from "./assets/coin.svg";
+import rocket from "./assets/shuttle.svg";
+import slime from "./assets/splash.svg";
+import characters from "./characters";
 
 // Functions, utils, dependencies...
-import * as Pixi from 'pixi.js';
-import firebase from './firebase-config';
-import { logout, updateCharPosition } from './utils/firebase';
-import { useEffect, useState } from 'react';
-import { useBeforeunload } from 'react-beforeunload';
+import * as Pixi from "pixi.js";
+import firebase from "./firebase-config";
+import { logout, updateCharPosition } from "./utils/firebase";
+import { useEffect, useState } from "react";
+import { useBeforeunload } from "react-beforeunload";
 import {
   getAvatar,
   useStickyState,
   startNewScreen,
   cleanup,
-} from './utils/backend';
-import { collisionDetect } from './utils/collision';
+} from "./utils/backend";
+import { collisionDetect } from "./utils/collision";
 
 // Contexts
-import { StartGameContext } from './contexts/StartGame';
-import { RoomContext } from './contexts/Room';
-import { UsernameContext } from './contexts/Username';
-import { UserContext } from './contexts/User';
-import { AvatarContext } from './contexts/Avatar';
-import { SpritesContext } from './contexts/Sprites';
-import { ScoresContext } from './contexts/Scores';
-import { PlayersContext } from './contexts/Players';
-import { GameEventContext } from './contexts/GameEvent';
+import { StartGameContext } from "./contexts/StartGame";
+import { RoomContext } from "./contexts/Room";
+import { UsernameContext } from "./contexts/Username";
+import { UserContext } from "./contexts/User";
+import { AvatarContext } from "./contexts/Avatar";
+import { SpritesContext } from "./contexts/Sprites";
+import { ScoresContext } from "./contexts/Scores";
+import { PlayersContext } from "./contexts/Players";
+import { GameEventContext } from "./contexts/GameEvent";
 
 // Variables init
 
-const canvasSize = { x: 900, y: 500 };
+const canvasSize = { x: 800, y: 500 };
 let speed = 25;
 
 const auth = firebase.auth();
@@ -53,7 +53,7 @@ export const fireDB = firebase.database();
 const gameApp = new Pixi.Application({
   width: canvasSize.x,
   height: canvasSize.y,
-  backgroundColor: 0x8fc0a9,
+  backgroundColor: 0x69c298,
   antialias: true,
   resolution: window.devicePixelRatio,
   autoDensity: true,
@@ -66,7 +66,7 @@ function App() {
   const [startGame, setStartGame] = useState(false);
   const [room, setRoom] = useState();
   const [user, setUser] = useState();
-  const [username, setUsername] = useStickyState('username');
+  const [username, setUsername] = useStickyState("username");
   const [avatar, setAvatar] = useState(0);
   const [sprites, setSprites] = useState({});
   const [scores, setScores] = useState({});
@@ -101,33 +101,33 @@ function App() {
         Object.keys(players).forEach((player) => {
           tempScores[player] = 0;
         });
-        fireDB.ref('rooms/' + room + '/gameProps/scores').set(tempScores);
+        fireDB.ref("rooms/" + room + "/gameProps/scores").set(tempScores);
       } else {
-        fireDB.ref('rooms/' + room + '/startGame').on('value', (snap) => {
+        fireDB.ref("rooms/" + room + "/startGame").on("value", (snap) => {
           if (!snap.val()) {
             setGameEvent({
-              message: 'Host Disconnected! Logging out in 5',
+              message: "Host Disconnected! Logging out in 5",
               error: true,
             });
             setTimeout(() => {
               setGameEvent({
-                message: 'Host Disconnected! Logging out in 4',
+                message: "Host Disconnected! Logging out in 4",
                 error: true,
               });
               clearTimeout();
               setTimeout(() => {
                 setGameEvent({
-                  message: 'Host Disconnected! Logging out in 3',
+                  message: "Host Disconnected! Logging out in 3",
                   error: true,
                 });
                 setTimeout(() => {
                   setGameEvent({
-                    message: 'Host Disconnected! Logging out in 2',
+                    message: "Host Disconnected! Logging out in 2",
                     error: true,
                   });
                   setTimeout(() => {
                     setGameEvent({
-                      message: 'Host Disconnected! Logging out in 1',
+                      message: "Host Disconnected! Logging out in 1",
                       error: true,
                     });
                     setTimeout(() => {
@@ -142,20 +142,20 @@ function App() {
       }
 
       fireDB
-        .ref('rooms/' + room + '/gameProps/characters/')
-        .on('value', (snap) => {
+        .ref("rooms/" + room + "/gameProps/characters/")
+        .on("value", (snap) => {
           if (snap.exists()) {
             setCharacterSnapShot(snap.val());
           }
         });
 
-      fireDB.ref('rooms/' + room + '/gameProps/boxes').on('value', (snap) => {
+      fireDB.ref("rooms/" + room + "/gameProps/boxes").on("value", (snap) => {
         if (snap.exists()) {
           setBoxSnapShot(snap.val());
         }
       });
 
-      fireDB.ref('rooms/' + room + '/gameProps/scores').on('value', (snap) => {
+      fireDB.ref("rooms/" + room + "/gameProps/scores").on("value", (snap) => {
         if (snap.exists()) {
           setScores(snap.val());
         }
@@ -202,15 +202,15 @@ function App() {
           );
           if (uid === user) {
             const [keyDownHandler, keyUpHandler] = keyHandlers(sprites);
-            window.addEventListener('keydown', keyDownHandler);
-            window.addEventListener('keyup', keyUpHandler);
-            const messenger = document.getElementById('Messaging__Window');
-            messenger.addEventListener('mouseout', (event) => {
+            window.addEventListener("keydown", keyDownHandler);
+            window.addEventListener("keyup", keyUpHandler);
+            const messenger = document.getElementById("Messaging__Window");
+            messenger.addEventListener("mouseout", (event) => {
               if (!listeningToKeyPresses) {
                 listeningToKeyPresses = true;
               }
             });
-            messenger.addEventListener('mouseover', (event) => {
+            messenger.addEventListener("mouseover", (event) => {
               if (listeningToKeyPresses) {
                 listeningToKeyPresses = false;
               }
@@ -225,12 +225,12 @@ function App() {
         Object.keys(sprites).forEach((boxSpriteUid) => {
           if (boxSpriteUid.match(/^box[0-9]*$/)) {
             if (collisionDetect(sprites[boxSpriteUid], sprites[uid])) {
-              if (boxesState[boxSpriteUid] === 'closed') {
+              if (boxesState[boxSpriteUid] === "closed") {
                 // Host collision logic
                 if (user === room) {
-                  if (boxesContents[boxSpriteUid] === 'coin') {
+                  if (boxesContents[boxSpriteUid] === "coin") {
                     fireDB
-                      .ref('rooms/' + room + '/gameProps/scores/' + uid)
+                      .ref("rooms/" + room + "/gameProps/scores/" + uid)
                       .set(scores[uid] + 1);
                   }
                 }
@@ -243,7 +243,7 @@ function App() {
                 tempSprite.anchor.set(0.5, 0.5);
 
                 let tempBoxContent;
-                if (boxesContents[boxSpriteUid] === 'coin') {
+                if (boxesContents[boxSpriteUid] === "coin") {
                   tempBoxContent = Pixi.Sprite.from(crownCoin);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
@@ -257,7 +257,7 @@ function App() {
                     return prevNum;
                   });
                 }
-                if (boxesContents[boxSpriteUid] === 'rocket') {
+                if (boxesContents[boxSpriteUid] === "rocket") {
                   tempBoxContent = Pixi.Sprite.from(rocket);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
@@ -267,7 +267,7 @@ function App() {
                   });
                   if (uid === user) speed = 50;
                 }
-                if (boxesContents[boxSpriteUid] === 'slime') {
+                if (boxesContents[boxSpriteUid] === "slime") {
                   tempBoxContent = Pixi.Sprite.from(slime);
                   tempBoxContent.position.set(boxPos.x, boxPos.y - 50);
                   tempBoxContent.anchor.set(0.5, 0.5);
@@ -281,14 +281,14 @@ function App() {
                   const sprites = { ...prevSprites };
                   sprites[boxSpriteUid] = tempSprite;
                   if (tempBoxContent) {
-                    sprites[boxSpriteUid + 'contents'] = tempBoxContent;
+                    sprites[boxSpriteUid + "contents"] = tempBoxContent;
                   }
                   return sprites;
                 });
 
                 setBoxesState((prevBoxesState) => {
                   const tempBoxesState = { ...prevBoxesState };
-                  tempBoxesState[boxSpriteUid] = 'open';
+                  tempBoxesState[boxSpriteUid] = "open";
                   return tempBoxesState;
                 });
               }
@@ -318,7 +318,7 @@ function App() {
     Object.keys(boxSnapShot).forEach((uid) => {
       setBoxesState((prevBoxesState) => {
         const tempBoxesState = { ...prevBoxesState };
-        tempBoxesState[uid] = 'closed';
+        tempBoxesState[uid] = "closed";
         return tempBoxesState;
       });
       setBoxesContents((prevBoxesContents) => {

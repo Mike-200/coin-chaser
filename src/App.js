@@ -52,7 +52,7 @@ import { GameEventContext } from "./contexts/GameEvent";
 
 // Variables init
 
-const canvasSize = { x: 900, y: 500 };
+const canvasSize = { x: 800, y: 500 };
 let speed = 25;
 
 const auth = firebase.auth();
@@ -61,7 +61,7 @@ export const fireDB = firebase.database();
 const gameApp = new Pixi.Application({
   width: canvasSize.x,
   height: canvasSize.y,
-  backgroundColor: 0x8fc0a9,
+  backgroundColor: 0x69c298,
   antialias: true,
   resolution: window.devicePixelRatio,
   autoDensity: true,
@@ -317,11 +317,17 @@ function App() {
                                 characters={characters}
                                 logoutButton={logoutButton}
                               />
-                              <PixiComponent
-                                sprites={sprites}
-                                gameApp={gameApp}
-                              />
-                              <Scores characters={characters} />
+                              <div id="hero">
+                                <PixiComponent
+                                  sprites={sprites}
+                                  gameApp={gameApp}
+                                />
+                                <Scores
+                                  players={players}
+                                  characters={characters}
+                                />
+                                <Messaging />
+                              </div>
                               <Controls
                                 numberOfBoxes={numberOfBoxes}
                                 setNumberOfBoxes={setNumberOfBoxes}
@@ -329,7 +335,6 @@ function App() {
                                 canvasSize={canvasSize}
                                 gameEnd={gameEnd}
                               />
-                              <Messaging />
                             </div>
                           </>
                         )}

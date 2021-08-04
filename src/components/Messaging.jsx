@@ -14,7 +14,7 @@ const Messaging = () => {
   const { username } = useContext(UsernameContext);
   const { room } = useContext(RoomContext);
 
-  const [messageBody, setMessageBody] = useState("");
+  const [messageBody, setMessageBody] = useState('');
   const [sortedMessages, setSortedMessages] = useState([]);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const Messaging = () => {
 
   return (
     <div id="Messaging__Window">
-      <h3>Chat Messages</h3>
+      <h2>Chat Messages</h2>
       <div id="All__Messages">
         {Object.entries(sortedMessages).map((item) => {
           return (

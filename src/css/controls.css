@@ -8,17 +8,101 @@
   outline: inherit;
 }
 
-.playing-controls {
-  padding: 30px 0;
-  display: flex;
-  justify-content: center;
-}
-
 .playing-controls img {
   margin: 10px;
+  cursor: pointer;
+}
+
+.playing-controls {
+  grid-area: arrows;
+  padding: 30px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .up-down-arrows {
   display: flex;
   flex-direction: column;
+}
+
+.playing-container {
+  display: grid;
+  grid-template-areas: "key arrows buttons";
+  grid-template-columns: 30% 40% 30%;
+  text-align: center;
+}
+
+.Key__Image {
+  grid-area: key;
+  float: left;
+  margin-left: 10px;
+}
+
+.Buttons__Image {
+  grid-area: buttons;
+  float: right;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Rules__Window {
+  width: 425px;
+  height: 250px;
+  border-style: solid;
+  border-width: 2px;
+  /* border-color: cornflowerblue;
+  background-color: khaki;
+  SEE APP.JS FOR ALL COLOURS OF BOXES TOGETHER */
+  margin-left: 15px;
+}
+
+.Key__Title {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 15px 0;
+}
+
+.Key__Instructions {
+  font-size: 16px;
+}
+
+.Key__Instructions p {
+  margin-bottom: 5px;
+}
+
+.Key__AllModifiersContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.Key__EachModifer {
+  display: flex;
+  align-items: left;
+  margin: 20px;
+}
+
+.Key__EachModifer img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.arrow {
+  width: 75px;
+  height: 75px;
+}
+
+.Controls__GameEvent {
+  color: black;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.event-error {
+  color: red;
 }

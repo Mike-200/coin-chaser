@@ -1,12 +1,186 @@
-@font-face {
-  font-family: "coin";
-  src: local("coin"), url("../assets/fonts/coin.ttf") format("truetype");
-}
-
 .Login__Name {
   font-size: 50px;
   font-family: coin;
-  margin-top: 45px;
+  margin: 45px 0 40px 0;
+  color: #0b0050;
+}
+
+.LoginCard p {
+  margin-bottom: 15px;
+}
+
+.Login__Name_button {
+  margin-top: 20px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 2px 4px 3px rgba(38, 38, 38, 0.15);
+  border: none;
+  cursor: pointer;
+  background-color: #f5cc46;
+  color: #0b0050;
+  font-family: OpenSans;
+  font-weight: 600;
+}
+
+.Login__Name_button:hover {
+  transform: scale(1.1);
+  background-color: #fadf99;
+}
+
+.Login__Name_input,
+.host-new-game input {
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  color: #0b0050;
+  background-color: #f7ffd7;
+  border: none;
+  font-family: OpenSans;
+  font-weight: 600;
+  border-radius: 20px;
+  box-shadow: 0px 2px 4px 3px rgba(38, 38, 38, 0.15);
+}
+
+.Login__Name_form {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.CardHolder {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  background: linear-gradient(
+    75deg,
+    rgba(146, 138, 194, 1) 26%,
+    rgba(143, 192, 169, 1) 62%,
+    rgba(143, 192, 169, 1) 100%
+  );
+  height: 100vh;
+}
+
+.LoginCard {
+  color: #ffffff;
+  position: absolute;
+  top: 20%;
+  border-left: auto;
+  border-right: auto;
+  background-color: #69c298;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  width: 400px;
+  min-height: 375px;
+  padding: 10px 10px 20px 10px;
+  font-size: 20px;
+  border: solid 4px #f5cc46;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.LoggedInCard {
+  color: #0b0050;
+  font-family: OpenSans;
+  font-weight: 600;
+  position: absolute;
+  top: 20%;
+  border: solid 4px #f5cc46;
+  background-color: #69c298;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  width: 500px;
+  min-height: 375px;
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 20px;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.choose-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+#LoginAvatar {
+  margin-bottom: 15px;
+  width: 90px;
+  height: 90px;
+}
+
+.host-new-game {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.host-new-game-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.host-new-game-buttons button,
+.host-new-game button {
+  background-color: #f7ffd7;
+  font-family: OpenSans;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.host-new-game-buttons .join {
+  background-color: #f5cc46;
+}
+
+.host-new-game-buttons .logout {
+  background-color: #0f24a8;
+  color: #f7ffd7;
+}
+
+::placeholder {
+  font-style: italic;
+  font-family: OpenSans;
+}
+
+.host-new-game p {
+  margin-bottom: 20px;
+}
+
+.new-game-p {
+  margin-top: 20px;
+}
+
+.host-new-game input {
+  margin-bottom: 20px;
+}
+
+#host-game {
+  background-color: #fadf99;
+  padding: 10px 20px;
+}
+
+.pick-your-avatar {
+  margin: 20px 0 15px 0;
+}
+
+.pick-your-avatar h2 {
+  font-family: coin;
+}
+
+.select {
+  font-size: 46px;
+}
+
+.your-avatar {
+  line-height: 1.4;
+  font-size: 22px;
+  margin-bottom: 25px;
 }
 
 .CardHolder {

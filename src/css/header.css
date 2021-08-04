@@ -1,5 +1,4 @@
 #Header__Avatar {
-  position: absolute;
   right: 15px;
   top: 25px;
 }
@@ -9,11 +8,6 @@
   right: 80px;
   top: 25px;
   text-align: right;
-}
-
-@font-face {
-  font-family: "coin";
-  src: local("coin"), url("../assets/fonts/coin.ttf") format("truetype");
 }
 
 .Header_name {
@@ -26,12 +20,24 @@
   height: 55px;
 }
 
-.event {
-  font-weight: bold;
-  color: aqua;
+.user {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
 }
 
-.event-error {
+.user p {
+  margin-left: 10px;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+/* .event {
+  font-weight: bold;
+  color: aqua;
+} */
+
+/* .event-error {
   font-weight: bold;
   color: red;
-}
+} */

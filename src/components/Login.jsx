@@ -48,7 +48,7 @@ const Login = ({ auth, logoutButton }) => {
   function loginButton(e) {
     e.preventDefault();
     if (!username) {
-      setUsername("empty");
+      setUsername('empty');
     }
     login(auth);
   }
@@ -119,20 +119,21 @@ const Login = ({ auth, logoutButton }) => {
 
   if (!user)
     return (
-      <div className="CardHolder">
+      <section className="CardHolder">
         <div className="LoginCard">
-          <form>
-            <div className="Login__Name">
-              <span>C</span>
-              <span>
-                <img className="Header_coin" alt="coin" src={coin}></img>
-              </span>
-              <span>IN CHASER</span>
-            </div>
+          <div className="Login__Name">
+            <span>C</span>
+            <span>
+              <img className="Header_coin" alt="coin" src={coin}></img>
+            </span>
+            <span>IN CHASER</span>
+          </div>
+          <form className="Login__Name_form">
             <p>Enter a username to play</p>
-            <p>(max 10 characters)</p>
+
             <input
               type="textbox"
+              className="Login__Name_input"
               maxLength="10"
               placeholder="Enter username"
               onChange={(e) => {
@@ -140,46 +141,64 @@ const Login = ({ auth, logoutButton }) => {
               }}
               value={username}
             ></input>
-            <button onClick={loginButton}>Enter</button>
+            <button className="Login__Name_button" onClick={loginButton}>
+              Enter
+            </button>
           </form>
           {error ? <p className="errorMessage">{error}</p> : null}
         </div>
-      </div>
+      </section>
     );
   else if (!room)
     return (
       <div className="CardHolder">
-        <div className="LoginCard">
-          <p>Host a new game for other players to join</p>
-          <button onClick={host}>Host new game</button>
-          <br />
-          <br />
-          <div>or</div>
-          <p>Enter a room key to join another game</p>
-          <input
-            type="textbox"
-            onChange={(event) => {
-              setRoomToBe(event.target.value);
-            }}
-            value={roomToBe}
-          ></input>
-          <button onClick={client}>Join</button>
-          <br />
-          <p>Pick your avatar</p>
-          <button onClick={previousAvatar}>
-            <img alt="previous avatar" src={leftArrow}></img>
-          </button>
-          <img
-            className="avatar"
-            alt="avatar"
-            src={getAvatar(avatar, characters)}
-          ></img>
-          <button onClick={nextAvatar}>
-            <img alt="next avatar" src={rightArrow}></img>
-          </button>
-          <br />
-          {error ? <p className="errorMessage">{error}</p> : null}
-          <button onClick={logoutButton}>Logout</button>
+        <div className="LoggedInCard">
+          <div className="pick-your-avatar">
+            <h2 className="select">Select</h2>
+            <h2 className="your-avatar">Your Avatar</h2>
+            <div className="choose-avatar">
+              <button className="avatarButton" onClick={previousAvatar}>
+                <img alt="previous avatar" src={leftArrow}></img>
+              </button>
+              <img
+                id="LoginAvatar"
+                alt="avatar"
+                src={getAvatar(avatar, characters)}
+              ></img>
+              <button className="avatarButton" onClick={nextAvatar}>
+                <img alt="next avatar" src={rightArrow}></img>
+              </button>
+              <br />
+              {error ? <p className="errorMessage">{error}</p> : null}
+            </div>
+          </div>
+
+          <div className="host-new-game">
+            <p>Host a new game for other players to join</p>
+            <button id="host-game" onClick={host}>
+              Host new game
+            </button>
+            <p className="new-game-p">
+              Or enter a room key to join another game
+            </p>
+            <input
+              type="textbox"
+              placeholder="Enter room key..."
+              onChange={(event) => {
+                setRoomToBe(event.target.value);
+              }}
+              value={roomToBe}
+            ></input>
+          </div>
+
+          <div className="host-new-game-buttons">
+            <button className="join" onClick={client}>
+              Join
+            </button>
+            <button className="logout" onClick={logoutButton}>
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -235,7 +254,7 @@ const Login = ({ auth, logoutButton }) => {
                   className="avatar"
                   src={getAvatar(clientsKnocks[uid].avatar, characters)}
                 ></img>
-                {clientsKnocks[uid].username}{" "}
+                {clientsKnocks[uid].username}{' '}
                 <button
                   onClick={() => {
                     buttonAcceptPlayer(uid);

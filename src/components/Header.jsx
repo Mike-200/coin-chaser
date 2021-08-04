@@ -23,7 +23,34 @@ const Header = ({ characters, logoutButton }) => {
   return (
     <header>
       <div className="container">
+        <button onClick={logoutButton}>Logout</button>
+
         <div className="Header_name">
+          <span>C</span>
+          <span>
+            <img className="Header_coin" alt="coin" src={coin}></img>
+          </span>
+          <span>IN CHASER</span>
+        </div>
+
+        {/* {gameEvent.message ? (
+          gameEvent.error ? (
+            <span className="event-error">{gameEvent.message}</span>
+          ) : (
+            <span className="event">{gameEvent.message}</span>
+          )
+        ) : null} */}
+
+        <div className="user">
+          <p>{username}</p>
+          <img
+            id="Header__Avatar"
+            alt="avatar"
+            src={getAvatar(players[user].avatar, characters)}
+          ></img>
+        </div>
+
+        {/* <div className="Header_name">
           C<img className="Header_coin" alt="coin" src={coin}></img>
           IN CHASER
         </div>
@@ -48,7 +75,7 @@ const Header = ({ characters, logoutButton }) => {
               src={getAvatar(players[user].avatar, characters)}
             ></img>
           </span>
-        </nav>
+        </nav> */}
       </div>
     </header>
   );

@@ -1,6 +1,26 @@
+@font-face {
+  font-family: "OpenSans";
+  src: local("OpenSans"),
+    url("./assets/fonts/OpenSans-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "coin";
+  src: local("coin"), url("./assets/fonts/coin.ttf") format("truetype");
+}
+
 .App {
   text-align: center;
+  /* background-color: red; */
   color: #000;
+  font-family: "OpenSans";
+}
+
+button {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 50px;
+  min-width: 100px;
 }
 
 .Logo {
@@ -11,4 +31,24 @@
 /* header and controls */
 .container {
   padding: 40px;
+}
+
+#hero {
+  /* background-color: red; */
+  position: relative;
+}
+
+#Messaging__Window {
+  border-color: cornflowerblue;
+  background-color: #c2948d;
+}
+
+#Scores__Window {
+  border-color: cornflowerblue;
+  background-color: #c2948d;
+}
+
+.Rules__Window {
+  border-color: cornflowerblue;
+  background-color: #c2bb8c;
 }

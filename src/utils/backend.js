@@ -197,6 +197,6 @@ export function checkIfSpriteUidIsBox(spriteUid) {
   return spriteUid.match(/^box[0-9]*$/);
 }
 
-export function checkIfSpriteUidIsBoxContent(spriteUid){
-  return spriteUid.match(/box[0-9]*contents/)
+export function checkIfSpriteUidIsBoxContent(spriteUid) {
+  return spriteUid.match(/box[0-9]*contents/);
 }

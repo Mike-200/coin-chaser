@@ -49,25 +49,53 @@ import { SpritesContext } from "./contexts/Sprites";
 import { ScoresContext } from "./contexts/Scores";
 import { PlayersContext } from "./contexts/Players";
 import { GameEventContext } from "./contexts/GameEvent";
+import { Renderer } from "pixi.js";
 
 // Variables init
-
-const canvasSize = { x: 800, y: 500 };
 let speed = 25;
 
 const auth = firebase.auth();
 export const fireDB = firebase.database();
 
+// Pixi Setup
+const canvasSize = { x: 800, y: 500 }; //ratio 1.6
+let pixiRatio = 1;
+let listeningToKeyPresses = true;
+
+// Detect screen size on open
+window.onload = function (event) {
+  if (window.innerWidth >= 1340) {
+    pixiRatio = (window.innerWidth - 540) / canvasSize.x;
+    resizePixiCanvas();
+  }
+};
+
+// Detect change in screen size
+window.onresize = function (event) {
+  if (window.innerWidth >= 1340) {
+    pixiRatio = (window.innerWidth - 540) / canvasSize.x;
+    resizePixiCanvas();
+  }
+};
+
 const gameApp = new Pixi.Application({
-  width: canvasSize.x,
-  height: canvasSize.y,
+  autoResize: true,
+  resolution: window.devicePixelRatio,
   backgroundColor: 0x69c298,
   antialias: true,
-  resolution: window.devicePixelRatio,
   autoDensity: true,
 });
 
-let listeningToKeyPresses = true;
+function resizePixiCanvas() {
+  console.log("pixiRation>>>", pixiRatio);
+  // const parent = gameApp.view.parentNode;
+  gameApp.renderer.resize(canvasSize.x * pixiRatio, canvasSize.y * pixiRatio);
+}
+
+window.addEventListener("resize", resizePixiCanvas);
+
+// sprites[uid].scale.x = pixiRatio;
+// sprites[uid].scale.y = pixiRatio;
 
 function App() {
   // User Contexts:-
@@ -88,6 +116,7 @@ function App() {
   const [boxSnapShot, setBoxSnapShot] = useState({});
   const [boxesState, setBoxesState] = useState({});
   const [gameEnd, setGameEnd] = useState(false);
+  const [spritesRelativePos, setSpritesRelativePos] = useState({});
 
   function keyHandlers(sprites) {
     let keyDown = false;
@@ -174,6 +203,7 @@ function App() {
   // On characters change
   useEffect(() => {
     Object.keys(characterSnapShot).forEach((uid) => {
+      const spritesRelativePos = {};
       if (!Object.keys(sprites).includes(uid)) {
         setSprites((prevSprites) => {
           const sprites = { ...prevSprites };
@@ -181,6 +211,18 @@ function App() {
             getAvatar(players[uid].avatar, characters),
             characterSnapShot[uid]
           );
+          spritesRelativePos[uid] = pixiSpriteBuilder(
+            getAvatar(players[uid].avatar, characters),
+            {
+              x: characterSnapShot[uid].x * pixiRatio,
+              y: characterSnapShot[uid].y * pixiRatio,
+            }
+          );
+          spritesRelativePos[uid].origPos = {
+            x: characterSnapShot[uid].x,
+            y: characterSnapShot[uid].y,
+          };
+
           if (uid === user) {
             // Key Presses Listener and zone trigger
             const [keyDownHandler, keyUpHandler] = keyHandlers(sprites);
@@ -192,10 +234,28 @@ function App() {
         });
       } else {
         if (sprites[uid].x > characterSnapShot[uid].x) {
-          sprites[uid].scale.x = -1;
+          if (!sprites[uid].scale.x < 0) {
+            sprites[uid].scale.x *= -1;
+            spritesRelativePos[uid].scale.x *= -1;
+          }
+          // sprites[uid].scale.y = 1;
+          //   sprites[uid].scale.set(-pixiRatio, pixiRatio);
         } else if (sprites[uid].x < characterSnapShot[uid].x)
-          sprites[uid].scale.x = 1;
-        sprites[uid].x = characterSnapShot[uid].x;
+          if (!sprites[uid] > 0) {
+            sprites[uid].scale.x *= -1;
+            spritesRelativePos[uid].scale.x *= -1;
+          }
+        spritesRelativePos[uid].position.set(
+          characterSnapShot[uid].x * pixiRatio,
+          characterSnapShot[uid].y * pixiRatio
+        );
+        spritesRelativePos[uid].origPos = {
+          x: characterSnapShot[uid].x,
+          y: characterSnapShot[uid].y,
+        };
+        // sprites[uid].scale.y = 1;
+        //   sprites[uid].scale.set(pixiRatio, pixiRatio);
+        sprites[uid].x = characterSnapShot[uid].x; // * pixiRatio
         sprites[uid].y = characterSnapShot[uid].y;
         // Collision logic
         Object.keys(sprites)
@@ -263,6 +323,10 @@ function App() {
             });
           });
       }
+
+      setSpritesRelativePos((prevSpritesRelativePos) => {
+        return { ...prevSpritesRelativePos, ...spritesRelativePos };
+      });
     });
   }, [startGame, characterSnapShot]);
 
@@ -321,6 +385,8 @@ function App() {
                                 <PixiComponent
                                   sprites={sprites}
                                   gameApp={gameApp}
+                                  pixiRatio={pixiRatio}
+                                  spritesRelativePos={spritesRelativePos}
                                 />
                                 <Scores
                                   players={players}

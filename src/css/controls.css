@@ -1,30 +1,8 @@
-/* .arrow-button {
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
-} */
-
-/* .playing-controls img {
-  margin: 10px;
-  cursor: pointer;
-} */
-
-.all-controls {
-  grid-area: arrows;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .playing-controls {
-  padding: 30px 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 20px;
 }
 
 .playing-controls button {
@@ -37,68 +15,119 @@
   box-shadow: none;
 }
 
-/* .circle {
-  border: solid 10px #0b0050;
-  border-radius: 50%;
-  width: 250px;
-  height: 250px;
-} */
-
 .up-down-arrows {
   display: flex;
   flex-direction: column;
 }
 
 .playing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.playing-rules {
+  max-width: 650px;
+}
+
+.playing-rules h3 {
+  margin: 10px 0px;
+  font-size: 20px;
+  font-family: coin;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  color: #9cf8e2;
+  text-shadow: 0px 3px 4px rgba(30, 29, 29, 0.25);
+}
+
+.playing-rules h4 {
+  margin-top: 20px;
+}
+
+.playing-powerups {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+}
+
+.playing-powerups-item {
+  margin: 20px 20px;
+}
+
+.playing-powerups-item p {
+  font-weight: 700;
+  color: #0b0050;
+}
+
+.next-level {
+  padding: 15px 25px;
+}
+
+.arrow {
+  width: 75px;
+  height: 75px;
+}
+
+.event-error {
+  color: red;
+}
+
+/* .all-controls {
+  grid-area: arrows;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
+/* .playing-container {
   display: grid;
   grid-template-areas: 'key arrows buttons';
   grid-template-columns: 30% 40% 30%;
   text-align: center;
-}
+} */
 
-.Key__Image {
+/* .Key__Image {
   grid-area: key;
   float: left;
   margin-left: 10px;
-}
+} */
 
-.Buttons__Image {
+/* .Buttons__Image {
   grid-area: buttons;
   float: right;
   margin-left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
-.Rules__Window {
+/* .Rules__Window {
   width: 425px;
   height: 250px;
   border-style: solid;
   border-width: 2px;
-  /* border-color: cornflowerblue;
-  background-color: khaki;
-  SEE APP.JS FOR ALL COLOURS OF BOXES TOGETHER */
   margin-left: 15px;
-}
+} */
 
-.Key__Title {
+/* .Key__Title {
   font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: space-around;
   padding: 15px 0;
-}
+} */
 
-.Key__Instructions {
+/* .Key__Instructions {
   font-size: 16px;
 }
 
 .Key__Instructions p {
   margin-bottom: 5px;
-}
+} */
 
-.Key__AllModifiersContainer {
+/* .Key__AllModifiersContainer {
   display: flex;
   flex-direction: column;
 }
@@ -113,13 +142,4 @@
   width: 30px;
   height: 30px;
   margin-right: 10px;
-}
-
-.arrow {
-  width: 75px;
-  height: 75px;
-}
-
-.event-error {
-  color: red;
-}
+} */

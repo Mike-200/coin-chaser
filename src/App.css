@@ -20,7 +20,10 @@
     rgba(143, 192, 169, 1) 62%,
     rgba(143, 192, 169, 1) 100%
   );
-  overflow: hidden;
+
+  /* display: grid;
+  grid-template-rows: auto min-content; */
+  height: 100vh;
 }
 
 button {

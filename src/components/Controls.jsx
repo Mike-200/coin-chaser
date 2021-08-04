@@ -49,76 +49,60 @@ const Controls = ({ numberOfBoxes, speed, canvasSize, gameEnd }) => {
 
   return (
     <section className="playing-container">
-      <div className="Rules__Window">
-        <div className="Key__Title">
-          <img alt="coin" src={coin}></img>
-          <h2>RULES</h2>
-          <img alt="coin" src={coin}></img>
-        </div>
-        <div className="Key__Instructions">
-          <p>Be the first to fist to get to the box and win the coin !</p>
-          <p>Be the first to collect 10 coins, to win</p>
-          <p>Use the arrow keys on your keyboard</p>
-          <p>or select the arrow keys at the bottom of the screen</p>
-          <p>Be careful as not all the boxes contain coins</p>
-          {/* <p>Chat with other players using the messaging system</p> */}
+      <div className="playing-rules">
+        <h3>Find the box with a coin to get a point. Get 10 points to win!</h3>
+
+        <div className="playing-powerups">
+          <div className="playing-powerups-item">
+            <img alt="rocket" src={rocket}></img>
+            <p>Increase speed</p>
+          </div>
+          <div className="playing-powerups-item">
+            <img alt="slime" src={slime}></img>
+            <p>Decrease speed</p>
+          </div>
         </div>
       </div>
 
-      <div className="all-controls">
-        <div className="circle">
-          <div className="playing-controls">
-            <button
-              onClick={() => {
-                move('ArrowLeft');
-              }}
-            >
-              <img src={left} alt="arrow left"></img>
-            </button>
-            <div className="up-down-arrows">
-              <button
-                onClick={() => {
-                  move('ArrowUp');
-                }}
-              >
-                <img src={up} alt="arrow up"></img>
-              </button>
-              <img src={middle} alt="middle"></img>
-              <button
-                onClick={() => {
-                  move('ArrowDown');
-                }}
-              >
-                <img src={down} alt="arrow down"></img>
-              </button>
-            </div>
-            <button
-              onClick={() => {
-                move('ArrowRight');
-              }}
-            >
-              <img src={right} alt="arrow right"></img>
-            </button>
-          </div>
+      <div className="playing-controls">
+        <button
+          onClick={() => {
+            move('ArrowLeft');
+          }}
+        >
+          <img src={left} alt="arrow left"></img>
+        </button>
+        <div className="up-down-arrows">
+          <button
+            onClick={() => {
+              move('ArrowUp');
+            }}
+          >
+            <img src={up} alt="arrow up"></img>
+          </button>
+          <img src={middle} alt="middle"></img>
+          <button
+            onClick={() => {
+              move('ArrowDown');
+            }}
+          >
+            <img src={down} alt="arrow down"></img>
+          </button>
         </div>
+        <button
+          onClick={() => {
+            move('ArrowRight');
+          }}
+        >
+          <img src={right} alt="arrow right"></img>
+        </button>
       </div>
-      <div className="Buttons__Image">
-        <div className="Key__AllModifiersContainer">
-          <div>
-            <div className="Key__EachModifer">
-              <p>Rockets speed you up</p>
-              <img alt="rocket" src={rocket}></img>
-            </div>
-            <div className="Key__EachModifer">
-              <p>Slime slows you down</p>
-              <img alt="slime" src={slime}></img>
-            </div>
-          </div>
-          {room === user && !gameEnd ? (
-            <button onClick={NewScreenButton}>Next level</button>
-          ) : null}
-        </div>
-      </div>
+
+      {room === user && !gameEnd ? (
+        <button className="logout next-level" onClick={NewScreenButton}>
+          Next level
+        </button>
+      ) : null}
     </section>
   );
 };

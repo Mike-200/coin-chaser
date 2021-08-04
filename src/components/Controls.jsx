@@ -1,114 +1,85 @@
+import { startNewScreen, updateCharPosition } from "../utils/backend";
+
+// styling
+import "../css/controls.css";
+
+// Sprites
 import up from "../assets/up-arrow.svg";
 import down from "../assets/down-arrow.svg";
 import left from "../assets/left-arrow.svg";
 import right from "../assets/right-arrow.svg";
-import { startNewScreen } from "../utils/backend";
-import { updateCharPosition } from "../utils/firebase";
 
+// Contexts
 import { useContext } from "react";
-import { StartGameContext } from "../contexts/StartGame";
 import { RoomContext } from "../contexts/Room";
 import { UserContext } from "../contexts/User";
-import { UsernameContext } from "../contexts/Username";
-import { AvatarContext } from "../contexts/Avatar";
 import { SpritesContext } from "../contexts/Sprites";
 import { PlayersContext } from "../contexts/Players";
 
-import { fireDB } from "../App";
-
-const Controls = ({ numberOfBoxes, speed, canvasSize }) => {
-  const { startGame, setStartGame } = useContext(StartGameContext);
-  const { room, setRoom } = useContext(RoomContext);
-  const { user, setUser } = useContext(UserContext);
-  const { username, setUsername } = useContext(UsernameContext);
-  const { avatar, setAvatar } = useContext(AvatarContext);
-  const { sprites, setSprites } = useContext(SpritesContext);
-  const { players, setPlayers } = useContext(PlayersContext);
+const Controls = ({ numberOfBoxes, speed, canvasSize, gameEnd }) => {
+  const { room } = useContext(RoomContext);
+  const { user } = useContext(UserContext);
+  const { sprites } = useContext(SpritesContext);
+  const { players } = useContext(PlayersContext);
 
   function NewScreenButton() {
     startNewScreen(room, user, players, numberOfBoxes);
   }
 
+  function move(arrowOrientation) {
+    updateCharPosition(
+      room,
+      user,
+      {
+        x: sprites[user].x,
+        y: sprites[user].y,
+      },
+      arrowOrientation,
+      speed,
+      canvasSize
+    );
+  }
+
   return (
-    <section className="playing container">
-      {room === user ? (
+    <section className="container">
+      {room === user && !gameEnd ? (
         <button onClick={NewScreenButton}>Next level</button>
       ) : null}
       <div className="playing-controls">
-        <img
+        <button
           onClick={() => {
-            updateCharPosition(
-              room,
-              user,
-              {
-                x: sprites[user].x,
-                y: sprites[user].y,
-              },
-              "ArrowLeft",
-              speed,
-              canvasSize
-            );
+            move("ArrowLeft");
           }}
-          value="left"
-          src={left}
-          alt="left-arrow"
-        ></img>
+          className="arrow-button"
+        >
+          <img src={left} alt="arrow left"></img>
+        </button>
         <div className="up-down-arrows">
-          <img
+          <button
             onClick={() => {
-              updateCharPosition(
-                room,
-                user,
-                {
-                  x: sprites[user].x,
-                  y: sprites[user].y,
-                },
-                "ArrowUp",
-                speed,
-                canvasSize
-              );
+              move("ArrowUp");
             }}
-            value="up"
-            src={up}
-            alt="up-arrow"
-          ></img>
-          <img
+            className="arrow-button"
+          >
+            <img src={up} alt="arrow up"></img>
+          </button>
+          <button
             onClick={() => {
-              updateCharPosition(
-                room,
-                user,
-                {
-                  x: sprites[user].x,
-                  y: sprites[user].y,
-                },
-                "ArrowDown",
-                speed, 
-                canvasSize
-              );
+              move("ArrowDown");
             }}
-            value="down"
-            src={down}
-            alt="down-arrow"
-          ></img>
+            className="arrow-button"
+          >
+            <img src={down} alt="arrow down"></img>
+          </button>
         </div>
-        <img
+        <button
           onClick={() => {
-            updateCharPosition(
-              room,
-              user,
-              {
-                x: sprites[user].x,
-                y: sprites[user].y,
-              },
-              "ArrowRight",
-              speed,
-              canvasSize
-            );
+            move("ArrowRight");
           }}
-          value="right"
-          src={right}
-          alt="right-arrow"
-        ></img>
+          className="arrow-button"
+        >
+          <img src={right} alt="arrow right"></img>
+        </button>
       </div>
     </section>
   );

@@ -1,27 +1,19 @@
+import { getAvatar } from "../utils/characters";
+
+// styling
 import "../css/scores.css";
 
+// contexts
 import { useContext } from "react";
-import { StartGameContext } from "../contexts/StartGame";
-import { RoomContext } from "../contexts/Room";
-import { UserContext } from "../contexts/User";
-import { UsernameContext } from "../contexts/Username";
-import { AvatarContext } from "../contexts/Avatar";
-import { SpritesContext } from "../contexts/Sprites";
 import { ScoresContext } from "../contexts/Scores.js";
 import { PlayersContext } from "../contexts/Players";
 
-import { getAvatar } from "../utils/backend";
+// sprites
 import crownCoin from "../assets/coin.svg";
 
 const Scores = ({ characters }) => {
-  const { startGame, setStartGame } = useContext(StartGameContext);
-  const { room, setRoom } = useContext(RoomContext);
-  const { user, setUser } = useContext(UserContext);
-  const { username, setUsername } = useContext(UsernameContext);
-  const { avatar, setAvatar } = useContext(AvatarContext);
-  const { sprites, setSprites } = useContext(SpritesContext);
   const { scores } = useContext(ScoresContext);
-  const { players, setPlayers } = useContext(PlayersContext);
+  const { players } = useContext(PlayersContext);
 
   return (
     <div id="Scores__Window">

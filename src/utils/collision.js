@@ -1,5 +1,5 @@
 // Collision detection function
-export function collisionDetect(char1, char2) {
+export default function collisionDetect(char1, char2) {
   //Define the variables we'll need to calculate
   let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
 

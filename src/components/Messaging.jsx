@@ -1,42 +1,32 @@
 import { useState, useContext, useEffect, useRef } from "react";
+
+// styling
+import "../css/messaging.css";
+
+// contexts
 import { StartGameContext } from "../contexts/StartGame";
 import { UsernameContext } from "../contexts/Username";
 import { RoomContext } from "../contexts/Room";
-import { AvatarContext } from "../contexts/Avatar";
-
-import { fireDB } from "../App";
-
-import "../css/messaging.css";
+import { sendMessageToDB, startListeningToMessages } from "../utils/messaging";
 
 const Messaging = () => {
   const { startGame } = useContext(StartGameContext);
   const { username } = useContext(UsernameContext);
   const { room } = useContext(RoomContext);
-  const { avatar } = useContext(AvatarContext);
 
   const [messageBody, setMessageBody] = useState("");
   const [sortedMessages, setSortedMessages] = useState([]);
+
   useEffect(() => {
     if (startGame) {
-      fireDB.ref("rooms/" + room + "/messages/").on("value", (snap) => {
-        if (snap.exists()) {
-          setSortedMessages(snap.val());
-        }
-      });
+      startListeningToMessages(room, setSortedMessages)
     }
-  }, []);
-  //   may need to re-oder the other way round
-  //(a, b) => new Date(a.created).valueOf() - new Date(b.created).valueOf()
-  // );
+  }, [startGame]);
 
   function sendMessage(e) {
     e.preventDefault();
     if (messageBody) {
-      const timestamp = Date.now();
-      fireDB.ref("rooms/" + room + "/messages/" + timestamp).set({
-        username,
-        messageBody,
-      });
+      sendMessageToDB(room, username, messageBody)
       setMessageBody("");
     }
   }
@@ -48,7 +38,6 @@ const Messaging = () => {
       dummy.current.scrollIntoView({
         behavior: "smooth",
         block: "end",
-        // inline: "nearest",
       });
     }
   }, [dummy.current, sortedMessages]);
@@ -57,12 +46,9 @@ const Messaging = () => {
     <div id="Messaging__Window">
       <h3>Chat Messages</h3>
       <div id="All__Messages">
-        {/* <ul id="Messages__Title">Messages</ul> */}
         {Object.entries(sortedMessages).map((item) => {
           return (
             <div>
-              {/* note item[0] is the time */}
-
               {username === item[1].username ? (
                 <li className="Sent" id="Each__Message" key={item[0]}>
                   <span id="Sent">sent: </span>
@@ -80,7 +66,6 @@ const Messaging = () => {
           );
         })}
       </div>
-
       <form id="Message__Form">
         <input
           id="Message__Input"

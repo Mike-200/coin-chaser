@@ -327,7 +327,7 @@ function App() {
                                   players={players}
                                   characters={characters}
                                 />
-                                <Messaging />
+                                <Messaging characters={characters} />
                               </div>
                               <Controls
                                 numberOfBoxes={numberOfBoxes}

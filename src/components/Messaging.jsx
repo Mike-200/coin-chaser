@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
+import { getAvatar } from "../utils/characters";
 
 // styling
 import "../css/messaging.css";
@@ -7,26 +8,28 @@ import "../css/messaging.css";
 import { StartGameContext } from "../contexts/StartGame";
 import { UsernameContext } from "../contexts/Username";
 import { RoomContext } from "../contexts/Room";
+import { UserContext } from "../contexts/User";
 import { sendMessageToDB, startListeningToMessages } from "../utils/messaging";
 
-const Messaging = () => {
+const Messaging = (characters) => {
   const { startGame } = useContext(StartGameContext);
   const { username } = useContext(UsernameContext);
   const { room } = useContext(RoomContext);
+  const { user } = useContext(UserContext);
 
-  const [messageBody, setMessageBody] = useState('');
+  const [messageBody, setMessageBody] = useState("");
   const [sortedMessages, setSortedMessages] = useState([]);
 
   useEffect(() => {
     if (startGame) {
-      startListeningToMessages(room, setSortedMessages)
+      startListeningToMessages(room, setSortedMessages);
     }
   }, [startGame]);
 
   function sendMessage(e) {
     e.preventDefault();
     if (messageBody) {
-      sendMessageToDB(room, username, messageBody)
+      sendMessageToDB(room, username, messageBody, user);
       setMessageBody("");
     }
   }
@@ -58,6 +61,11 @@ const Messaging = () => {
               ) : (
                 <li className="Received" id="Each__Message" key={item[0]}>
                   <div id="Received">from: {item[1].username}</div>
+                  <img
+                    alt="avatar"
+                    className="Messanging__Avatar"
+                    src={getAvatar(user, characters)}
+                  ></img>
                   <div> {item[1].messageBody}</div>
                   <li ref={dummy}></li>
                 </li>

@@ -12,8 +12,8 @@ import {
   startListeningToStartGame,
 } from '../utils/firebase';
 import characters from '../characters';
-import leftArrow from '../assets/left-arrow.svg';
-import rightArrow from '../assets/right-arrow.svg';
+import leftArrow from '../assets/avatar-left-button.svg';
+import rightArrow from '../assets/avatar-right-button.svg';
 
 import { useContext } from 'react';
 import { StartGameContext } from '../contexts/StartGame';
@@ -154,41 +154,51 @@ const Login = ({ auth, logoutButton }) => {
       <div className="CardHolder">
         <div className="LoggedInCard">
           <div className="pick-your-avatar">
-            <p>Select Your Avatar</p>
-            <button className="avatarButton" onClick={previousAvatar}>
-              <img alt="previous avatar" src={leftArrow}></img>
-            </button>
-            <img
-              id="LoginAvatar"
-              alt="avatar"
-              src={getAvatar(avatar, characters)}
-            ></img>
-            <button className="avatarButton" onClick={nextAvatar}>
-              <img alt="next avatar" src={rightArrow}></img>
-            </button>
-            <br />
-            {error ? <p className="errorMessage">{error}</p> : null}
+            <h2 className="select">Select</h2>
+            <h2 className="your-avatar">Your Avatar</h2>
+            <div className="choose-avatar">
+              <button className="avatarButton" onClick={previousAvatar}>
+                <img alt="previous avatar" src={leftArrow}></img>
+              </button>
+              <img
+                id="LoginAvatar"
+                alt="avatar"
+                src={getAvatar(avatar, characters)}
+              ></img>
+              <button className="avatarButton" onClick={nextAvatar}>
+                <img alt="next avatar" src={rightArrow}></img>
+              </button>
+              <br />
+              {error ? <p className="errorMessage">{error}</p> : null}
+            </div>
           </div>
 
           <div className="host-new-game">
             <p>Host a new game for other players to join</p>
-            <button onClick={host}>Host new game</button>
+            <button id="host-game" onClick={host}>
+              Host new game
+            </button>
             <p className="new-game-p">
               Or enter a room key to join another game
             </p>
             <input
               type="textbox"
+              placeholder="Enter room key..."
               onChange={(event) => {
                 setRoomToBe(event.target.value);
               }}
               value={roomToBe}
             ></input>
-            <button onClick={client}>Join</button>
           </div>
 
-          <button className="logout" onClick={logoutButton}>
-            Logout
-          </button>
+          <div className="host-new-game-buttons">
+            <button className="join" onClick={client}>
+              Join
+            </button>
+            <button className="logout" onClick={logoutButton}>
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     );

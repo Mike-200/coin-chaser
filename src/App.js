@@ -49,7 +49,7 @@ import { SpritesContext } from "./contexts/Sprites";
 import { ScoresContext } from "./contexts/Scores";
 import { PlayersContext } from "./contexts/Players";
 import { GameEventContext } from "./contexts/GameEvent";
-import { Renderer } from "pixi.js";
+import { SpritesRelativePosContext } from "./contexts/SpritesRelativePos";
 
 // Variables init
 let speed = 25;
@@ -105,6 +105,7 @@ function App() {
   const [username, setUsername] = useStickyState("username");
   const [avatar, setAvatar] = useState(0);
   const [sprites, setSprites] = useState({});
+  const [spritesRelativePos, setSpritesRelativePos] = useState({});
   const [scores, setScores] = useState({});
   const [players, setPlayers] = useState({});
   const [gameEvent, setGameEvent] = useState({ message: null, error: false });
@@ -116,7 +117,6 @@ function App() {
   const [boxSnapShot, setBoxSnapShot] = useState({});
   const [boxesState, setBoxesState] = useState({});
   const [gameEnd, setGameEnd] = useState(false);
-  const [spritesRelativePos, setSpritesRelativePos] = useState({});
 
   function keyHandlers(sprites) {
     let keyDown = false;
@@ -203,7 +203,7 @@ function App() {
   // On characters change
   useEffect(() => {
     Object.keys(characterSnapShot).forEach((uid) => {
-      const spritesRelativePos = {};
+      const tempSprites = {};
       if (!Object.keys(sprites).includes(uid)) {
         setSprites((prevSprites) => {
           const sprites = { ...prevSprites };
@@ -211,14 +211,14 @@ function App() {
             getAvatar(players[uid].avatar, characters),
             characterSnapShot[uid]
           );
-          spritesRelativePos[uid] = pixiSpriteBuilder(
+          tempSprites[uid] = pixiSpriteBuilder(
             getAvatar(players[uid].avatar, characters),
             {
               x: characterSnapShot[uid].x * pixiRatio,
               y: characterSnapShot[uid].y * pixiRatio,
             }
           );
-          spritesRelativePos[uid].origPos = {
+          tempSprites[uid].origPos = {
             x: characterSnapShot[uid].x,
             y: characterSnapShot[uid].y,
           };
@@ -234,29 +234,21 @@ function App() {
         });
       } else {
         if (sprites[uid].x > characterSnapShot[uid].x) {
-          if (!sprites[uid].scale.x < 0) {
-            sprites[uid].scale.x *= -1;
-            spritesRelativePos[uid].scale.x *= -1;
-          }
-          // sprites[uid].scale.y = 1;
-          //   sprites[uid].scale.set(-pixiRatio, pixiRatio);
-        } else if (sprites[uid].x < characterSnapShot[uid].x)
-          if (!sprites[uid] > 0) {
-            sprites[uid].scale.x *= -1;
-            spritesRelativePos[uid].scale.x *= -1;
-          }
+          sprites[uid].scale.x = -1;
+          spritesRelativePos[uid].scale.x = -Math.abs(spritesRelativePos[uid].scale.x);
+        } else if (sprites[uid].x < characterSnapShot[uid].x) {
+          sprites[uid].scale.x = Math.abs(spritesRelativePos[uid].scale.x);
+        }
         spritesRelativePos[uid].position.set(
           characterSnapShot[uid].x * pixiRatio,
           characterSnapShot[uid].y * pixiRatio
         );
+        sprites[uid].x = characterSnapShot[uid].x;
+        sprites[uid].y = characterSnapShot[uid].y;
         spritesRelativePos[uid].origPos = {
           x: characterSnapShot[uid].x,
           y: characterSnapShot[uid].y,
         };
-        // sprites[uid].scale.y = 1;
-        //   sprites[uid].scale.set(pixiRatio, pixiRatio);
-        sprites[uid].x = characterSnapShot[uid].x; // * pixiRatio
-        sprites[uid].y = characterSnapShot[uid].y;
         // Collision logic
         Object.keys(sprites)
           .filter((spriteUid) => checkIfSpriteUidIsBox(spriteUid))
@@ -323,10 +315,11 @@ function App() {
             });
           });
       }
-
-      setSpritesRelativePos((prevSpritesRelativePos) => {
-        return { ...prevSpritesRelativePos, ...spritesRelativePos };
-      });
+      if (tempSprites) {
+        setSpritesRelativePos((prevSpritesRelativePos) => {
+          return { ...prevSpritesRelativePos, ...tempSprites };
+        });
+      }
     });
   }, [startGame, characterSnapShot]);
 
@@ -367,46 +360,49 @@ function App() {
             <UsernameContext.Provider value={{ username, setUsername }}>
               <AvatarContext.Provider value={{ avatar, setAvatar }}>
                 <SpritesContext.Provider value={{ sprites, setSprites }}>
-                  <ScoresContext.Provider value={{ scores, setScores }}>
-                    <PlayersContext.Provider value={{ players, setPlayers }}>
-                      <GameEventContext.Provider
-                        value={{ gameEvent, setGameEvent }}
-                      >
-                        {!startGame ? (
-                          <Login auth={auth} logoutButton={logoutButton} />
-                        ) : (
-                          <>
-                            <div className="App">
-                              <Header
-                                characters={characters}
-                                logoutButton={logoutButton}
-                              />
-                              <div id="hero">
-                                <PixiComponent
-                                  sprites={sprites}
-                                  gameApp={gameApp}
-                                  pixiRatio={pixiRatio}
-                                  spritesRelativePos={spritesRelativePos}
-                                />
-                                <Scores
-                                  players={players}
+                  <SpritesRelativePosContext.Provider
+                    value={{ spritesRelativePos, setSpritesRelativePos }}
+                  >
+                    <ScoresContext.Provider value={{ scores, setScores }}>
+                      <PlayersContext.Provider value={{ players, setPlayers }}>
+                        <GameEventContext.Provider
+                          value={{ gameEvent, setGameEvent }}
+                        >
+                          {!startGame ? (
+                            <Login auth={auth} logoutButton={logoutButton} />
+                          ) : (
+                            <>
+                              <div className="App">
+                                <Header
                                   characters={characters}
+                                  logoutButton={logoutButton}
                                 />
-                                <Messaging />
+                                <div id="hero">
+                                  <PixiComponent
+                                    sprites={sprites}
+                                    gameApp={gameApp}
+                                    pixiRatio={pixiRatio}
+                                  />
+                                  <Scores
+                                    players={players}
+                                    characters={characters}
+                                  />
+                                  <Messaging />
+                                </div>
+                                <Controls
+                                  numberOfBoxes={numberOfBoxes}
+                                  setNumberOfBoxes={setNumberOfBoxes}
+                                  speed={speed}
+                                  canvasSize={canvasSize}
+                                  gameEnd={gameEnd}
+                                />
                               </div>
-                              <Controls
-                                numberOfBoxes={numberOfBoxes}
-                                setNumberOfBoxes={setNumberOfBoxes}
-                                speed={speed}
-                                canvasSize={canvasSize}
-                                gameEnd={gameEnd}
-                              />
-                            </div>
-                          </>
-                        )}
-                      </GameEventContext.Provider>
-                    </PlayersContext.Provider>
-                  </ScoresContext.Provider>
+                            </>
+                          )}
+                        </GameEventContext.Provider>
+                      </PlayersContext.Provider>
+                    </ScoresContext.Provider>
+                  </SpritesRelativePosContext.Provider>
                 </SpritesContext.Provider>
               </AvatarContext.Provider>
             </UsernameContext.Provider>

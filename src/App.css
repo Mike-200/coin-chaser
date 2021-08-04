@@ -1,19 +1,25 @@
 @font-face {
-  font-family: "OpenSans";
-  src: local("OpenSans"),
-    url("./assets/fonts/OpenSans-Regular.ttf") format("truetype");
+  font-family: 'OpenSans';
+  src: local('OpenSans'),
+    url('./assets/fonts/OpenSans-Regular.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: "coin";
-  src: local("coin"), url("./assets/fonts/coin.ttf") format("truetype");
+  font-family: 'coin';
+  src: local('coin'), url('./assets/fonts/coin.ttf') format('truetype');
 }
 
 .App {
   text-align: center;
-  /* background-color: red; */
   color: #000;
-  font-family: "OpenSans";
+  font-family: 'OpenSans';
+  height: 100vh;
+  background: linear-gradient(
+    75deg,
+    rgba(146, 138, 194, 1) 26%,
+    rgba(143, 192, 169, 1) 62%,
+    rgba(143, 192, 169, 1) 100%
+  );
 }
 
 button {
@@ -21,6 +27,16 @@ button {
   font-size: 16px;
   border-radius: 50px;
   min-width: 100px;
+  font-family: OpenSans;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.logout {
+  background-color: #0f24a8;
+  color: #f7ffd7;
 }
 
 .Logo {
@@ -31,6 +47,9 @@ button {
 /* header and controls */
 .container {
   padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #hero {

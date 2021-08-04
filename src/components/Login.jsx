@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getAvatar } from "../utils/characters";
+import { useEffect, useState } from 'react';
+import { getAvatar } from '../utils/characters';
 import {
   login,
   startListeningToNewPlayers,
@@ -10,27 +10,26 @@ import {
   removeKnockPlayer,
   startGameHost,
   startListeningToStartGame,
-} from "../utils/login";
+} from '../utils/login';
 
 // styling
-import "../css/login.css";
-import "../assets/fonts/coin.ttf";
+import '../css/login.css';
+import '../assets/fonts/coin.ttf';
 
 // sprites
-import characters from "../utils/characters";
-import leftArrow from "../assets/left-arrow.svg";
-import rightArrow from "../assets/right-arrow.svg";
-import coin from "../assets/coin.svg";
+import characters from '../utils/characters';
+import leftArrow from '../assets/avatar-left-button.svg';
+import rightArrow from '../assets/avatar-right-button.svg';
+import coin from '../assets/coin.svg';
 
 // contexts
-import { useContext } from "react";
-import { StartGameContext } from "../contexts/StartGame";
-import { RoomContext } from "../contexts/Room";
-import { UserContext } from "../contexts/User";
-import { UsernameContext } from "../contexts/Username";
-import { AvatarContext } from "../contexts/Avatar";
-import { PlayersContext } from "../contexts/Players";
-
+import { useContext } from 'react';
+import { StartGameContext } from '../contexts/StartGame';
+import { RoomContext } from '../contexts/Room';
+import { UserContext } from '../contexts/User';
+import { UsernameContext } from '../contexts/Username';
+import { AvatarContext } from '../contexts/Avatar';
+import { PlayersContext } from '../contexts/Players';
 
 const Login = ({ auth, logoutButton }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);

@@ -1,18 +1,18 @@
-import { useContext } from "react";
-import { getAvatar } from "../utils/characters";
+import { useContext } from 'react';
+import { getAvatar } from '../utils/characters';
 
 // sprites
-import coin from "../assets/coin.svg";
+import coin from '../assets/coin.svg';
 
 // Styling
-import "../css/header.css";
-import "../assets/fonts/coin.ttf";
+import '../css/header.css';
+import '../assets/fonts/coin.ttf';
 
 // Contexts
-import { UserContext } from "../contexts/User";
-import { UsernameContext } from "../contexts/Username";
-import { PlayersContext } from "../contexts/Players";
-import { GameEventContext } from "../contexts/GameEvent";
+import { UserContext } from '../contexts/User';
+import { UsernameContext } from '../contexts/Username';
+import { PlayersContext } from '../contexts/Players';
+import { GameEventContext } from '../contexts/GameEvent';
 
 const Header = ({ characters, logoutButton }) => {
   const { user } = useContext(UserContext);
@@ -22,60 +22,34 @@ const Header = ({ characters, logoutButton }) => {
 
   return (
     <header>
-      <div className="container">
-        <button onClick={logoutButton}>Logout</button>
-
+      <div className="container top">
+        <button className="header-margin logout" onClick={logoutButton}>
+          Logout
+        </button>
         <div className="Header_name">
           <span>C</span>
           <span>
             <img className="Header_coin" alt="coin" src={coin}></img>
           </span>
           <span>IN CHASER</span>
+          <div className="Controls__GameEvent">
+            {gameEvent.message ? (
+              gameEvent.error ? (
+                <p className="event-error">{gameEvent.message}</p>
+              ) : (
+                <p>{gameEvent.message}</p>
+              )
+            ) : null}
+          </div>
         </div>
-
-        {/* {gameEvent.message ? (
-          gameEvent.error ? (
-            <span className="event-error">{gameEvent.message}</span>
-          ) : (
-            <span className="event">{gameEvent.message}</span>
-          )
-        ) : null} */}
-
         <div className="user">
-          <p>{username}</p>
+          <p className="header-margin">{username}</p>
           <img
             id="Header__Avatar"
             alt="avatar"
             src={getAvatar(players[user].avatar, characters)}
           ></img>
         </div>
-
-        {/* <div className="Header_name">
-          C<img className="Header_coin" alt="coin" src={coin}></img>
-          IN CHASER
-        </div>
-        <br />
-        {gameEvent.message ? (
-          gameEvent.error ? (
-            <span className="event-error">{gameEvent.message}</span>
-          ) : (
-            <span className="event">{gameEvent.message}</span>
-          )
-        ) : null}
-        <nav>
-          <span id="Header__username">
-            <div>{username}</div>
-            <br />
-            <button onClick={logoutButton}>Logout</button>
-          </span>
-          <span>
-            <img
-              id="Header__Avatar"
-              alt="avatar"
-              src={getAvatar(players[user].avatar, characters)}
-            ></img>
-          </span>
-        </nav> */}
       </div>
     </header>
   );

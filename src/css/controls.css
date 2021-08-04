@@ -28,7 +28,7 @@
 
 .playing-container {
   display: grid;
-  grid-template-areas: "key arrows buttons";
+  grid-template-areas: 'key arrows buttons';
   grid-template-columns: 30% 40% 30%;
   text-align: center;
 }
@@ -95,12 +95,6 @@
 .arrow {
   width: 75px;
   height: 75px;
-}
-
-.Controls__GameEvent {
-  color: black;
-  font-size: 24px;
-  font-weight: bold;
 }
 
 .event-error {

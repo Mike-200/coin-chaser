@@ -102,8 +102,7 @@
 
 .avatarButton {
   background-color: transparent;
-  border: none;
-  cursor: pointer;
+  box-shadow: none;
 }
 
 #LoginAvatar {
@@ -124,23 +123,13 @@
   justify-content: space-between;
 }
 
-.host-new-game-buttons button,
+/* .host-new-game-buttons button,
 .host-new-game button {
   background-color: #f7ffd7;
-  font-family: OpenSans;
-  font-weight: 700;
-  border: none;
-  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
-  cursor: pointer;
-}
+} */
 
 .host-new-game-buttons .join {
   background-color: #f5cc46;
-}
-
-.host-new-game-buttons .logout {
-  background-color: #0f24a8;
-  color: #f7ffd7;
 }
 
 ::placeholder {
@@ -187,25 +176,6 @@
   display: flex;
   justify-content: center;
   align-content: center;
-}
-
-.LoginCard {
-  position: absolute;
-  top: 20%;
-  border-left: auto;
-  border-right: auto;
-  background-color: #f7ffd7;
-  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
-  width: 400px;
-  min-height: 375px;
-  padding: 10px;
-  font-size: 20px;
-  border-style: solid;
-  border-width: 3px;
-  border-color: darkgoldenrod;
-  border-radius: 20px;
-  text-align: center;
-  padding-bottom: 20px;
 }
 
 .avatar {

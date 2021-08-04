@@ -20,6 +20,7 @@
     rgba(143, 192, 169, 1) 62%,
     rgba(143, 192, 169, 1) 100%
   );
+  overflow: hidden;
 }
 
 button {

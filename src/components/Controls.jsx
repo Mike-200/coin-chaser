@@ -4,10 +4,11 @@ import { startNewScreen, updateCharPosition } from '../utils/backend';
 import '../css/controls.css';
 
 // Sprites
-import up from '../assets/up-arrow.svg';
-import down from '../assets/down-arrow.svg';
-import left from '../assets/left-arrow.svg';
-import right from '../assets/right-arrow.svg';
+import up from '../assets/gamepad-up.svg';
+import down from '../assets/gamepad-down.svg';
+import left from '../assets/gamepad-left.svg';
+import right from '../assets/gamepad-right.svg';
+import middle from '../assets/gamepad-middle.svg';
 import coin from '../assets/coin.svg';
 import rocket from '../assets/shuttle.svg';
 import slime from '../assets/splash.svg';
@@ -63,42 +64,42 @@ const Controls = ({ numberOfBoxes, speed, canvasSize, gameEnd }) => {
           {/* <p>Chat with other players using the messaging system</p> */}
         </div>
       </div>
-      <div>
-        <div className="playing-controls">
-          <button
-            onClick={() => {
-              move('ArrowLeft');
-            }}
-            className="arrow-button"
-          >
-            <img src={left} alt="arrow left"></img>
-          </button>
-          <div className="up-down-arrows">
+
+      <div className="all-controls">
+        <div className="circle">
+          <div className="playing-controls">
             <button
               onClick={() => {
-                move('ArrowUp');
+                move('ArrowLeft');
               }}
-              className="arrow-button"
             >
-              <img src={up} alt="arrow up"></img>
+              <img src={left} alt="arrow left"></img>
             </button>
+            <div className="up-down-arrows">
+              <button
+                onClick={() => {
+                  move('ArrowUp');
+                }}
+              >
+                <img src={up} alt="arrow up"></img>
+              </button>
+              <img src={middle} alt="middle"></img>
+              <button
+                onClick={() => {
+                  move('ArrowDown');
+                }}
+              >
+                <img src={down} alt="arrow down"></img>
+              </button>
+            </div>
             <button
               onClick={() => {
-                move('ArrowDown');
+                move('ArrowRight');
               }}
-              className="arrow-button"
             >
-              <img src={down} alt="arrow down"></img>
+              <img src={right} alt="arrow right"></img>
             </button>
           </div>
-          <button
-            onClick={() => {
-              move('ArrowRight');
-            }}
-            className="arrow-button"
-          >
-            <img src={right} alt="arrow right"></img>
-          </button>
         </div>
       </div>
       <div className="Buttons__Image">

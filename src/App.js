@@ -62,22 +62,6 @@ const canvasSize = { x: 800, y: 500 }; //ratio 1.6
 let pixiRatio = 1;
 let listeningToKeyPresses = true;
 
-// Detect screen size on open
-window.onload = function (event) {
-  if (window.innerWidth >= 1340) {
-    pixiRatio = (window.innerWidth - 540) / canvasSize.x;
-    resizePixiCanvas();
-  }
-};
-
-// Detect change in screen size
-window.onresize = function (event) {
-  if (window.innerWidth >= 1340) {
-    pixiRatio = (window.innerWidth - 540) / canvasSize.x;
-    resizePixiCanvas();
-  }
-};
-
 const gameApp = new Pixi.Application({
   autoResize: true,
   resolution: window.devicePixelRatio,
@@ -85,17 +69,6 @@ const gameApp = new Pixi.Application({
   antialias: true,
   autoDensity: true,
 });
-
-function resizePixiCanvas() {
-  console.log("pixiRation>>>", pixiRatio);
-  // const parent = gameApp.view.parentNode;
-  gameApp.renderer.resize(canvasSize.x * pixiRatio, canvasSize.y * pixiRatio);
-}
-
-window.addEventListener("resize", resizePixiCanvas);
-
-// sprites[uid].scale.x = pixiRatio;
-// sprites[uid].scale.y = pixiRatio;
 
 function App() {
   // User Contexts:-
@@ -117,6 +90,7 @@ function App() {
   const [boxSnapShot, setBoxSnapShot] = useState({});
   const [boxesState, setBoxesState] = useState({});
   const [gameEnd, setGameEnd] = useState(false);
+  const [resized, setResized] = useState(0);
 
   function keyHandlers(sprites) {
     let keyDown = false;
@@ -163,6 +137,12 @@ function App() {
     window.location.reload();
   }
 
+  function resizePixiCanvas() {
+    console.log("pixiRation>>>", pixiRatio);
+    gameApp.renderer.resize(canvasSize.x * pixiRatio, canvasSize.y * pixiRatio);
+    setResized((prevNum) => prevNum + 1);
+  }
+
   useBeforeunload(() => {
     cleanup(user === room, fireDB, room, setStartGame, () => {
       logout(auth);
@@ -184,6 +164,21 @@ function App() {
         setBoxSnapShot,
         setScores
       );
+      // Detect screen size on open
+      window.onload = function (event) {
+        if (window.innerWidth >= 1340) {
+          pixiRatio = (window.innerWidth - 540) / canvasSize.x;
+          resizePixiCanvas();
+        }
+      };
+
+      // Detect change in screen size
+      window.onresize = function (event) {
+        if (window.innerWidth >= 1340) {
+          pixiRatio = (window.innerWidth - 540) / canvasSize.x;
+          resizePixiCanvas();
+        }
+      };
     }
   }, [startGame]);
 
@@ -235,9 +230,12 @@ function App() {
       } else {
         if (sprites[uid].x > characterSnapShot[uid].x) {
           sprites[uid].scale.x = -1;
-          spritesRelativePos[uid].scale.x = -Math.abs(spritesRelativePos[uid].scale.x);
+          spritesRelativePos[uid].scale.x = -Math.abs(
+            spritesRelativePos[uid].scale.x
+          );
         } else if (sprites[uid].x < characterSnapShot[uid].x) {
-          sprites[uid].scale.x = Math.abs(spritesRelativePos[uid].scale.x);
+          sprites[uid].scale.x = 1;
+          spritesRelativePos[uid].scale.x = Math.abs(spritesRelativePos[uid].scale.x);
         }
         spritesRelativePos[uid].position.set(
           characterSnapShot[uid].x * pixiRatio,
@@ -381,6 +379,7 @@ function App() {
                                   <PixiComponent
                                     sprites={sprites}
                                     gameApp={gameApp}
+                                    resized={resized}
                                     pixiRatio={pixiRatio}
                                   />
                                   <Scores

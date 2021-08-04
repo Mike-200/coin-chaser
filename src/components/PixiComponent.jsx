@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useContext } from "react";
 import { SpritesRelativePosContext } from "../contexts/SpritesRelativePos";
 
-const PixiComponent = ({ gameApp, sprites, pixiRatio }) => {
+const PixiComponent = ({ gameApp, sprites, pixiRatio, resized }) => {
   const { spritesRelativePos } = useContext(SpritesRelativePosContext);
 
   const ref = useRef("pixi_canvas");
@@ -21,19 +21,20 @@ const PixiComponent = ({ gameApp, sprites, pixiRatio }) => {
       gameApp.stage.addChild(spritesRelativePos[spriteUid]);
     });
   }, [spritesRelativePos]);
-  
-  // useEffect(() => {
-  //   console.log("pixiRatio has changed")
-  //   Object.keys(spritesRelativePos).forEach((spriteUid) => {
-  //     spritesRelativePos[spriteUid].position.set(
-  //       spritesRelativePos[spriteUid].origPos.x * pixiRatio,
-  //       spritesRelativePos[spriteUid].origPos.y * pixiRatio
-  //     );
-  //     spritesRelativePos[spriteUid].scale.x =
-  //       sprites[spriteUid].scale.x * pixiRatio;
-  //     spritesRelativePos[spriteUid].scale.y = pixiRatio;
-  //   });
-  // }, [pixiRatio]);
+
+  useEffect(() => {
+    console.log("pixiRatio has changed");
+    Object.keys(spritesRelativePos).forEach((spriteUid) => {
+      spritesRelativePos[spriteUid].position.set(
+        spritesRelativePos[spriteUid].origPos.x * pixiRatio,
+        spritesRelativePos[spriteUid].origPos.y * pixiRatio
+      );
+      if (spritesRelativePos[spriteUid].scale.x < 0) {
+        spritesRelativePos[spriteUid].scale.x = -pixiRatio;
+      } else spritesRelativePos[spriteUid].scale.x = pixiRatio;
+      spritesRelativePos[spriteUid].scale.y = pixiRatio;
+    });
+  }, [resized]);
 
   return <div id="pixi_canvas" ref={ref}></div>;
 };

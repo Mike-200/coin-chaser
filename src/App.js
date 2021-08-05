@@ -1,28 +1,28 @@
 // Styling
-import "./App.css";
+import './App.css';
 
 // Components
-import PixiComponent from "./components/PixiComponent";
-import Controls from "./components/Controls";
-import Login from "./components/Login";
-import Header from "./components/Header";
-import Scores from "./components/Scores";
-import Messaging from "./components/Messaging";
+import PixiComponent from './components/PixiComponent';
+import Controls from './components/Controls';
+import Login from './components/Login';
+import Header from './components/Header';
+import Scores from './components/Scores';
+import Messaging from './components/Messaging';
 
 // Sprites
-import closedBox from "./assets/box-closed.svg";
-import openBox from "./assets/opened-box.svg";
-import crownCoin from "./assets/coin.svg";
-import rocket from "./assets/shuttle.svg";
-import slime from "./assets/splash.svg";
-import characters from "./utils/characters";
+import closedBox from './assets/box-closed.svg';
+import openBox from './assets/opened-box.svg';
+import crownCoin from './assets/coin.svg';
+import rocket from './assets/shuttle.svg';
+import slime from './assets/splash.svg';
+import characters from './utils/characters';
 
 // Functions, utils, dependencies...
-import * as Pixi from "pixi.js";
-import firebase from "./firebase-config";
-import { logout } from "./utils/login";
-import { useEffect, useState } from "react";
-import { useBeforeunload } from "react-beforeunload";
+import * as Pixi from 'pixi.js';
+import firebase from './firebase-config';
+import { logout } from './utils/login';
+import { useEffect, useState } from 'react';
+import { useBeforeunload } from 'react-beforeunload';
 import {
   startNewScreen,
   cleanup,
@@ -34,21 +34,21 @@ import {
   checkIfSpriteUidIsBox,
   pixiBoxContentSpriteBuilder,
   checkIfSpriteUidIsBoxContent,
-} from "./utils/backend";
-import useStickyState from "./utils/stickyState";
-import collisionDetect from "./utils/collision";
-import { getAvatar } from "./utils/characters";
+} from './utils/backend';
+import useStickyState from './utils/stickyState';
+import collisionDetect from './utils/collision';
+import { getAvatar } from './utils/characters';
 
 // Contexts
-import { StartGameContext } from "./contexts/StartGame";
-import { RoomContext } from "./contexts/Room";
-import { UsernameContext } from "./contexts/Username";
-import { UserContext } from "./contexts/User";
-import { AvatarContext } from "./contexts/Avatar";
-import { SpritesContext } from "./contexts/Sprites";
-import { ScoresContext } from "./contexts/Scores";
-import { PlayersContext } from "./contexts/Players";
-import { GameEventContext } from "./contexts/GameEvent";
+import { StartGameContext } from './contexts/StartGame';
+import { RoomContext } from './contexts/Room';
+import { UsernameContext } from './contexts/Username';
+import { UserContext } from './contexts/User';
+import { AvatarContext } from './contexts/Avatar';
+import { SpritesContext } from './contexts/Sprites';
+import { ScoresContext } from './contexts/Scores';
+import { PlayersContext } from './contexts/Players';
+import { GameEventContext } from './contexts/GameEvent';
 
 // Variables init
 
@@ -75,7 +75,7 @@ function App() {
   const [startGame, setStartGame] = useState(false);
   const [room, setRoom] = useState();
   const [user, setUser] = useState();
-  const [username, setUsername] = useStickyState("username");
+  const [username, setUsername] = useStickyState('username');
   const [avatar, setAvatar] = useState(0);
   const [sprites, setSprites] = useState({});
   const [scores, setScores] = useState({});
@@ -123,16 +123,15 @@ function App() {
   }
 
   function listenToMouseOverMessenger() {
-
-    messengerRef = document.getElementById("stopListenKeys");
-    messengerRef.addEventListener("mouseout", setListeningToKeyPressesTrue);
-    messengerRef.addEventListener("mouseover", setListeningToKeyPressesFalse);
+    messengerRef = document.getElementById('stopListenKeys');
+    messengerRef.addEventListener('mouseout', setListeningToKeyPressesTrue);
+    messengerRef.addEventListener('mouseover', setListeningToKeyPressesFalse);
   }
 
   function stopListenToMouseOverMessenger() {
-    messengerRef.removeEventListener("mouseout", setListeningToKeyPressesTrue);
+    messengerRef.removeEventListener('mouseout', setListeningToKeyPressesTrue);
     messengerRef.removeEventListener(
-      "mouseover",
+      'mouseover',
       setListeningToKeyPressesFalse
     );
   }
@@ -194,8 +193,8 @@ function App() {
           if (uid === user) {
             // Key Presses Listener and zone trigger
             const [keyDownHandler, keyUpHandler] = keyHandlers(sprites);
-            window.addEventListener("keydown", keyDownHandler);
-            window.addEventListener("keyup", keyUpHandler);
+            window.addEventListener('keydown', keyDownHandler);
+            window.addEventListener('keyup', keyUpHandler);
           }
           return sprites;
         });
@@ -212,7 +211,7 @@ function App() {
           .filter((boxSpriteUid) =>
             collisionDetect(sprites[boxSpriteUid], sprites[uid])
           )
-          .filter((boxSpriteUid) => boxesState[boxSpriteUid] === "closed")
+          .filter((boxSpriteUid) => boxesState[boxSpriteUid] === 'closed')
           .forEach((boxSpriteUid) => {
             const boxPos = {
               x: sprites[boxSpriteUid].x,
@@ -223,10 +222,10 @@ function App() {
             openBoxSprite.anchor.set(0.5, 0.5);
 
             let boxContentSprite;
-            if (boxesContents[boxSpriteUid] === "coin") {
+            if (boxesContents[boxSpriteUid] === 'coin') {
               if (user === room) {
                 fireDB
-                  .ref("rooms/" + room + "/gameProps/scores/" + uid)
+                  .ref('rooms/' + room + '/gameProps/scores/' + uid)
                   .set(scores[uid] + 1);
               }
               boxContentSprite = pixiBoxContentSpriteBuilder(crownCoin, boxPos);
@@ -240,7 +239,7 @@ function App() {
                 return prevNum;
               });
             }
-            if (boxesContents[boxSpriteUid] === "rocket") {
+            if (boxesContents[boxSpriteUid] === 'rocket') {
               boxContentSprite = pixiBoxContentSpriteBuilder(rocket, boxPos);
               setGameEvent({
                 message: `${players[uid].username} got the Rocket!`,
@@ -248,7 +247,7 @@ function App() {
               });
               if (uid === user) speed = 50;
             }
-            if (boxesContents[boxSpriteUid] === "slime") {
+            if (boxesContents[boxSpriteUid] === 'slime') {
               boxContentSprite = pixiBoxContentSpriteBuilder(slime, boxPos);
               setGameEvent({
                 message: `${players[uid].username} got the Slime!`,
@@ -260,14 +259,14 @@ function App() {
               const sprites = { ...prevSprites };
               sprites[boxSpriteUid] = pixiSpriteBuilder(openBox, boxPos);
               if (boxContentSprite) {
-                sprites[boxSpriteUid + "contents"] = boxContentSprite;
+                sprites[boxSpriteUid + 'contents'] = boxContentSprite;
               }
               return sprites;
             });
 
             setBoxesState((prevBoxesState) => {
               const tempBoxesState = { ...prevBoxesState };
-              tempBoxesState[boxSpriteUid] = "open";
+              tempBoxesState[boxSpriteUid] = 'open';
               return tempBoxesState;
             });
           });
@@ -293,7 +292,7 @@ function App() {
     const newBoxesContents = {};
     const newSprites = {};
     Object.keys(boxSnapShot).forEach((uid) => {
-      newBoxesState[uid] = "closed";
+      newBoxesState[uid] = 'closed';
       newBoxesContents[uid] = boxSnapShot[uid].contains;
       newSprites[uid] = pixiSpriteBuilder(closedBox, boxSnapShot[uid]);
     });
@@ -328,13 +327,13 @@ function App() {
                               />
 
                               <div id="hero">
-                                <PixiComponent
-                                  sprites={sprites}
-                                  gameApp={gameApp}
-                                />
                                 <Scores
                                   players={players}
                                   characters={characters}
+                                />
+                                <PixiComponent
+                                  sprites={sprites}
+                                  gameApp={gameApp}
                                 />
                                 <Messaging
                                   listenToMouseOverMessenger={

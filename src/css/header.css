@@ -20,7 +20,7 @@
 
 .Header_coin {
   width: 55px;
-  height: 55px;
+  min-height: 55px;
 }
 
 .header-margin {
@@ -56,4 +56,19 @@
 
 .event-error {
   color: red;
+}
+
+@media (orientation: portrait) {
+  .Header_name {
+    font-size: 25px;
+  }
+
+  .Header_coin {
+    width: 25px;
+    min-height: 25px;
+  }
+
+  .Controls__GameEvent {
+    font-size: calc(6px + 1vmin);
+  }
 }

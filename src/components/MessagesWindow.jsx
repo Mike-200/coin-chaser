@@ -33,10 +33,10 @@ const MessagesWindow = ({
     }
   }
 
-//   useEffect(() => {
-//     listenToMouseOverMessenger();
-//     return stopListenToMouseOverMessenger;
-//   }, []);
+  useEffect(() => {
+    listenToMouseOverMessenger();
+    return stopListenToMouseOverMessenger;
+  }, []);
 
   useEffect(() => {
     if (dummy.current) {

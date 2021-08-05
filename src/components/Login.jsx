@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getAvatar } from "../utils/characters";
+import { useEffect, useState } from 'react';
+import { getAvatar } from '../utils/characters';
 import {
   login,
   startListeningToNewPlayers,
@@ -10,27 +10,26 @@ import {
   removeKnockPlayer,
   startGameHost,
   startListeningToStartGame,
-} from "../utils/login";
+} from '../utils/login';
 
 // styling
-import "../css/login.css";
-import "../assets/fonts/coin.ttf";
+import '../css/login.css';
+import '../assets/fonts/coin.ttf';
 
 // sprites
-import characters from "../utils/characters";
-import leftArrow from "../assets/left-arrow.svg";
-import rightArrow from "../assets/right-arrow.svg";
-import coin from "../assets/coin.svg";
+import characters from '../utils/characters';
+import leftArrow from '../assets/avatar-left-button.svg';
+import rightArrow from '../assets/avatar-right-button.svg';
+import coin from '../assets/coin.svg';
 
 // contexts
-import { useContext } from "react";
-import { StartGameContext } from "../contexts/StartGame";
-import { RoomContext } from "../contexts/Room";
-import { UserContext } from "../contexts/User";
-import { UsernameContext } from "../contexts/Username";
-import { AvatarContext } from "../contexts/Avatar";
-import { PlayersContext } from "../contexts/Players";
-
+import { useContext } from 'react';
+import { StartGameContext } from '../contexts/StartGame';
+import { RoomContext } from '../contexts/Room';
+import { UserContext } from '../contexts/User';
+import { UsernameContext } from '../contexts/Username';
+import { AvatarContext } from '../contexts/Avatar';
+import { PlayersContext } from '../contexts/Players';
 
 const Login = ({ auth, logoutButton }) => {
   const { startGame, setStartGame } = useContext(StartGameContext);
@@ -175,7 +174,7 @@ const Login = ({ auth, logoutButton }) => {
 
           <div className="host-new-game">
             <p>Host a new game for other players to join</p>
-            <button id="host-game" onClick={host}>
+            <button id="host-game" className="host-btn" onClick={host}>
               Host new game
             </button>
             <p className="new-game-p">
@@ -230,10 +229,12 @@ const Login = ({ auth, logoutButton }) => {
       return (
         <div className="CardHolder">
           <div className="LoginCard">
-            <p>Provide the room key shown below to the other players</p>
+            <p className="room_key">
+              Provide this room key for other players to join:
+            </p>
             <p className="bold">{room}</p>
 
-            <p>Players already in the game...</p>
+            <p>Players already joined:</p>
             {Object.keys(players).map((uid) => {
               return (
                 <p key={uid}>
@@ -246,7 +247,7 @@ const Login = ({ auth, logoutButton }) => {
                 </p>
               );
             })}
-            <p>Players waiting to join the game...</p>
+            <p>Players waiting to join:</p>
             {Object.keys(clientsKnocks).map((uid) => (
               <p key={uid}>
                 <img

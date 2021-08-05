@@ -8,10 +8,11 @@ export function startListeningToMessages(room, setMessages) {
   });
 }
 
-export function sendMessageToDB(room, username, messageBody) {
+export function sendMessageToDB(room, username, messageBody, user) {
   const timestamp = Date.now();
   fireDB.ref("rooms/" + room + "/messages/" + timestamp).set({
     username,
     messageBody,
+    user,
   });
 }

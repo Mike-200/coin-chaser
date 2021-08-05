@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 
 const PixiComponent = ({ gameApp, sprites }) => {
-  const ref = useRef("pixi_canvas");
+  const ref = useRef('pixi_canvas');
 
   useEffect(() => {
     ref.current.appendChild(gameApp.view);
@@ -19,7 +19,7 @@ const PixiComponent = ({ gameApp, sprites }) => {
     });
   }, [sprites, gameApp]);
 
-  return <div id="pixi_canvas" ref={ref}></div>;
+  return <div id="pixi_canvas" className="pixi_canvas" ref={ref}></div>;
 };
 
 export default PixiComponent;

@@ -1,19 +1,28 @@
 @font-face {
-  font-family: "OpenSans";
-  src: local("OpenSans"),
-    url("./assets/fonts/OpenSans-Regular.ttf") format("truetype");
+  font-family: 'OpenSans';
+  src: local('OpenSans'),
+    url('./assets/fonts/OpenSans-Regular.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: "coin";
-  src: local("coin"), url("./assets/fonts/coin.ttf") format("truetype");
+  font-family: 'coin';
+  src: local('coin'), url('./assets/fonts/coin.ttf') format('truetype');
 }
 
 .App {
   text-align: center;
-  /* background-color: red; */
   color: #000;
-  font-family: "OpenSans";
+  font-family: 'OpenSans';
+  /* height: 100vh; */
+  background: linear-gradient(
+    75deg,
+    rgba(146, 138, 194, 1) 26%,
+    rgba(143, 192, 169, 1) 62%,
+    rgba(143, 192, 169, 1) 100%
+  );
+  /* display: grid;
+  grid-template-rows: auto min-content; */
+  min-height: 100vh;
 }
 
 button {
@@ -21,6 +30,17 @@ button {
   font-size: 16px;
   border-radius: 50px;
   min-width: 100px;
+  font-family: OpenSans;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.logout {
+  background-color: #0f24a8;
+  color: #f7ffd7;
+  transition: all 0.3s ease-in-out;
 }
 
 .Logo {
@@ -31,24 +51,25 @@ button {
 /* header and controls */
 .container {
   padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #hero {
   /* background-color: red; */
-  position: relative;
+  /* position: relative; */
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
 }
 
-#Messaging__Window {
-  border-color: cornflowerblue;
-  background-color: #c2948d;
+.pixi_canvas {
+  box-shadow: 0px 2px 4px 3px rgba(38, 38, 38, 0.15);
 }
 
-#Scores__Window {
-  border-color: cornflowerblue;
-  background-color: #c2948d;
-}
-
-.Rules__Window {
-  border-color: cornflowerblue;
-  background-color: #c2bb8c;
+@media (orientation: portrait) {
+  #hero {
+    flex-direction: column;
+  }
 }

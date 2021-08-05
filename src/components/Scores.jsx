@@ -1,15 +1,15 @@
-import { getAvatar } from "../utils/characters";
+import { getAvatar } from '../utils/characters';
 
 // styling
-import "../css/scores.css";
+import '../css/scores.css';
 
 // contexts
-import { useContext } from "react";
-import { ScoresContext } from "../contexts/Scores.js";
-import { PlayersContext } from "../contexts/Players";
+import { useContext } from 'react';
+import { ScoresContext } from '../contexts/Scores.js';
+import { PlayersContext } from '../contexts/Players';
 
 // sprites
-import crownCoin from "../assets/coin.svg";
+import crownCoin from '../assets/coin.svg';
 
 const Scores = ({ characters }) => {
   const { scores } = useContext(ScoresContext);
@@ -30,6 +30,7 @@ const Scores = ({ characters }) => {
                 ></img>
                 {players[uid].username}
               </div>
+
               <div id="Scores__Scores">
                 <p>{scores[uid]}</p>
                 <img id="Scores__Icons" alt="coin" src={crownCoin}></img>

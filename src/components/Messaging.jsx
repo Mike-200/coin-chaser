@@ -1,83 +1,62 @@
-import { useState, useContext, useEffect, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
+import MessagesWindow from "./MessagesWindow";
+import { startListeningToMessages } from "../utils/messaging";
 
 // styling
 import "../css/messaging.css";
 
-// contexts
-import { StartGameContext } from "../contexts/StartGame";
-import { UsernameContext } from "../contexts/Username";
-import { RoomContext } from "../contexts/Room";
-import { sendMessageToDB, startListeningToMessages } from "../utils/messaging";
+// Assets
+import chatDownArrow from "../assets/chat-down-arrow.svg";
+import chatUpArrow from "../assets/chat-up-arrow.svg";
 
-const Messaging = () => {
-  const { startGame } = useContext(StartGameContext);
-  const { username } = useContext(UsernameContext);
+// Contexts
+import { RoomContext } from "../contexts/Room";
+
+const Messaging = ({
+  characters,
+  stopListenToMouseOverMessenger,
+  listenToMouseOverMessenger,
+}) => {
   const { room } = useContext(RoomContext);
 
-  const [messageBody, setMessageBody] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
   const [sortedMessages, setSortedMessages] = useState([]);
 
-  useEffect(() => {
-    if (startGame) {
-      startListeningToMessages(room, setSortedMessages)
-    }
-  }, [startGame]);
-
-  function sendMessage(e) {
-    e.preventDefault();
-    if (messageBody) {
-      sendMessageToDB(room, username, messageBody)
-      setMessageBody("");
-    }
+  function toggleCollapse() {
+    setIsOpen((isOpen) => !isOpen);
   }
 
-  const dummy = useRef();
-
   useEffect(() => {
-    if (dummy.current) {
-      dummy.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
-  }, [dummy.current, sortedMessages]);
+    startListeningToMessages(room, setSortedMessages);
+  }, []);
 
   return (
-    <div id="Messaging__Window">
-      <h2>Chat Messages</h2>
-      <div id="All__Messages">
-        {Object.entries(sortedMessages).map((item) => {
-          return (
-            <div>
-              {username === item[1].username ? (
-                <li className="Sent" id="Each__Message" key={item[0]}>
-                  <span id="Sent">sent: </span>
-                  <span> {item[1].messageBody}</span>
-                  <li ref={dummy}></li>
-                </li>
-              ) : (
-                <li className="Received" id="Each__Message" key={item[0]}>
-                  <div id="Received">from: {item[1].username}</div>
-                  <div> {item[1].messageBody}</div>
-                  <li ref={dummy}></li>
-                </li>
-              )}
-            </div>
-          );
-        })}
-      </div>
-      <form id="Message__Form">
-        <input
-          id="Message__Input"
-          type="text"
-          placeholder="Enter new message..."
-          value={messageBody}
-          onChange={(e) => setMessageBody(e.target.value)}
-        ></input>
-        <button id="Message__Button" type="submit" onClick={sendMessage}>
-          Send
-        </button>
-      </form>
+    <div>
+      {!isOpen && (
+        <div
+          id="Messaging__Window"
+          className="closed_chat"
+          onClick={toggleCollapse}
+        >
+          <h2>Click to chat!</h2>
+          <img src={chatUpArrow} alt="chat-up-arrow"></img>
+        </div>
+      )}
+
+      {isOpen && (
+        <div id="Messaging__Window" className="open_chat">
+          <div className="Messaging__Title" onClick={toggleCollapse}>
+            <h2>Coin Chat!</h2>
+            <img src={chatDownArrow} alt="chat-down-arrow"></img>
+          </div>
+          <MessagesWindow
+            characters={characters}
+            listenToMouseOverMessenger={listenToMouseOverMessenger}
+            stopListenToMouseOverMessenger={stopListenToMouseOverMessenger}
+            sortedMessages={sortedMessages}
+          />
+        </div>
+      )}
     </div>
   );
 };

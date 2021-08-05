@@ -1,6 +1,7 @@
 #Header__Avatar {
   right: 15px;
   top: 25px;
+  margin-bottom: 50px;
 }
 
 #Header__username {
@@ -13,11 +14,17 @@
 .Header_name {
   font-size: 50px;
   font-family: coin;
+  height: 100px;
+  color: #0b0050;
 }
 
 .Header_coin {
   width: 55px;
-  height: 55px;
+  min-height: 55px;
+}
+
+.header-margin {
+  margin-bottom: 45px;
 }
 
 .user {
@@ -32,12 +39,36 @@
   font-weight: bold;
 }
 
-/* .event {
-  font-weight: bold;
-  color: aqua;
-} */
+.top {
+  padding-bottom: 15px;
+}
 
-/* .event-error {
+.Controls__GameEvent {
+  color: #f5cc46;
+  font-size: 20px;
   font-weight: bold;
+  font-family: coin;
+}
+
+.Controls__GameEvent p {
+  margin-top: 30px;
+}
+
+.event-error {
   color: red;
-} */
+}
+
+@media (orientation: portrait) {
+  .Header_name {
+    font-size: 25px;
+  }
+
+  .Header_coin {
+    width: 25px;
+    min-height: 25px;
+  }
+
+  .Controls__GameEvent {
+    font-size: calc(6px + 1vmin);
+  }
+}

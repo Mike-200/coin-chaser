@@ -7,9 +7,19 @@
 
 .LoginCard p {
   margin-bottom: 15px;
+  color: #0b0050;
 }
 
-.Login__Name_button {
+.room_key {
+  font-size: 20px;
+  margin: 20px auto 20px auto;
+  max-width: 300px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.Login__Name_button,
+.LoginCard button {
   margin-top: 20px;
   transition: all 0.3s ease-in-out;
   box-shadow: 0px 2px 4px 3px rgba(38, 38, 38, 0.15);
@@ -21,7 +31,9 @@
   font-weight: 600;
 }
 
-.Login__Name_button:hover {
+.Login__Name_button:hover,
+.LoginCard button:hover,
+.host-new-game-buttons .join:hover {
   transform: scale(1.1);
   background-color: #fadf99;
 }
@@ -102,8 +114,7 @@
 
 .avatarButton {
   background-color: transparent;
-  border: none;
-  cursor: pointer;
+  box-shadow: none;
 }
 
 #LoginAvatar {
@@ -124,23 +135,14 @@
   justify-content: space-between;
 }
 
-.host-new-game-buttons button,
+/* .host-new-game-buttons button,
 .host-new-game button {
   background-color: #f7ffd7;
-  font-family: OpenSans;
-  font-weight: 700;
-  border: none;
-  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
-  cursor: pointer;
-}
+} */
 
 .host-new-game-buttons .join {
   background-color: #f5cc46;
-}
-
-.host-new-game-buttons .logout {
-  background-color: #0f24a8;
-  color: #f7ffd7;
+  transition: all 0.3s ease-in-out;
 }
 
 ::placeholder {
@@ -160,9 +162,19 @@
   margin-bottom: 20px;
 }
 
-#host-game {
+.host-btn {
   background-color: #fadf99;
   padding: 10px 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.host-btn:hover {
+  transform: scale(1.1);
+  background-color: #f5cc46;
+}
+
+.logout:hover {
+  transform: scale(1.1);
 }
 
 .pick-your-avatar {
@@ -187,25 +199,6 @@
   display: flex;
   justify-content: center;
   align-content: center;
-}
-
-.LoginCard {
-  position: absolute;
-  top: 20%;
-  border-left: auto;
-  border-right: auto;
-  background-color: #f7ffd7;
-  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
-  width: 400px;
-  min-height: 375px;
-  padding: 10px;
-  font-size: 20px;
-  border-style: solid;
-  border-width: 3px;
-  border-color: darkgoldenrod;
-  border-radius: 20px;
-  text-align: center;
-  padding-bottom: 20px;
 }
 
 .avatar {

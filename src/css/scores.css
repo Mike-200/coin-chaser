@@ -1,19 +1,23 @@
 #Scores__Window {
-  position: absolute;
+  /* position: absolute;
   top: 0px;
-  right: 15px;
+  right: 15px; */
   min-height: 498px;
-  width: 225px;
-  border-style: solid;
-  border-width: 2px;
-  /* border-color: cornflowerblue;
-  background-color: darkgray;
-  SEE APP.JS FOR ALL COLOURS OF BOXES TOGETHER */
+  width: 250px;
+  background: linear-gradient(18.45deg, #9ba2ff 0%, #edf4ed 98.74%);
+  box-shadow: 0px 2px 4px 3px rgba(38, 38, 38, 0.15);
+  margin-right: 20px;
+}
+
+#Scores__Window h2 {
+  font-family: coin;
+  color: #0b0050;
+  margin: 20px;
 }
 
 #Scores__List {
   list-style-type: none;
-  padding-top: 5px;
+  padding: 5px 5px 0 5px;
   margin-left: 10px;
   margin-right: 10px;
   font-size: 20px;
@@ -41,7 +45,35 @@
   align-items: center;
 }
 
+#Scores__Users img {
+  margin-right: 12px;
+}
+
 #Scores__Icons {
   width: 30px;
   height: 30px;
+}
+
+@media (orientation: portrait) {
+  #Scores__Window {
+    min-height: 200px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  #Scores__Characters {
+    flex-direction: column;
+  }
+
+  #Scores__List {
+    flex-direction: column;
+  }
+
+  /* #Scores__Characters {
+    display: block;
+  }
+
+  #Scores__Characters {
+    display: block;
+  } */
 }

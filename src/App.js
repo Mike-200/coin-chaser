@@ -123,6 +123,7 @@ function App() {
   }
 
   function listenToMouseOverMessenger() {
+
     messengerRef = document.getElementById("stopListenKeys");
     messengerRef.addEventListener("mouseout", setListeningToKeyPressesTrue);
     messengerRef.addEventListener("mouseover", setListeningToKeyPressesFalse);

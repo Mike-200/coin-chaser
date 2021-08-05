@@ -53,18 +53,22 @@ const Controls = ({ numberOfBoxes, speed, canvasSize, gameEnd }) => {
         <h3>Find the box with a coin to get a point. Get 10 points to win!</h3>
 
         <div className="playing-powerups">
-          <div className="playing-powerups-item">
+          {/* <div className="playing-powerups-item">
             <img alt="rocket" src={rocket}></img>
             <p>Increase speed</p>
-          </div>
-          <div className="playing-powerups-item">
+          </div> */}
+          {/* <div className="playing-powerups-item">
             <img alt="slime" src={slime}></img>
             <p>Decrease speed</p>
-          </div>
+          </div> */}
         </div>
       </div>
 
       <div className="playing-controls">
+        <div className="playing-powerups-item">
+          <img alt="rocket" src={rocket}></img>
+          <p>Increase speed</p>
+        </div>
         <button
           onClick={() => {
             move('ArrowLeft');
@@ -96,6 +100,10 @@ const Controls = ({ numberOfBoxes, speed, canvasSize, gameEnd }) => {
         >
           <img src={right} alt="arrow right"></img>
         </button>
+        <div className="playing-powerups-item">
+          <img alt="slime" src={slime}></img>
+          <p>Decrease speed</p>
+        </div>
       </div>
 
       {room === user && !gameEnd ? (

@@ -115,24 +115,21 @@ function App() {
   }
 
   function setListeningToKeyPressesTrue(event) {
-    console.log("listeningToKeyPresses = true");
     listeningToKeyPresses = true;
   }
 
   function setListeningToKeyPressesFalse(event) {
-    console.log("listeningToKeyPresses = false");
     listeningToKeyPresses = false;
   }
 
   function listenToMouseOverMessenger() {
-    console.log("startListeningToMouseOver");
+
     messengerRef = document.getElementById("stopListenKeys");
     messengerRef.addEventListener("mouseout", setListeningToKeyPressesTrue);
     messengerRef.addEventListener("mouseover", setListeningToKeyPressesFalse);
   }
 
   function stopListenToMouseOverMessenger() {
-    console.log("stopListeningToMouseOver");
     messengerRef.removeEventListener("mouseout", setListeningToKeyPressesTrue);
     messengerRef.removeEventListener(
       "mouseover",

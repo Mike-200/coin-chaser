@@ -68,7 +68,6 @@ const MessagesWindow = ({
               ) : (
                 <div className="Received" id="Each__Message" key={item[0]}>
                   {/* <div id="Received">from: {item[1].username}</div> */}
-                  {/* {console.log(">>>", players[item[1].user].avatar)} */}
                   <img
                     alt="avatar"
                     className="Messaging__Avatar"

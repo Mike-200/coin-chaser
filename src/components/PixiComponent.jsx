@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useContext } from "react";
 import { SpritesRelativePosContext } from "../contexts/SpritesRelativePos";
 
-const PixiComponent = ({ gameApp, sprites, pixiRatio, resized }) => {
+const PixiComponent = ({ gameApp, pixiRatio, resized }) => {
   const { spritesRelativePos } = useContext(SpritesRelativePosContext);
 
   const ref = useRef("pixi_canvas");
@@ -23,7 +23,6 @@ const PixiComponent = ({ gameApp, sprites, pixiRatio, resized }) => {
   }, [spritesRelativePos]);
 
   useEffect(() => {
-    console.log("pixiRatio has changed");
     Object.keys(spritesRelativePos).forEach((spriteUid) => {
       spritesRelativePos[spriteUid].position.set(
         spritesRelativePos[spriteUid].origPos.x * pixiRatio,

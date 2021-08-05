@@ -138,7 +138,6 @@ function App() {
   }
 
   function resizePixiCanvas() {
-    console.log("pixiRation>>>", pixiRatio);
     gameApp.renderer.resize(canvasSize.x * pixiRatio, canvasSize.y * pixiRatio);
     setResized((prevNum) => prevNum + 1);
   }
@@ -151,6 +150,13 @@ function App() {
 
   // Game Init
   useEffect(() => {
+    // Detect screen size on open
+    window.onload = function (event) {
+      if (window.innerWidth >= 1340) {
+        pixiRatio = (window.innerWidth - 540) / canvasSize.x;
+        resizePixiCanvas();
+      }
+    };
     if (startGame) {
       if (room === user) {
         startNewScreen(room, user, players, numberOfBoxes);
@@ -164,13 +170,6 @@ function App() {
         setBoxSnapShot,
         setScores
       );
-      // Detect screen size on open
-      window.onload = function (event) {
-        if (window.innerWidth >= 1340) {
-          pixiRatio = (window.innerWidth - 540) / canvasSize.x;
-          resizePixiCanvas();
-        }
-      };
 
       // Detect change in screen size
       window.onresize = function (event) {
@@ -198,7 +197,7 @@ function App() {
   // On characters change
   useEffect(() => {
     Object.keys(characterSnapShot).forEach((uid) => {
-      const tempSprites = {};
+      const tempSpritesRelativePos = {};
       if (!Object.keys(sprites).includes(uid)) {
         setSprites((prevSprites) => {
           const sprites = { ...prevSprites };
@@ -206,14 +205,15 @@ function App() {
             getAvatar(players[uid].avatar, characters),
             characterSnapShot[uid]
           );
-          tempSprites[uid] = pixiSpriteBuilder(
+          tempSpritesRelativePos[uid] = pixiSpriteBuilder(
             getAvatar(players[uid].avatar, characters),
             {
               x: characterSnapShot[uid].x * pixiRatio,
               y: characterSnapShot[uid].y * pixiRatio,
             }
           );
-          tempSprites[uid].origPos = {
+          tempSpritesRelativePos[uid].scale.set(pixiRatio, pixiRatio);
+          tempSpritesRelativePos[uid].origPos = {
             x: characterSnapShot[uid].x,
             y: characterSnapShot[uid].y,
           };
@@ -235,14 +235,16 @@ function App() {
           );
         } else if (sprites[uid].x < characterSnapShot[uid].x) {
           sprites[uid].scale.x = 1;
-          spritesRelativePos[uid].scale.x = Math.abs(spritesRelativePos[uid].scale.x);
+          spritesRelativePos[uid].scale.x = Math.abs(
+            spritesRelativePos[uid].scale.x
+          );
         }
+        sprites[uid].x = characterSnapShot[uid].x;
+        sprites[uid].y = characterSnapShot[uid].y;
         spritesRelativePos[uid].position.set(
           characterSnapShot[uid].x * pixiRatio,
           characterSnapShot[uid].y * pixiRatio
         );
-        sprites[uid].x = characterSnapShot[uid].x;
-        sprites[uid].y = characterSnapShot[uid].y;
         spritesRelativePos[uid].origPos = {
           x: characterSnapShot[uid].x,
           y: characterSnapShot[uid].y,
@@ -259,18 +261,14 @@ function App() {
               x: sprites[boxSpriteUid].x,
               y: sprites[boxSpriteUid].y,
             };
-            const openBoxSprite = Pixi.Sprite.from(openBox);
-            openBoxSprite.position.set(boxPos.x, boxPos.y);
-            openBoxSprite.anchor.set(0.5, 0.5);
-
-            let boxContentSprite;
+            let boxContentSpriteToBuild;
             if (boxesContents[boxSpriteUid] === "coin") {
               if (user === room) {
                 fireDB
                   .ref("rooms/" + room + "/gameProps/scores/" + uid)
                   .set(scores[uid] + 1);
               }
-              boxContentSprite = pixiBoxContentSpriteBuilder(crownCoin, boxPos);
+              boxContentSpriteToBuild = "coin";
               speed = 25;
               setGameEvent({
                 message: `${players[uid].username} got the Coin!`,
@@ -282,7 +280,7 @@ function App() {
               });
             }
             if (boxesContents[boxSpriteUid] === "rocket") {
-              boxContentSprite = pixiBoxContentSpriteBuilder(rocket, boxPos);
+              boxContentSpriteToBuild = "rocket";
               setGameEvent({
                 message: `${players[uid].username} got the Rocket!`,
                 error: false,
@@ -290,7 +288,7 @@ function App() {
               if (uid === user) speed = 50;
             }
             if (boxesContents[boxSpriteUid] === "slime") {
-              boxContentSprite = pixiBoxContentSpriteBuilder(slime, boxPos);
+              boxContentSpriteToBuild = "slime";
               setGameEvent({
                 message: `${players[uid].username} got the Slime!`,
                 error: false,
@@ -298,14 +296,62 @@ function App() {
               if (uid === user) speed = 12.5;
             }
             setSprites((prevSprites) => {
-              const sprites = { ...prevSprites };
-              sprites[boxSpriteUid] = pixiSpriteBuilder(openBox, boxPos);
-              if (boxContentSprite) {
-                sprites[boxSpriteUid + "contents"] = boxContentSprite;
+              const tempSprites = { ...prevSprites };
+              tempSprites[boxSpriteUid] = pixiSpriteBuilder(openBox, boxPos);
+              if (boxContentSpriteToBuild === "coin") {
+                tempSprites[boxSpriteUid + "contents"] =
+                  pixiBoxContentSpriteBuilder(crownCoin, boxPos);
+              } else if (boxContentSpriteToBuild === "rocket") {
+                tempSprites[boxSpriteUid + "contents"] =
+                  pixiBoxContentSpriteBuilder(rocket, boxPos);
+              } else if (boxContentSpriteToBuild === "slime") {
+                tempSprites[boxSpriteUid + "contents"] =
+                  pixiBoxContentSpriteBuilder(slime, boxPos);
               }
-              return sprites;
+              return tempSprites;
             });
-
+            setSpritesRelativePos((prevSprites) => {
+              const tempSprites = { ...prevSprites };
+              tempSprites[boxSpriteUid] = pixiSpriteBuilder(openBox, {
+                x: boxPos.x * pixiRatio,
+                y: boxPos.y * pixiRatio,
+              });
+              tempSprites[boxSpriteUid].scale.set(pixiRatio, pixiRatio);
+              tempSprites[boxSpriteUid].origPos = {
+                x: boxPos.x,
+                y: boxPos.y,
+              };
+              if (boxContentSpriteToBuild === "coin") {
+                tempSprites[boxSpriteUid + "contents"] =
+                  pixiBoxContentSpriteBuilder(crownCoin, {
+                    x: boxPos.x * pixiRatio,
+                    y: boxPos.y * pixiRatio,
+                  });
+              } else if (boxContentSpriteToBuild === "rocket") {
+                tempSprites[boxSpriteUid + "contents"] =
+                  pixiBoxContentSpriteBuilder(rocket, {
+                    x: boxPos.x * pixiRatio,
+                    y: boxPos.y * pixiRatio,
+                  });
+              } else if (boxContentSpriteToBuild === "slime") {
+                tempSprites[boxSpriteUid + "contents"] =
+                  pixiBoxContentSpriteBuilder(slime, {
+                    x: boxPos.x * pixiRatio,
+                    y: boxPos.y * pixiRatio,
+                  });
+              }
+              if (boxContentSpriteToBuild) {
+                tempSprites[boxSpriteUid + "contents"].scale.set(
+                  pixiRatio,
+                  pixiRatio
+                );
+                tempSprites[boxSpriteUid + "contents"].origPos = {
+                  x: boxPos.x,
+                  y: boxPos.y - 50,
+                };
+              }
+              return tempSprites;
+            });
             setBoxesState((prevBoxesState) => {
               const tempBoxesState = { ...prevBoxesState };
               tempBoxesState[boxSpriteUid] = "open";
@@ -313,9 +359,9 @@ function App() {
             });
           });
       }
-      if (tempSprites) {
+      if (tempSpritesRelativePos) {
         setSpritesRelativePos((prevSpritesRelativePos) => {
-          return { ...prevSpritesRelativePos, ...tempSprites };
+          return { ...prevSpritesRelativePos, ...tempSpritesRelativePos };
         });
       }
     });
@@ -333,20 +379,38 @@ function App() {
         boxContentsOnStage.forEach((spriteUid) => delete newSprites[spriteUid]);
         return newSprites;
       });
+      setSpritesRelativePos((prevSprites) => {
+        const newSprites = { ...prevSprites };
+        boxContentsOnStage.forEach((spriteUid) => delete newSprites[spriteUid]);
+        return newSprites;
+      });
     }
     // reset boxes sprites
     const newBoxesState = {};
     const newBoxesContents = {};
     const newSprites = {};
+    const newSpritesRelativePos = {};
     Object.keys(boxSnapShot).forEach((uid) => {
       newBoxesState[uid] = "closed";
       newBoxesContents[uid] = boxSnapShot[uid].contains;
       newSprites[uid] = pixiSpriteBuilder(closedBox, boxSnapShot[uid]);
+      newSpritesRelativePos[uid] = pixiSpriteBuilder(closedBox, {
+        x: boxSnapShot[uid].x * pixiRatio,
+        y: boxSnapShot[uid].y * pixiRatio,
+      });
+      newSpritesRelativePos[uid].scale.set(pixiRatio, pixiRatio);
+      newSpritesRelativePos[uid].origPos = {
+        x: boxSnapShot[uid].x,
+        y: boxSnapShot[uid].y,
+      };
     });
     setBoxesState(newBoxesState);
     setBoxesContents(newBoxesContents);
     setSprites((prevSprites) => {
       return { ...prevSprites, ...newSprites };
+    });
+    setSpritesRelativePos((prevSprites) => {
+      return { ...prevSprites, ...newSpritesRelativePos };
     });
   }, [startGame, boxSnapShot]);
 
@@ -377,7 +441,6 @@ function App() {
                                 />
                                 <div id="hero">
                                   <PixiComponent
-                                    sprites={sprites}
                                     gameApp={gameApp}
                                     resized={resized}
                                     pixiRatio={pixiRatio}

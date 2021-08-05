@@ -7,7 +7,6 @@
   background: linear-gradient(74.29deg, #acd3f3 5.95%, #f5fffa 105.38%);
   box-shadow: 0px 2px 4px 3px rgba(38, 38, 38, 0.15);
   border-radius: 20px;
-  cursor: pointer;
 }
 
 .closed_chat {
@@ -25,8 +24,8 @@
   color: #f5fffb;
   font-family: coin;
   font-size: 10px;
-  cursor: pointer;
   z-index: 9;
+  cursor: pointer;
 }
 
 .open_chat h2 {
@@ -42,6 +41,7 @@
   justify-content: space-between;
   background-color: #1b04a7;
   border-radius: 20px 20px 0 0;
+  cursor: pointer;
 }
 
 .Messaging__Title img {
@@ -117,3 +117,8 @@
   background-color: transparent;
   box-shadow: none;
 }
+
+/* #stopListenKeys {
+  margin: 0;
+  padding: 0;
+} */

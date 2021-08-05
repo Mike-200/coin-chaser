@@ -1,47 +1,59 @@
-/* using these */
-#Messaging__Window {
-  position: absolute;
-  top: 0;
-  left: 15px;
+.open_chat {
+  position: fixed;
+  bottom: 0;
+  right: 15px;
   height: 498px;
   width: 300px;
-  /* background-color: #f5fffb; */
   background: linear-gradient(74.29deg, #acd3f3 5.95%, #f5fffa 105.38%);
   box-shadow: 0px 2px 4px 3px rgba(38, 38, 38, 0.15);
   border-radius: 20px;
+  cursor: pointer;
 }
 
-#Messaging__Window h2 {
+.closed_chat {
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  width: 270px;
+  height: 60px;
+  border-radius: 20px 20px 0 0;
+  background-color: #1b04a7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  color: #f5fffb;
+  font-family: coin;
+  font-size: 10px;
+  cursor: pointer;
+  z-index: 9;
+}
+
+.open_chat h2 {
   font-family: coin;
   font-size: 18px;
-  margin: 20px 0 10px 0;
-  color: #0b0050;
+  margin: 15px 0;
+  color: #f5fffb;
 }
 
-/* #Messages__Title {
-  padding-top: 5px;
-  padding-bottom: 7px;
-  font-size: 20px;
-  border-style: solid;
-  border-width: 2px;
-  border-color: cornflowerblue;
-  border-radius: 10px;
-  text-align: left;
-  font-style: italic;
-  background-color: rgb(192, 180, 114);
-} */
+.Messaging__Title {
+  display: flex;
+  padding: 5px 20px;
+  justify-content: space-between;
+  background-color: #1b04a7;
+  border-radius: 20px 20px 0 0;
+}
+
+.Messaging__Title img {
+  margin-top: 5px;
+}
 
 #All__Messages {
   width: 95%;
   margin: auto;
   height: 80%;
-  /* overflow: hidden; */
   overflow-y: scroll;
 }
-
-/* #All__Messages * {
-  overflow-anchor: none;
-} */
 
 #Each__Message {
   list-style-type: none;
@@ -57,10 +69,6 @@
 .Messaging__Avatar {
   width: 25px;
   height: 25px;
-  /* border: solid 3px #000;
-  border-radius: 50%;
-  padding: 5px;
-  background-color: #fff; */
 }
 
 .Sent {
@@ -81,17 +89,10 @@
   box-shadow: 0px 2px 4px 3px rgba(38, 38, 38, 0.15);
 }
 
-/* #Anchor {
-  scroll-snap-align: end; */
-/* overflow-anchor: auto;
-  height: 100px;
-} */
-
 #Message__Form {
   left: 0;
   bottom: 0;
   width: 100%;
-  /* background-color: #b7b5b9; */
   margin-top: 10px;
   position: absolute;
   bottom: 0;
@@ -116,31 +117,3 @@
   background-color: transparent;
   box-shadow: none;
 }
-
-/* not sure yet */
-
-/* body {
-  background-color: #f3f2f3;
-  margin: 0;
-  padding: 0;
-} */
-
-/* header {
-  text-align: center;
-} */
-
-/* li span {
-  font-style: italic;
-  font-weight: bolder;
-  color: #b5b0b9;
-} */
-
-/* .sent {
-  background-color: #a79cb3;
-  margin-left: 50%;
-} */
-
-/* #sent {
-  color: #6929ca;
-  justify-content: right;
-} */

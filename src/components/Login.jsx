@@ -174,7 +174,7 @@ const Login = ({ auth, logoutButton }) => {
 
           <div className="host-new-game">
             <p>Host a new game for other players to join</p>
-            <button id="host-game" onClick={host}>
+            <button id="host-game" className="host-btn" onClick={host}>
               Host new game
             </button>
             <p className="new-game-p">
@@ -229,10 +229,12 @@ const Login = ({ auth, logoutButton }) => {
       return (
         <div className="CardHolder">
           <div className="LoginCard">
-            <p>Provide the room key shown below to the other players</p>
+            <p className="room_key">
+              Provide this room key for other players to join:
+            </p>
             <p className="bold">{room}</p>
 
-            <p>Players already in the game...</p>
+            <p>Players already joined:</p>
             {Object.keys(players).map((uid) => {
               return (
                 <p key={uid}>
@@ -245,7 +247,7 @@ const Login = ({ auth, logoutButton }) => {
                 </p>
               );
             })}
-            <p>Players waiting to join the game...</p>
+            <p>Players waiting to join:</p>
             {Object.keys(clientsKnocks).map((uid) => (
               <p key={uid}>
                 <img

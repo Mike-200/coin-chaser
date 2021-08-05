@@ -7,9 +7,19 @@
 
 .LoginCard p {
   margin-bottom: 15px;
+  color: #0b0050;
 }
 
-.Login__Name_button {
+.room_key {
+  font-size: 20px;
+  margin: 20px auto 20px auto;
+  max-width: 300px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.Login__Name_button,
+.LoginCard button {
   margin-top: 20px;
   transition: all 0.3s ease-in-out;
   box-shadow: 0px 2px 4px 3px rgba(38, 38, 38, 0.15);
@@ -21,7 +31,9 @@
   font-weight: 600;
 }
 
-.Login__Name_button:hover {
+.Login__Name_button:hover,
+.LoginCard button:hover,
+.host-new-game-buttons .join:hover {
   transform: scale(1.1);
   background-color: #fadf99;
 }
@@ -130,6 +142,7 @@
 
 .host-new-game-buttons .join {
   background-color: #f5cc46;
+  transition: all 0.3s ease-in-out;
 }
 
 ::placeholder {
@@ -149,9 +162,19 @@
   margin-bottom: 20px;
 }
 
-#host-game {
+.host-btn {
   background-color: #fadf99;
   padding: 10px 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.host-btn:hover {
+  transform: scale(1.1);
+  background-color: #f5cc46;
+}
+
+.logout:hover {
+  transform: scale(1.1);
 }
 
 .pick-your-avatar {

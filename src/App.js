@@ -49,6 +49,7 @@ import { SpritesContext } from './contexts/Sprites';
 import { ScoresContext } from './contexts/Scores';
 import { PlayersContext } from './contexts/Players';
 import { GameEventContext } from './contexts/GameEvent';
+import { MessagingOpenContext } from './contexts/MessagingOpen';
 
 // Variables init
 
@@ -68,6 +69,7 @@ const gameApp = new Pixi.Application({
 });
 
 let listeningToKeyPresses = true;
+let messengerRef;
 
 function App() {
   // User Contexts:-
@@ -80,6 +82,7 @@ function App() {
   const [scores, setScores] = useState({});
   const [players, setPlayers] = useState({});
   const [gameEvent, setGameEvent] = useState({ message: null, error: false });
+  const [isOpen, setIsOpen] = useState(true);
 
   // States:-
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
@@ -114,13 +117,26 @@ function App() {
   }
 
   function listenToMouseOverMessenger() {
-    const messenger = document.getElementById('Messaging__Window');
-    messenger.addEventListener('mouseout', (event) => {
+    messengerRef = document.getElementById('Messaging__Window');
+    messengerRef.addEventListener('mouseout', (event) => {
       if (!listeningToKeyPresses) {
         listeningToKeyPresses = true;
       }
     });
-    messenger.addEventListener('mouseover', (event) => {
+    messengerRef.addEventListener('mouseover', (event) => {
+      if (listeningToKeyPresses) {
+        listeningToKeyPresses = false;
+      }
+    });
+  }
+
+  function stopListenToMouseOverMessenger() {
+    messengerRef.removeEventListener('mouseout', (event) => {
+      if (!listeningToKeyPresses) {
+        listeningToKeyPresses = true;
+      }
+    });
+    messengerRef.removeEventListener('mouseover', (event) => {
       if (listeningToKeyPresses) {
         listeningToKeyPresses = false;
       }
@@ -155,6 +171,7 @@ function App() {
         setBoxSnapShot,
         setScores
       );
+      listenToMouseOverMessenger();
     }
   }, [startGame]);
 
@@ -186,7 +203,6 @@ function App() {
             const [keyDownHandler, keyUpHandler] = keyHandlers(sprites);
             window.addEventListener('keydown', keyDownHandler);
             window.addEventListener('keyup', keyUpHandler);
-            listenToMouseOverMessenger();
           }
           return sprites;
         });
@@ -297,57 +313,67 @@ function App() {
 
   return (
     <div>
-      <StartGameContext.Provider value={{ startGame, setStartGame }}>
-        <RoomContext.Provider value={{ room, setRoom }}>
-          <UserContext.Provider value={{ user, setUser }}>
-            <UsernameContext.Provider value={{ username, setUsername }}>
-              <AvatarContext.Provider value={{ avatar, setAvatar }}>
-                <SpritesContext.Provider value={{ sprites, setSprites }}>
-                  <ScoresContext.Provider value={{ scores, setScores }}>
-                    <PlayersContext.Provider value={{ players, setPlayers }}>
-                      <GameEventContext.Provider
-                        value={{ gameEvent, setGameEvent }}
-                      >
-                        {!startGame ? (
-                          <Login auth={auth} logoutButton={logoutButton} />
-                        ) : (
-                          <>
-                            <div className="App">
-                              <Header
-                                characters={characters}
-                                logoutButton={logoutButton}
-                              />
-
-                              <div id="hero">
-                                <PixiComponent
-                                  sprites={sprites}
-                                  gameApp={gameApp}
-                                />
-                                <Scores
-                                  players={players}
+      <MessagingOpenContext.Provider value={{ isOpen, setIsOpen }}>
+        <StartGameContext.Provider value={{ startGame, setStartGame }}>
+          <RoomContext.Provider value={{ room, setRoom }}>
+            <UserContext.Provider value={{ user, setUser }}>
+              <UsernameContext.Provider value={{ username, setUsername }}>
+                <AvatarContext.Provider value={{ avatar, setAvatar }}>
+                  <SpritesContext.Provider value={{ sprites, setSprites }}>
+                    <ScoresContext.Provider value={{ scores, setScores }}>
+                      <PlayersContext.Provider value={{ players, setPlayers }}>
+                        <GameEventContext.Provider
+                          value={{ gameEvent, setGameEvent }}
+                        >
+                          {!startGame ? (
+                            <Login auth={auth} logoutButton={logoutButton} />
+                          ) : (
+                            <>
+                              <div className="App">
+                                <Header
                                   characters={characters}
+                                  logoutButton={logoutButton}
                                 />
-                                <Messaging characters={characters} />
+
+                                <div id="hero">
+                                  <PixiComponent
+                                    sprites={sprites}
+                                    gameApp={gameApp}
+                                  />
+                                  <Scores
+                                    players={players}
+                                    characters={characters}
+                                  />
+                                  <Messaging
+                                    stopListenToMouseOverMessenger={
+                                      stopListenToMouseOverMessenger
+                                    }
+                                    listenToMouseOverMessenger={
+                                      listenToMouseOverMessenger
+                                    }
+                                    characters={characters}
+                                  />
+                                </div>
+                                <Controls
+                                  numberOfBoxes={numberOfBoxes}
+                                  setNumberOfBoxes={setNumberOfBoxes}
+                                  speed={speed}
+                                  canvasSize={canvasSize}
+                                  gameEnd={gameEnd}
+                                />
                               </div>
-                              <Controls
-                                numberOfBoxes={numberOfBoxes}
-                                setNumberOfBoxes={setNumberOfBoxes}
-                                speed={speed}
-                                canvasSize={canvasSize}
-                                gameEnd={gameEnd}
-                              />
-                            </div>
-                          </>
-                        )}
-                      </GameEventContext.Provider>
-                    </PlayersContext.Provider>
-                  </ScoresContext.Provider>
-                </SpritesContext.Provider>
-              </AvatarContext.Provider>
-            </UsernameContext.Provider>
-          </UserContext.Provider>
-        </RoomContext.Provider>
-      </StartGameContext.Provider>
+                            </>
+                          )}
+                        </GameEventContext.Provider>
+                      </PlayersContext.Provider>
+                    </ScoresContext.Provider>
+                  </SpritesContext.Provider>
+                </AvatarContext.Provider>
+              </UsernameContext.Provider>
+            </UserContext.Provider>
+          </RoomContext.Provider>
+        </StartGameContext.Provider>
+      </MessagingOpenContext.Provider>
     </div>
   );
 }

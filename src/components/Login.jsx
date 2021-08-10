@@ -118,37 +118,35 @@ const Login = ({ auth, logoutButton }) => {
 
   if (!user)
     return (
-      <section className="Card_Holder">
-        <div className="Login_Positioning">
-          <div className="LoginCard">
-            <div className="Login_Name">
-              <span>C</span>
-              <span>
-                <img className="Login_Header_Coin" alt="coin" src={coin}></img>
-              </span>
-              <span>IN CHASER</span>
-            </div>
-            <form className="Login__Name_form">
-              <p>Enter a username to play</p>
-
-              <input
-                type="textbox"
-                className="Login__Name_input"
-                maxLength="10"
-                placeholder="Enter username"
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                }}
-                value={username}
-              ></input>
-              <button className="Login__Name_button" onClick={loginButton}>
-                Enter
-              </button>
-            </form>
-            {error ? <p className="errorMessage">{error}</p> : null}
+      <div className="Login_positioning">
+        <div className="Login_card">
+          <div className="Login_Title">
+            <span>C</span>
+            <span>
+              <img className="Login_Header_Coin" alt="coin" src={coin}></img>
+            </span>
+            <span>IN CHASER</span>
           </div>
+          <form className="Login_Name_form">
+            <p>Enter a username to play</p>
+
+            <input
+              type="textbox"
+              className="Login_input"
+              maxLength="10"
+              placeholder="Enter username"
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
+              value={username}
+            ></input>
+            <button className="Login_Name_button" onClick={loginButton}>
+              Enter
+            </button>
+          </form>
+          {error ? <p className="errorMessage">{error}</p> : null}
         </div>
-      </section>
+      </div>
     );
   else if (!room)
     return (

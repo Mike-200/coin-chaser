@@ -430,7 +430,7 @@ function App() {
   }, [startGame, boxSnapShot]);
 
   return (
-    <div>
+    <div className="App">
       <StartGameContext.Provider value={{ startGame, setStartGame }}>
         <RoomContext.Provider value={{ room, setRoom }}>
           <UserContext.Provider value={{ user, setUser }}>
@@ -449,41 +449,39 @@ function App() {
                             <Login auth={auth} logoutButton={logoutButton} />
                           ) : (
                             <>
-                              <div className="App">
-                                <Header
+                              <Header
+                                characters={characters}
+                                logoutButton={logoutButton}
+                              />
+
+                              <div id="hero">
+                                <Scores
+                                  players={players}
+                                  characters={characters}
+                                />
+                                <PixiComponent
+                                  gameApp={gameApp}
+                                  resized={resized}
+                                  pixiRatio={pixiRatio}
+                                />
+                                <Messaging
+                                  listenToMouseOverMessenger={
+                                    listenToMouseOverMessenger
+                                  }
+                                  stopListenToMouseOverMessenger={
+                                    stopListenToMouseOverMessenger
+                                  }
                                   characters={characters}
                                   logoutButton={logoutButton}
                                 />
-
-                                <div id="hero">
-                                  <Scores
-                                    players={players}
-                                    characters={characters}
-                                  />
-                                  <PixiComponent
-                                    gameApp={gameApp}
-                                    resized={resized}
-                                    pixiRatio={pixiRatio}
-                                  />
-                                  <Messaging
-                                    listenToMouseOverMessenger={
-                                      listenToMouseOverMessenger
-                                    }
-                                    stopListenToMouseOverMessenger={
-                                      stopListenToMouseOverMessenger
-                                    }
-                                    characters={characters}
-                                    logoutButton={logoutButton}
-                                  />
-                                </div>
-                                <Controls
-                                  numberOfBoxes={numberOfBoxes}
-                                  setNumberOfBoxes={setNumberOfBoxes}
-                                  speed={speed}
-                                  canvasSize={canvasSize}
-                                  gameEnd={gameEnd}
-                                />
                               </div>
+                              <Controls
+                                numberOfBoxes={numberOfBoxes}
+                                setNumberOfBoxes={setNumberOfBoxes}
+                                speed={speed}
+                                canvasSize={canvasSize}
+                                gameEnd={gameEnd}
+                              />
                             </>
                           )}
                         </GameEventContext.Provider>

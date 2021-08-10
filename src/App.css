@@ -10,10 +10,13 @@
 }
 
 .App {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
   text-align: center;
   color: #000;
   font-family: "OpenSans";
-  /* height: 100vh; */
   background: linear-gradient(
     75deg,
     rgba(146, 138, 194, 1) 26%,
@@ -22,30 +25,41 @@
   );
   /* display: grid;
   grid-template-rows: auto min-content; */
-  min-height: 100vh;
+  height: 100vh;
 }
 
 button {
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 50px;
-  min-width: 100px;
-  font-family: OpenSans;
-  font-weight: 700;
+  padding: 1vw 2vw 1vw 2vw;
+  font-size: 3vh;
+  border-radius: 4vh;
+  font-weight: 600;
   border: none;
   box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
   cursor: pointer;
+  width: 33vw;
+  margin: 2vw auto 2vw auto;
+}
+
+input {
+  font-weight: 600;
+  border-radius: 4vh;
+  padding: 1vw 2vw 1vw 2vw;
+  font-size: 3vh;
+  text-align: center;
+  background-color: #f7ffd7;
+  border: none;
+  margin: 2vw auto 2vw auto;
+  width: 33vw;
 }
 
 .logout {
   background-color: #0f24a8;
-  color: #f7ffd7;
-  transition: all 0.3s ease-in-out;
+  color: #ffffff;
 }
 
-.Logo {
-  font-size: 6vh;
-  font-family: cursive;
+.logout:hover {
+  transform: scale(1.1);
+  background-color: #2870c2;
 }
 
 /* header and controls */

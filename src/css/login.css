@@ -1,21 +1,86 @@
-.Login__Name {
-  font-size: 50px;
-  font-family: coin;
-  margin: 45px 0 40px 0;
+.Card_Holder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  background: linear-gradient(
+    75deg,
+    rgba(146, 138, 194, 1) 26%,
+    rgba(143, 192, 169, 1) 62%,
+    rgba(143, 192, 169, 1) 100%
+  );
+  height: 100vh;
+}
+
+.Login_Positioning {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* First Card */
+.LoginCard {
+  /* color: #ffffff; */
+
+  /* position: absolute; */
+  /* border-left: auto;
+  border-right: auto; */
   color: #0b0050;
+  font-family: OpenSans;
+  font-weight: 600;
+
+  background-color: #69c298;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  max-width: 460px;
+  min-height: 375px;
+  /* padding: 1vh 1vh 2vh 1vh; */
+  font-size: 3vh;
+  border: solid 4px #f5cc46;
+  border-radius: 2vh;
+  text-align: center;
+  margin-left: 2vw;
+  margin-right: 2vw;
 }
 
 .LoginCard p {
   margin-bottom: 15px;
-  color: #0b0050;
 }
 
-.room_key {
-  font-size: 20px;
-  margin: 20px auto 20px auto;
-  max-width: 300px;
+.Login_Name {
+  font-size: 6vh;
+  font-family: coin;
+  margin: 45px 0 40px 0;
+  /* color: #0b0050; */
+}
+
+.Login_Header_Coin {
+  width: 6vh;
+  height: 6vh;
+  padding-bottom: 0.5vh;
+}
+
+/* Second Card */
+/* .LoggedInCard {
+  color: #0b0050;
+  font-family: OpenSans;
+  font-weight: 600;
+  border: solid 4px #f5cc46;
+  background-color: #69c298;
+  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
+  max-width: 400px;
+  min-height: 375px;
+  font-size: 3vh;
+  border-radius: 2vh;
   text-align: center;
-  line-height: 1.4;
+  margin-left: 2vh;
+  margin-right: 2vh;
+} */
+
+.room_key {
+  font-size: 3vh;
+  margin: 2vw auto 2vw auto;
+  /* max-width: 300px; */
+  text-align: center;
+  /* line-height: 1.4; */
 }
 
 .Login__Name_button,
@@ -38,6 +103,11 @@
   background-color: #fadf99;
 }
 
+.LoginCard button .avatarButton {
+  background-color: transparent;
+  box-shadow: none;
+}
+
 .Login__Name_input,
 .host-new-game input {
   padding: 10px;
@@ -58,69 +128,26 @@
   flex-direction: column;
 }
 
-.CardHolder {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  background: linear-gradient(
-    75deg,
-    rgba(146, 138, 194, 1) 26%,
-    rgba(143, 192, 169, 1) 62%,
-    rgba(143, 192, 169, 1) 100%
-  );
-  height: 100vh;
-}
-
-.LoginCard {
-  color: #ffffff;
-  position: absolute;
-  top: 20%;
-  border-left: auto;
-  border-right: auto;
-  background-color: #69c298;
-  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
-  width: 400px;
-  min-height: 375px;
-  padding: 10px 10px 20px 10px;
-  font-size: 20px;
-  border: solid 4px #f5cc46;
-  border-radius: 20px;
-  text-align: center;
-}
-
-.LoggedInCard {
-  color: #0b0050;
-  font-family: OpenSans;
-  font-weight: 600;
-  position: absolute;
-  top: 20%;
-  border: solid 4px #f5cc46;
-  background-color: #69c298;
-  box-shadow: 0 4px 8px RGBA(0, 0, 0, 0.05);
-  width: 500px;
-  min-height: 375px;
-  padding: 10px;
-  font-size: 20px;
-  border-radius: 20px;
-  text-align: center;
-  padding-bottom: 20px;
-}
-
 .choose-avatar {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: row;
 }
 
-.avatarButton {
+.Login_arrow {
+  max-width: 12vw;
+}
+
+/* .avatarButton {
   background-color: transparent;
   box-shadow: none;
-}
+} */
 
-#LoginAvatar {
-  margin-bottom: 15px;
-  width: 90px;
-  height: 90px;
+.LoginAvatar {
+  margin-bottom: 1.5vh;
+  width: 25vw;
+  margin-top: 2vh;
 }
 
 .host-new-game {
@@ -151,15 +178,15 @@
 }
 
 .host-new-game p {
-  margin-bottom: 20px;
+  margin-bottom: 1.5vh;
 }
 
 .new-game-p {
-  margin-top: 20px;
+  margin-top: 1.5vh;
 }
 
 .host-new-game input {
-  margin-bottom: 20px;
+  margin-bottom: 1.5vh;
 }
 
 .host-btn {
@@ -173,27 +200,40 @@
   background-color: #f5cc46;
 }
 
+.logout {
+  margin: 1vh 1vh 1vh 1vh;
+}
+
+.join {
+  margin: 1vh 1vh 1vh 1vh;
+}
+
+.startGame {
+  margin: 1vh 1vh 1vh 1vh;
+}
+
 .logout:hover {
   transform: scale(1.1);
 }
 
 .pick-your-avatar {
-  margin: 20px 0 15px 0;
+  margin: 2vh 0 2vh 0;
 }
 
 .pick-your-avatar h2 {
   font-family: coin;
+  /* margin-bottom: 2vh; */
 }
 
-.select {
-  font-size: 46px;
+/* .select {
+  font-size: 3vh;
 }
 
 .your-avatar {
   line-height: 1.4;
-  font-size: 22px;
-  margin-bottom: 25px;
-}
+  font-size: 2.5vh;
+  margin-bottom: 2vh;
+} */
 
 .CardHolder {
   display: flex;
@@ -210,6 +250,8 @@
   color: red;
 }
 
-.bold {
+.room {
   font-weight: bold;
+  font-size: 2.6vh;
+  padding: 20px;
 }

@@ -82,7 +82,10 @@ function App() {
   const [spritesRelativePos, setSpritesRelativePos] = useState({});
   const [scores, setScores] = useState({});
   const [players, setPlayers] = useState({});
-  const [gameEvent, setGameEvent] = useState({ message: null, error: false });
+  const [gameEvent, setGameEvent] = useState({
+    message: "Find the box with a coin to get a point. Get 10 points to win!",
+    error: false,
+  });
 
   // States:-
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
@@ -161,8 +164,10 @@ function App() {
   useEffect(() => {
     // Detect screen size on open
     window.onload = function (event) {
-      if (window.innerWidth >= 800) {
-        pixiRatio = (window.innerWidth - 540) / canvasSize.x;
+      if (window.innerWidth >= 200) {
+        pixiRatio = (window.innerWidth * 0.6) / canvasSize.x;
+        let tempPixiRatio = (window.innerHeight * 0.6) / canvasSize.y;
+        if (tempPixiRatio < pixiRatio) pixiRatio = tempPixiRatio;
         resizePixiCanvas();
       }
     };
@@ -182,8 +187,10 @@ function App() {
 
       // Detect change in screen size
       window.onresize = function (event) {
-        if (window.innerWidth >= 800) {
-          pixiRatio = (window.innerWidth - 540) / canvasSize.x;
+        if (window.innerWidth >= 200) {
+          pixiRatio = (window.innerWidth * 0.6) / canvasSize.x;
+          let tempPixiRatio = (window.innerHeight * 0.6) / canvasSize.y;
+          if (tempPixiRatio < pixiRatio) pixiRatio = tempPixiRatio;
           resizePixiCanvas();
         }
       };

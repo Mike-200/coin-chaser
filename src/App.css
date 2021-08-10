@@ -1,18 +1,18 @@
 @font-face {
-  font-family: 'OpenSans';
-  src: local('OpenSans'),
-    url('./assets/fonts/OpenSans-Regular.ttf') format('truetype');
+  font-family: "OpenSans";
+  src: local("OpenSans"),
+    url("./assets/fonts/OpenSans-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'coin';
-  src: local('coin'), url('./assets/fonts/coin.ttf') format('truetype');
+  font-family: "coin";
+  src: local("coin"), url("./assets/fonts/coin.ttf") format("truetype");
 }
 
 .App {
   text-align: center;
   color: #000;
-  font-family: 'OpenSans';
+  font-family: "OpenSans";
   /* height: 100vh; */
   background: linear-gradient(
     75deg,
@@ -44,7 +44,7 @@ button {
 }
 
 .Logo {
-  font-size: 50px;
+  font-size: 6vh;
   font-family: cursive;
 }
 
